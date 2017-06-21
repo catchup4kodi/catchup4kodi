@@ -1,0 +1,13 @@
+<settings>
+<category label="Auto-View">
+    <setting id="favs" type="text" label="Favorites" default="" visible="false" />
+	<setting id="sort" type="bool" label="Sort Alphabetically" default="false"/>
+	<setting id="auto-view" type="bool" label="Enable Automatic View" default="false"/>
+	<setting id="default" type="number" label="Default" default="50" enable="!eq(-1,false)"/>
+	<setting id="episode-view" type="number" label="Episode View" default="503" enable="!eq(-1,false)"/>
+</category>
+</settings>
+
+
+
+

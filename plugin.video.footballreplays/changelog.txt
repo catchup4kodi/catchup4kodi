@@ -1,0 +1,25 @@
+v1.2.0
+Fix Resolving Playwire
+
+v1.1.7 
+Fixed VK.COM
+
+v1.1.6
+Addong decryption Thanks To Lambda
+
+v1.0.5
+Fixed Playing Wrong Video
+
+v1.0.3
+Added Highlights
+
+v1.0.2
+Fixed Next Page
+
+v1.0.1
+Added Search Function
+Added Date Of Matches
+
+
+v1.0
+Initial Release

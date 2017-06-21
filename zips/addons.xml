@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addons>
+<addon id="plugin.video.bbciplayer" name="BBC iPlayer" version="0.3.7" provider-name="catchup4kodi">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="default.py">
+        <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">BBC iPlayer</summary>
+    <description lang="en">BBC iPlayer</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
+<addon id="plugin.video.disneyjunior" name="Disney Junior" version="1.3.2" provider-name="catchup4kodi">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="default.py">
+        <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Stream from disney junior kids</summary>
+    <description lang="en">Stream from disney junior kids</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
+<addon id="plugin.video.filmon" name="FilmOn" version="4.6.8" provider-name="live4kodi">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="default.py">
+        <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">FilmOn</summary>
+    <language>en de fr es it ru</language>
+    <description lang="en">FilmOn.com is an internet based television provider owned by FilmOn.TV Networks Inc. FilmOn.TV Networks was founded by Alki David in 2006.FilmOn.com subscription packages include access to over 120 streaming TV channels (mostly in English language) in addition to premium FilmOn.com Movie channels and pay-per-view channels</description>
+    <disclaimer lang="en">By using This Plugin You will receive sometimes an advert which helps funds the developers developing.....we all thank you!!</disclaimer>
+    <platform>all</platform>
+  </extension>
+</addon>
+
+<addon id="plugin.video.footballreplays" name="Football Replays" version="1.4.0" provider-name="catchup4kodi">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.urlresolver" version="0.0.1"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="default.py">
+        <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Football Replays</summary>
+    <description lang="en">Football Replays</description>
+    <disclaimer lang="en">Watch football replays from around the globe</disclaimer>
+    <platform>all</platform>
+  </extension>
+</addon>
+
+<addon id="plugin.video.irish.tv" name="Irish TV" version="0.2.6" provider-name="catchup4kodi">
+    <requires>
+        <import addon="xbmc.python" version="2.1.0"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="default.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+	<language>en</language>
+        <platform>all</platform>
+        <summary>Irish TV Live</summary>
+    </extension>
+</addon>
+
+<addon id="plugin.video.itv" name="ITV" version="2.3.8" provider-name="catchup4kodi">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="default.py">
+        <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <platform>all</platform>
+    <summary>Plugin for ITV Live Tv Player</summary>
+    <description>ITV Player Front End</description>
+  </extension>
+</addon>
+
+<addon id="plugin.video.matchreplays" version="0.0.3" name="Match Replays" provider-name="catchup4kodi">
+  <requires>
+   <import addon="script.module.urlresolver" version="0.0.1"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="default.py">
+        <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary>Watch Soccer Highlights</summary>
+    <description>Watch Soccer Highlights Videos</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
+<addon id="plugin.video.notfilmon" name="NotFilmOn" version="4.9.5" provider-name=".[COLOR blue]X[/COLOR]unity[COLOR blue]T[/COLOR]alk">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="default.py">
+        <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">NotFilmOn</summary>
+    <description lang="en">Stream And Record From FilmON Tv Live .....Official Support....XBMCTALK.COM</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
+<addon id="plugin.video.tvplayer" name="Tv Player" version="0.2.9" provider-name="catchup4kodi">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="default.py">
+        <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Stream Most Uk Live tv</summary>
+    <description lang="en">Stream Most Uk Live tv</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
+<addon id="plugin.video.uktvplay" name="UKTV Play" version="0.0.5" provider-name="catchup4kodi">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="default.py">
+        <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">UKTV Play</summary>
+    <description lang="en">Watch All Your Favourite UK TV from Dave,Really,Yesterday and Drama</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+</addons>

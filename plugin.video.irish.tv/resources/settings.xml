@@ -1,0 +1,6 @@
+<settings>
+  <!-- General -->
+  <category label="Settings">
+    <setting id="rtelive" label="ENABLE RTE LIVE HD" type="bool" default="false" />
+  </category>
+</settings>

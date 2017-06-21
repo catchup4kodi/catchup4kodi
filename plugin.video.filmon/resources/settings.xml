@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+<category label="30019">
+    <setting id="pop_time" type="text" label="For POP UP" default="2000-01-01 00:00:00" visible="false"/>
+    <setting id="ga_time" type="text" label="GA Called" default="2000-01-01 00:00:00" visible="false"/>
+    <setting id="visitor_ga" type="text" label="GA visitor" default="" visible="false"/>
+	<setting id="filmon" type="bool" label="30010" default="false"/>
+	<setting id="user" type="text" label="30011" default="" enable="!eq(-1,false)"/>
+	<setting id="pass" type="text" option="hidden" label="30012" default="" enable="!eq(-2,false)"/>
+    <setting type="sep" />
+	<setting id="res" type="enum" lvalues="30017|30018|30310" label="30013" default="0" />
+	<setting id="protocol" type="enum" values="RTMP|HLS" label="Choose Protocol:" default="1" />
+    <setting type="sep" />
+	<setting id="firstrun" type="bool" label="DO NOT TOUCH" default="false" visible="false"/>
+</category> 	
+
+<category label="30020">
+	<setting id="auto-view" type="bool" label="30014" default="false"/>
+	<setting id="epg" type="number" label="30015" default="503" enable="!eq(-1,false)"/>
+	<setting id="default" type="number" label="30016" default="500" enable="!eq(-1,false)"/>
+</category>
+</settings>

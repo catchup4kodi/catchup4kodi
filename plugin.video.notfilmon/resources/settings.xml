@@ -1,0 +1,19 @@
+<settings>
+<category label="FilmOn Settings">
+    <setting id="pop_time" type="text" label="For POP UP" default="2000-01-01 00:00:00" visible="false"/>
+    <setting id="ga_time" type="text" label="GA Called" default="2000-01-01 00:00:00" visible="false"/>
+    <setting id="visitor_ga" type="text" label="GA visitor" default="" visible="false"/>
+	<setting id="filmon" type="bool" label="FILMON ACCOUNT" default="false"/>
+	<setting id="user" type="text" label="Email" default="" enable="!eq(-1,false)"/>
+	<setting id="pass" type="text" option="hidden" label="Password" default="" enable="!eq(-2,false)"/>
+    <setting type="sep" />
+	<setting id="res" type="enum" values="LOW|HIGH" label="Preferred Resolution:" default="0" />
+    <setting type="sep" />
+</category> 	
+
+<category label="Auto-View">
+	<setting id="auto-view" type="bool" label="Enable Automatic View" default="false"/>
+	<setting id="epg" type="number" label="EPG View" default="504" enable="!eq(-1,false)"/>
+	<setting id="default" type="number" label="EVERY THING ELSE" default="500" enable="!eq(-1,false)"/>
+</category>
+</settings>

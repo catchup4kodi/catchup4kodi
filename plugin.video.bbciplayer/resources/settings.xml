@@ -1,0 +1,23 @@
+<settings>
+<category label="Settings">
+	<setting id="proxy" type="bool" label="Use Proxy" default="false"/>
+	<setting id="new_custom_url" type="labelenum" label="Proxy Url" default="http://www.justproxy.co.uk/" values="http://www.englandproxy.co.uk/|http://www.justproxy.co.uk/|http://www.joeproxy.co.uk/" enable="!eq(-1,false)" />
+    <setting id="favs" type="text" label="Favorites" default="" visible="false" />
+</category>
+<category label="Stream Options">
+	<setting id="livehd" type="bool" label="HD Live Streams" default="true"/>
+	<setting label="AutoPlay" type="bool" default="true" id="autoplay"/>
+	<setting label="Catchup Source" type="enum" default="0" id="catchup" enable="eq(-1,true)" values="HLS|RTMP"/>
+	<setting label="Supplier" type="enum" default="0" id="supplier" enable="eq(-2,true)" values="AKAMAI|LIMELIGHT"/>
+</category>
+<category label="Auto-View">
+	<setting id="sort" type="bool" label="Sort Alphabetically" default="false"/>
+	<setting id="auto-view" type="bool" label="Enable Automatic View" default="false"/>
+	<setting id="default" type="number" label="Default" default="50" enable="!eq(-1,false)"/>
+	<setting id="episode-view" type="number" label="Episode View" default="503" enable="!eq(-1,false)"/>
+</category>
+</settings>
+
+
+
+

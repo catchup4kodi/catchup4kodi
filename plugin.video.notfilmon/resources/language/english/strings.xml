@@ -1,0 +1,8 @@
+<strings>
+	<!-- XBMC -->
+	<string id="xbmchub">XBMCHUB account</string>
+	<string id="user">Username</string>
+    <string id="pass">Password</string>
+	<!-- Res -->
+	<string id="res">Resolution</string>
+	<string id="message">Message Off</string>

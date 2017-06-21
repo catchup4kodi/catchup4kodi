@@ -1,0 +1,71 @@
+v4.8
+Quick Fix
+
+v4.7
+Icon Fix
+
+v4.6a
+Quick Fix ;)
+
+v4.5a
+Added POP UP
+
+v4.3a
+Better Playing Now
+Changed version number to match official
+
+v3.0e
+Fixed For New Servers
+
+v3.0d
+Quick Fix
+
+v2.9d
+Better GA
+
+v2.9c
+Quick Fix
+
+v2.9
+Quick Fix
+
+v2.8
+Final Fix
+
+v2.7
+Quick Fix
+Better Analytics
+
+v2.6
+Quick Fix
+
+v2.5
+Fixed Channels
+Added Google Analytics
+
+v2.4
+Ready For New Channels
+
+v2.3
+Hopefully Fixed Now
+
+v2.2
+Thank you Icarus
+
+v2.1
+Definately Fixed Local Channels Now
+
+v2.0
+Think i have fixed local channels
+
+v1.4
+Now On Hub Repo
+
+v1.3
+Frodo Fix
+
+v1.2
+Fixed Naming issues
+
+v1.1
+Initial release

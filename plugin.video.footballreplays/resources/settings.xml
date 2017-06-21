@@ -1,0 +1,18 @@
+<settings>
+<category label="Settings">
+   <setting id="maxVideoQuality" type="enum" label="Quality" values="480p|720p|1080p" default="2"/>
+</category>
+<category label="VK.Com Settings">
+	<setting id="use_vk" type="bool" label="Enable your Vk Account" default="false"/>
+	<setting id="vk_user" type="text" label="Email/ Phone Number" default="" enable="!eq(-1,false)"/>
+	<setting id="vk_password" type="text" label="Password" default="" enable="!eq(-2,false)"/>
+</category>
+<category label="Auto-View">
+	<setting id="auto-view" type="bool" label="Enable Automatic View" default="false"/>
+	<setting id="main" type="number" label="Main View" default="500" enable="!eq(-1,false)"/>
+	<setting id="default" type="number" label="Everythinh Else" default="50" enable="!eq(-2,false)"/>
+    <!-- Google Analytics --> 
+    <setting id="ga_time" type="text" label="GA Called" default="2000-01-01 00:00:00" visible="false"/>
+    <setting id="visitor_ga" type="text" label="GA visitor" default="" visible="false"/>
+</category>
+</settings>

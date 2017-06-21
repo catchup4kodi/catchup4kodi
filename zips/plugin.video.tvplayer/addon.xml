@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="plugin.video.tvplayer" name="Tv Player" version="0.2.9" provider-name="catchup4kodi">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="default.py">
+        <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Stream Most Uk Live tv</summary>
+    <description lang="en">Stream Most Uk Live tv</description>
+    <platform>all</platform>
+  </extension>
+</addon>
