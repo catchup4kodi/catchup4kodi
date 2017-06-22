@@ -102,7 +102,7 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.notfilmon" name="NotFilmOn" version="4.9.5" provider-name=".[COLOR blue]X[/COLOR]unity[COLOR blue]T[/COLOR]alk">
+<addon id="plugin.video.notfilmon" name="NotFilmOn" version="4.9.6" provider-name="catchup4kodi">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
   </requires>
@@ -111,7 +111,7 @@
   </extension>
   <extension point="xbmc.addon.metadata">
     <summary lang="en">NotFilmOn</summary>
-    <description lang="en">Stream And Record From FilmON Tv Live .....Official Support....XBMCTALK.COM</description>
+    <description lang="en">Stream And Record From FilmON Tv Live</description>
     <platform>all</platform>
   </extension>
 </addon>
