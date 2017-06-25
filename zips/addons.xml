@@ -143,4 +143,19 @@
     <platform>all</platform>
   </extension>
 </addon>
+
+<addon id="repository.catchup4kodi" name="Catchup4Kodi Repo" version="1.0" provider-name="catchup4kodi">
+	<extension point="xbmc.addon.repository" name="Catchup4Kodi Repo">
+		<dir>
+		<info compressed="false">https://raw.githubusercontent.com/catchup4kodi/repository.ntv-mx/master/zips/addons.xml</info>
+		<checksum>https://raw.githubusercontent.com/catchup4kodi/repository.ntv-mx/master/zips/addons.xml.md5</checksum>
+		<datadir zip="true">https://raw.githubusercontent.com/catchup4kodi/repository.ntv-mx/master/zips/</datadir>
+		</dir>
+	</extension>
+	<extension point="xbmc.addon.metadata">
+		<summary lang="en">Catchup and live addons for Kodi</summary>
+		<description lang="en">Some of the addons in here are geo locked so may not work in your region without a proxy/vpn. There are certainly a few UK based ones which will only work with a UK IP.</description>
+		<genre>livetv,tvshows,kids,sports</genre>
+	</extension>
+</addon>
 </addons>
