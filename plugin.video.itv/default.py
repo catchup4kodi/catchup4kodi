@@ -493,7 +493,7 @@ def HLS(url,iconimage):
             IP=ADDON.getSetting('custom_ip')
 
     TITLE=re.compile('data-video-title="(.+?)"').findall(buf)[0]
-    POSTURL=re.compile('data-video-playlist="(.+?)"').findall(buf)[0]
+    POSTURL=re.compile('data-video-id="(.+?)"').findall(buf)[0]
     hmac=re.compile('data-video-hmac="(.+?)"').findall(buf)[0]
     
     req = urllib2.Request(POSTURL)

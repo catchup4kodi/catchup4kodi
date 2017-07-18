@@ -25,6 +25,9 @@ class Generator:
         if not os.path.exists(zips_path):
             os.makedirs(zips_path)
 
+# Comment out this line if you have .pyc or .pyo files you need to keep
+        self._remove_binaries()
+
         self._generate_addons_file()
         self._generate_md5_file()
         print "Finished updating addons xml and md5 files"
@@ -55,6 +58,29 @@ class Generator:
             for file in files:
                 if file in copyfiles:
                     shutil.copy(os.path.join(addon_id,file),addon_folder)
+
+# Remove any instances of pyc or pyo files
+    def _remove_binaries(self):
+        for parent, dirnames, filenames in os.walk('.'):
+            for fn in filenames:
+                if fn.lower().endswith('pyo') or fn.lower().endswith('pyc'):
+                    compiled = os.path.join(parent, fn)
+                    py_file  = compiled.replace('.pyo','.py').replace('.pyc','.py')
+                    if os.path.exists(py_file):
+                        try:
+                            os.remove(compiled)
+                            print"Removed compiled python file:"
+                            print compiled
+                            print'-----------------------------'
+                        except:
+                            print"Failed to remove compiled python file:"
+                            print compiled
+                            print'-----------------------------'
+                    else:
+                        print"Compiled python file found but no matching .py file exists:"
+                        print compiled
+                        print'-----------------------------'
+
 
     def _generate_addons_file(self):
 # addon list

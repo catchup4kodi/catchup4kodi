@@ -74,7 +74,7 @@
     </extension>
 </addon>
 
-<addon id="plugin.video.itv" name="ITV" version="2.3.8" provider-name="catchup4kodi">
+<addon id="plugin.video.itv" name="ITV" version="2.3.9" provider-name="catchup4kodi">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
   </requires>
@@ -85,6 +85,7 @@
     <platform>all</platform>
     <summary>Plugin for ITV Live Tv Player</summary>
     <description>ITV Player Front End</description>
+    <news>Fixed regex so video links are now being picked up correctly</news>
   </extension>
 </addon>
 
