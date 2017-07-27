@@ -3,8 +3,10 @@ import HTMLParser
 
 #ee3fa
 ADDON = xbmcaddon.Addon(id='plugin.video.bbciplayer')
-
+ICON = ADDON.getAddonInfo('icon')
+FANART = ADDON.getAddonInfo('fanart')
 PROXYBASE=ADDON.getSetting('new_custom_url')
+ART = xbmc.translatePath(os.path.join('special://home/addons/plugin.video.bbciplayer/img/'))
 
 if 'just' in PROXYBASE:
     PROXYURL = 'http://www.justproxy.co.uk/index.php?q=%s'
@@ -14,6 +16,7 @@ else:
     if 'england' in PROXYBASE:
         PROXYURL = 'http://www.englandproxy.co.uk/'
         PROXYREF = 'http://www.englandproxy.co.uk/'
+
     else:
         PROXYURL='http://www.joeproxy.co.uk/index.php?q=%s&hl=3cc'
         PROXYREF = 'http://www.joeproxy.co.uk/'    
@@ -29,12 +32,12 @@ def fixImage(image, resolution):
 
 
 def CATEGORIES():
-    addDir('My Searches','',11,'','')    
-    addDir('Most Popular','http://www.bbc.co.uk/iplayer/group/popular',10,'','')
-    addDir('By Channel','http://www.bbc.co.uk/iplayer',15,'','')
-    addDir('iPlayer A-Z','url',3,'','')
-    addDir('Categories','url',7,'','')
-    addDir('Live','url',2,'','')
+    addDir('My Searches','',11,ART+'iplay.jpg','')    
+    addDir('Most Popular','http://www.bbc.co.uk/iplayer/group/popular',10,ART+'iplay.jpg','')
+    addDir('By Channel','http://www.bbc.co.uk/iplayer',15,ART+'iplay.jpg','')
+    addDir('iPlayer A-Z','url',3,ART+'iplay.jpg','')
+    addDir('Categories','url',7,ART+'iplay.jpg','')
+    addDir('Live','url',2,ART+'iplay.jpg','')
 
 
  
@@ -146,7 +149,7 @@ def GetContent(url):
 
     for url , name in match:
         
-        addDir(name,url,4,'','')
+        addDir(name,url,4,ART+'iplay.jpg','')
 
 
 
@@ -163,7 +166,7 @@ def GetByChannel(url):
             if len(name)<16:
                 if not 'http' in _url:
                     _url='http://www.bbc.co.uk/'+_url
-                addDir(name,_url,7,'','')
+                addDir(name,_url,7,ART+'iplay.jpg','')
         except:pass
     setView('movies', 'default')
         
@@ -190,7 +193,7 @@ def NextPageGenre(url):
                 try:iconimage=re.compile('srcset="(.+?)"').findall (p)[0]
                 except:iconimage=''
 
-            plot=re.compile('<p class="synopsis">(.+?)</p>').findall (p)[0]
+            #plot=re.compile('<p class="synopsis">(.+?)</p>').findall (p)[0]
 
             #except:
                 #name=name
@@ -210,13 +213,14 @@ def NextPageGenre(url):
             else:
                 mode=5
                 
-            addDir(name,_URL_,mode,iconimage.replace('336x189','832x468') ,plot,IPID)
+            addDir(name,_URL_,mode,iconimage.replace('336x189','832x468') ,'',IPID)
         except:pass    
     setView('movies', 'episode-view')
 
 
 def ForCategrories(NEW_URL):    
     HTML=OPEN_URL(NEW_URL)
+    print 'PAGE' + HTML
     html=HTML.split('data-ip-id="')
     for p in html:
         try:
@@ -228,7 +232,7 @@ def ForCategrories(NEW_URL):
                 try:iconimage=re.compile('srcset="(.+?)"').findall (p)[0]
                 except:iconimage=''
 
-            plot=re.compile('<p class="synopsis">(.+?)</p>').findall (p)[0]
+            #plot=re.compile('class="synopsis">(.+?)</p>').findall (p)[0]
             try:
                 number=re.compile('>(.+?)</em>').findall(p)[0]
 
@@ -241,7 +245,7 @@ def ForCategrories(NEW_URL):
                 
                 _URL_='http://www.bbc.co.uk%s' %URL
             else:
-                _URL = URL
+                _URL_ = URL
 
                 
             if not IPID in _URL_:
@@ -254,7 +258,7 @@ def ForCategrories(NEW_URL):
             else:
                 mode=5
                 
-            addDir(name,_URL_,mode,iconimage.replace('336x189','832x468') ,plot,IPID)
+            addDir(name,_URL_,mode,iconimage.replace('336x189','832x468') ,'',IPID)
         except:pass             
 
     try:
@@ -263,7 +267,7 @@ def ForCategrories(NEW_URL):
         nextpage = re.compile('<a href="(.+?)"').findall(HTML)[0].replace('amp;','')
         if not nextpage in NEW_URL:
             _URL_='http://www.bbc.co.uk'+nextpage
-            addDir('[COLOR blue]>> Next Page >>[/COLOR]',_URL_,7,'' ,'','')
+            addDir('[COLOR blue]>> Next Page >>[/COLOR]',_URL_,7,ART+'nextpage.jpg' ,'','')
     except:
         pass  
 
@@ -344,7 +348,7 @@ def Genre(url):
         if '?' in NEW_URL:
             NEW_URL=NEW_URL.split('?')[0]
         _URL_=NEW_URL+nextpage.replace('&#x3D;','=')
-        addDir('[COLOR blue]>> Next Page >>[/COLOR]',_URL_,7,'' ,'','')
+        addDir('[COLOR blue]>> Next Page >>[/COLOR]',_URL_,7,ART+'nextpage.jpg' ,'','')
     except:
         pass      
     setView('movies', 'episode-view')   
@@ -369,7 +373,7 @@ def POPULAR(url):
 
             #except:
                 #name=name    
-            _URL_='http://www.bbc.co.uk%s' %URL
+            _URL_=URL
             if not IPID in _URL_:
                 IPID=IPID
             else:
@@ -390,17 +394,17 @@ def POPULAR(url):
         if not nextpage in NEW_URL:
             _URL_='http://www.bbc.co.uk'+nextpage
            
-            addDir('[COLOR blue]>> Next Page >>[/COLOR]',_URL_,10,'' ,'','')
+            addDir('[COLOR blue]>> Next Page >>[/COLOR]',_URL_,10,ART+'nextpage.jpg' ,'','')
     except:
         pass   
     setView('movies', 'episode-view')
 
 def MySearch():
-    addDir('Search','',9,'','')
+    addDir('Search','',9,ART+'iplay.jpg','')
     favs = ADDON.getSetting('favs').split(',')
     for title in favs:
         NEW_URL='http://www.bbc.co.uk/iplayer/search?q=%s' % title.replace(' ','%20')        
-        addDir(title,NEW_URL,8,'','')
+        addDir(title,NEW_URL,8,ART+'iplay.jpg','')
     
 
 def Search(search_entered):
@@ -441,7 +445,7 @@ def GetEpisodes(id, page=1):
                 try:iconimage=re.compile('srcset="(.+?)"').findall (p)[0]
                 except:iconimage=''
 
-            plot=re.compile('<p class="synopsis">(.+?)</p>').findall (p)[0]
+            #plot=re.compile('<p class="synopsis">(.+?)</p>').findall (p)[0]
 
             #except:
                 #name=name
@@ -450,7 +454,7 @@ def GetEpisodes(id, page=1):
                 
                 _URL_='http://www.bbc.co.uk%s' %URL
             else:
-                _URL = URL
+                _URL_ = URL
                 
             if not IPID in _URL_:
                 IPID=IPID
@@ -462,7 +466,7 @@ def GetEpisodes(id, page=1):
             else:
                 mode=5
                 
-            addDir(name,_URL_,mode,iconimage.replace('336x189','832x468') ,plot,IPID)
+            addDir(name,_URL_,mode,iconimage.replace('336x189','832x468') ,'',IPID)
         except:
             pass
 
@@ -721,6 +725,12 @@ def addDir(name,url,mode,iconimage,description,IPID=''):
                 name =h.unescape(name)
             except:pass
 
+            try:
+                name = name.encode('ascii', 'ignore')
+            except:
+                name = name.decode('utf-8').encode('ascii', 'ignore')
+
+
             u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&iconimage="+urllib.quote_plus(iconimage)+"&description="+urllib.quote_plus(description)+"&IPID="+urllib.quote_plus(IPID)
             ok=True
             #if not IPID == '':
@@ -790,11 +800,6 @@ except: pass
 try:    IPID = params["IPID"]
 except: pass    
 
-print "Mode     : " + str(mode)
-print "URL      : " + str(url)
-print "Name     : " + str(name)
-print "IconImage: " + str(iconimage)   
-        
 #these are the modes which tells the plugin where to go
        
 if mode==1:

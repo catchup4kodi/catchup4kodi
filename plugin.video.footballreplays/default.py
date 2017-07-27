@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import urllib,urllib2,sys,re,xbmcplugin,xbmcgui,xbmcaddon,xbmc,os
 import datetime
 import time
@@ -7,8 +8,10 @@ net=net.Net()
 PLUGIN='plugin.video.footballreplays'
 ADDON = xbmcaddon.Addon(id='plugin.video.footballreplays')
 maxVideoQuality = ADDON.getSetting("maxVideoQuality")
+xbmc.log('maxVideoQuality: %s'%maxVideoQuality,2)
 qual = ["480p", "720p", "1080p"]
 maxVideoQuality = qual[int(maxVideoQuality)]
+xbmc.log('maxVideoQuality: %s'%maxVideoQuality,2)
 
 datapath = xbmc.translatePath(ADDON.getAddonInfo('profile'))
 cookie_path = os.path.join(datapath, 'cookies')
@@ -29,7 +32,7 @@ if os.path.exists(cookie_path) == False:
         
 def CATEGORIES():
     addDir('Full Matches','url',3,'','1')
-    addDir('Search Team','url',4,'','1')
+    # addDir('Search Team','url',4,'','1')
     addDir('Highlights','url',5 ,'','1')
     setView('movies', 'main') 
        #setView is setting the automatic view.....first is what section "movies"......second is what you called it in the settings xml  
@@ -62,13 +65,16 @@ def NEXTPAGE(page):
     setView('movies', 'main') 
                                                                       
 def GETLINKS(name,url):#  cause mode is empty in this one it will go back to first directory
+    xbmc.log('GETLINKS: %s'%url)
     links=OPEN_URL(url)
     links= links.split("class='heading-more open'><span>")
+    xbmc.log('LINK LEN: %s'%len(links))
     for link in links:
-        try:
+        # try:
             language=link.split('<')[0]
             if len(language)>1:
                 addDir ('[COLOR green]%s[/COLOR]'%language, url , 200 , '', '' )
+                xbmc.log('LANGUAGE URL: %s'%url)
             if "proxy.link=lfv*" in link :
                 import base64
                 import decrypter
@@ -89,13 +95,21 @@ def GETLINKS(name,url):#  cause mode is empty in this one it will go back to fir
                 match = re.compile(r,re.DOTALL).findall(link)
                 yt= match[0]
                 iconimage = 'http://i.ytimg.com/vi/%s/0.jpg' % yt.replace('?rel=0','')
-                url = 'plugin://plugin.video.youtube/?path=root/video&action=play_video&videoid=%s' % yt.replace('?rel=0','')
+                url = 'plugin://plugin.video.youtube/play/?video_id=%s' % yt.replace('?rel=0','')
                 addDir( name+' - [COLOR red]YOUTUBE[/COLOR]' , url , 200 , iconimage , '' )
             if "dailymotion.com" in link :
-                r = 'src="http://www.dailymotion.com/embed/video/(.+?)\?.+?"></iframe>'
+                r = 'src="//www.dailymotion.com/embed/video/(.+?)"'
                 match = re.compile(r,re.DOTALL).findall(link)
+                xbmc.log('MATCH: %s'%match)
                 for url in match :
                     addDir ( name+' - [COLOR red]DAILYMOTION[/COLOR]' , url , 200 , GETTHUMB(url), '' )
+            if "streamable.com" in link :
+                # r = 'src="https://streamable.com/s/.+?/(.+?)\?.+?"></iframe>'
+                r = '<iframe src="(.+?)"'
+                match = re.compile(r,re.DOTALL).findall(link)
+                for url in match:
+                    if 'streamable' in url:
+                        addDir ( name+' - [COLOR red]STREAMABLE[/COLOR]' , url , 200 , GETTHUMB(url), '' )
             if "http://videa" in link :
                 r = 'http://videa.+?v=(.+?)"'
                 match = re.compile(r,re.DOTALL).findall(link)
@@ -126,17 +140,22 @@ def GETLINKS(name,url):#  cause mode is empty in this one it will go back to fir
                 match = re.compile(r,re.DOTALL).findall(link)
                 for url in match :
                     addDir (name+' - [COLOR red]MAIL.RU[/COLOR]','http://videoapi.my.mail.ru/videos/%s.json'%url,200,'', '' )
-            if "//openload.co" in link :
-                r = 'src="(.+?//openload.co.+?)"'
+            if "openload.co" in link :
+                r = 'data-lazy-src="(.+?)"'
                 match = re.compile(r,re.DOTALL).findall(link)
                 for url in match :
                     addDir (name+' - [COLOR red]OPENLOAD.CO[/COLOR]',url,200,'', '' )
+                r = 'iframe src="(.+?)"'
+                match = re.compile(r,re.DOTALL).findall(link)
+                for url in match :
+                    if 'openload' in url:
+                        addDir (name+' - [COLOR red]OPENLOAD.CO[/COLOR]',url,200,'', '' )
             if "//player.footballfullmatch" in link :
                 r = 'src="(.+?player.footballfullmatch.com.+?)"'
                 match = re.compile(r,re.DOTALL).findall(link)
                 for url in match :
                     addDir (name+' - [COLOR red]FOOTBALLFULLMATCH.COM[/COLOR]',url,200,'', '' )
-        except:pass
+        # except:pass
 
 
                 
@@ -173,13 +192,16 @@ def makeUTF8(data):
                 s += i
         return s  
         
-          
-            
 def HIGHLIGHTS():
     link=OPEN_URL('http://livefootballvideo.com/highlights')
     r= '<div class="team home column">(.+?)&nbsp;.+?<a href="(.+?)" class="score">(.+?)</a>.+?">&nbsp;(.+?)</div>'
     match = re.compile ( r , re.DOTALL).findall (link)
     for team_a ,url,score,  team_b  in match :
+        xbmc.log(score)
+        if score.startswith('<span'):
+            score = score.split('/span>')[1]
+        if score.endswith('</span>'):
+            score = score.split('<span')[0]
         name = '[COLOR white]%s[/COLOR] [COLOR yellow]%s[/COLOR] [COLOR white]%s[/COLOR]' % ( team_a ,score, team_b )
         iconimage = 'http://livefootballvideo.com'
         addDir(name,url,7,iconimage,'')
@@ -196,14 +218,11 @@ def HIGHLIGHTS_NEXTPAGE( page ) :
         iconimage = 'http://livefootballvideo.com'
         addDir(name,url,7,iconimage,'')
     addDir('Next Page >>' , 'url' , 6 , '' , '1' )
-    setView('movies', 'default') 
-    
-    
+    setView('movies', 'default')    
     
 def HIGHLIGHTS_LINKS(name,url):
     GETLINKS(name,url)
-
-            
+           
 def Search():
         search_entered = ''
         keyboard = xbmc.Keyboard(search_entered, 'Search Football Replays')
@@ -212,7 +231,8 @@ def Search():
             search_entered = keyboard.getText() .replace(' ','+')  # sometimes you need to replace spaces with + or %20#
             if search_entered == None:
                 return False
-        link=OPEN_MAGIC('http://www.google.com/cse?cx=partner-pub-9069051203647610:8413886168&ie=UTF-8&q=%s&sa=Search&ref=livefootballvideo.com/highlights'%search_entered)
+        link=OPEN_MAGIC('https://cse.google.co.uk/cse?cx=partner-pub-9069051203647610:8413886168&ie=UTF-8&q=%s&sa=Search&ref=&gws_rd=cr&ei=GHF4WeipBdCjUPbqsIAN#gsc.tab=0&gsc.q=%s&gsc.page=1'%(search_entered,search_entered))
+        xbmc.log('### LINK: %s'%link)
         match=re.compile('" href="(.+?)" onmousedown=".+?">(.+?)</a>').findall(link)
         for url,dirtyname in match: 
             import HTMLParser
@@ -220,8 +240,7 @@ def Search():
             name= cleanname.replace('<b>','').replace('</b>','')
             addDir(name,url,1,'','')
         setView('movies', 'default') 
-        
-        
+              
 def GETTHUMB(url):
     try:
         import json
@@ -230,44 +249,7 @@ def GETTHUMB(url):
         icon=data['thumbnail_large_url']
         return icon
     except:
-        return ''
-        
-        
-def getStreamUrl(id):
-    qual = ["480p", "720p", "1080p"]
-    maxVideoQuality = qual[int(maxVideoQuality)]    
-    content = OPEN_URL("http://www.dailymotion.com/embed/video/"+id)
-    if '"message":"This video has been removed due to a copyright claim of WWE"' in content:
-        xbmc.executebuiltin('XBMC.Notification(Info:,copyright claim (DailyMotion)!,5000)')
-        return ""        
-    elif content.find('"statusCode":410') > 0 or content.find('"statusCode":403') > 0:
-        xbmc.executebuiltin('XBMC.Notification(Info:,Not Found (DailyMotion)!,5000)')
-        return ""
-    else:
-        matchFullHD = re.compile('"1080":.+?"url":"(.+?)"', re.DOTALL).findall(content)
-        matchHD = re.compile('"720":.+?"url":"(.+?)"', re.DOTALL).findall(content)
-        matchHQ = re.compile('"480":.+?"url":"(.+?)"', re.DOTALL).findall(content)
-        matchSD = re.compile('"380":.+?"url":"(.+?)"', re.DOTALL).findall(content)
-        matchLD = re.compile('"240":.+?"url":"(.+?)"', re.DOTALL).findall(content)
-        url = ""
-        if matchFullHD and maxVideoQuality == "1080p":
-            url = urllib.unquote_plus(matchFullHD[0]).replace("\\", "")
-        elif matchHD and (maxVideoQuality == "720p" or maxVideoQuality == "1080p"):
-            url = urllib.unquote_plus(matchHD[0]).replace("\\", "")
-        elif matchHQ:
-            url = urllib.unquote_plus(matchHQ[0]).replace("\\", "")
-        elif matchSD:
-            url = urllib.unquote_plus(matchSD[0]).replace("\\", "")
-        elif matchLD:
-            url = urllib.unquote_plus(matchLD[0]).replace("\\", "")
-        print url
-        print '####################################'
-        return url
-        
-
-
-
-    
+        return ''   
         
 def GrabRu(id):
     print id
@@ -275,7 +257,6 @@ def GrabRu(id):
     r = '<m3u8>(.+?)</m3u8>'
     match = re.compile(r,re.DOTALL).findall(link)
     return match[0]
-
 
 def getData(url,headers={}):
     net.save_cookies(cookie_jar)
@@ -285,7 +266,6 @@ def getData(url,headers={}):
     data=response.read()
     response.close()
     return data
-
 
 def GrabMailRu(url):
     print 'RESOLVING VIDEO.MAIL.RU VIDEO API LINK'
@@ -308,19 +288,13 @@ def GrabMailRu(url):
     match = re.compile(r,re.DOTALL).findall(data)
     for quality,stream in match:
         name.append(quality.title())
-        
-
-  
         test = str(l)
         test = test.replace('<Cookie ','')
         test = test.replace(' for .my.mail.ru/>','')
         url.append(stream +'|Cookie='+test)
 
     return url[xbmcgui.Dialog().select('Please Select Resolution', name)]
-
-
-
-    
+  
 def GrabVidea(id):
     link = OPEN_URL('http://videa.hu/flvplayer_get_video_xml.php?v=%s&m=0'%str(id))
     name=[]
@@ -377,23 +351,14 @@ def GrabVK(url):
             dialog = xbmcgui.Dialog()
             dialog.ok("Football Replays", '','Sorry Video Is Private', '')
         
-        
-        
-        
 def LOGIN_VK(number,password,GET_URL):
-
-                
-    
     headers = {}
     headers.update({'Content-Type': 'application/x-www-form-urlencoded', 'Connection': 'keep-alive',
                     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
                     'Accept-Encoding': 'gzip,deflate,sdch', 'Accept-Language': 'en-GB,en-US;q=0.8,en;q=0.6',
                     'User-Agent': 'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.146 Safari/537.36'})
     
-    
-    html = net.http_GET('http://vk.com')
-    
-    
+    html = net.http_GET('http://vk.com') 
     ip_h = re.search(r'ip_h\"\svalue=\"(.*?)\"', html.content, re.I)
     html = net.http_POST('https://login.vk.com/?act=login', {'act':'login','role':'al_frame','expire':'',
                                                              'captcha_sid':'','_origin':'http://vk.com','ip_h':ip_h.group(1),
@@ -401,12 +366,10 @@ def LOGIN_VK(number,password,GET_URL):
     if os.path.exists(cookie_path) == False:
         os.makedirs(cookie_path)
     net.save_cookies(cookie_jar)
-    net.set_cookies(cookie_jar)
-    
+    net.set_cookies(cookie_jar)  
     html = net.http_GET(GET_URL).content.replace('\\','')
     return html
-    
-    
+     
 def PLAYSTREAM(name,url,iconimage):
         if 'YOUTUBE' in name:
             link = str(url)
@@ -421,8 +384,7 @@ def PLAYSTREAM(name,url,iconimage):
 
         elif 'MAIL.RU' in name:
             link = GrabMailRu(url)
-
-            
+      
         elif 'RUTUBE' in name:
             try:
                 html = 'http://rutube.ru/api/play/trackinfo/%s/?format=xml'% url.replace('_ru','')
@@ -448,16 +410,13 @@ def PLAYSTREAM(name,url,iconimage):
             files = re.compile(h,re.DOTALL).findall(link)[0]
 
             if base:
-                link=base+'/'+files
-                
+                link=base+'/'+files         
                 
         elif 'DAILYMOTION' in name:
-            try:
-                url = url.split('video/')[1]
-            except:
-                url = url
-            link = getStreamUrl(url)
-            
+            import urlresolver
+            link = 'http://www.dailymotion.com/embed/video/'+url
+            link=urlresolver.resolve(str(link))
+
         elif 'FOOTBALLFULLMATCH.COM' in name:
             link = OPEN_URL(url).replace("'",'"')
             r = '"file": "(.+?)"'
@@ -474,7 +433,6 @@ def PLAYSTREAM(name,url,iconimage):
             xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, liz)
         except:pass
         
- 
 def OPEN_URL(url):
     req = urllib2.Request(url)
     req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
@@ -483,7 +441,6 @@ def OPEN_URL(url):
     response.close()
     return link
     
-    
 def OPEN_MAGIC(url):
     req = urllib2.Request(url)
     req.add_header('User-Agent' , "Magic Browser")
@@ -491,8 +448,6 @@ def OPEN_MAGIC(url):
     link=response.read()
     response.close()
     return link
-    
-    
         
 def get_params():
         param=[]
@@ -511,9 +466,7 @@ def get_params():
                                 param[splitparams[0]]=splitparams[1]
                                 
         return param
-
-
-        
+ 
 # this is the listing of the items        
 def addDir(name,url,mode,iconimage,page):
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&iconimage="+urllib.quote_plus(iconimage)+"&page="+str(page)
@@ -526,7 +479,8 @@ def addDir(name,url,mode,iconimage,page):
         else:
             ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
         return ok
-#same as above but this is addlink this is where you pass your playable content so you dont use addDir you use addLink "url" is always the playable content         
+
+# same as above but this is addlink this is where you pass your playable content so you dont use addDir you use addLink "url" is always the playable content         
 def addLink(name,url,iconimage,description):
         ok=True
         liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
@@ -534,17 +488,15 @@ def addLink(name,url,iconimage,description):
         liz.setProperty("IsPlayable","true")
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=url,listitem=liz,isFolder=False)
         return ok 
- 
         
-#below tells plugin about the views                
+# below tells plugin about the views                
 def setView(content, viewType):
         # set content type so library shows more views and info
         if content:
                 xbmcplugin.setContent(int(sys.argv[1]), content)
         if ADDON.getSetting('auto-view') == 'true':#<<<----see here if auto-view is enabled(true) 
                 xbmc.executebuiltin("Container.SetViewMode(%s)" % ADDON.getSetting(viewType) )#<<<-----then get the view type
-                      
-               
+                            
 params=get_params()
 url=None
 name=None
@@ -609,5 +561,4 @@ elif mode == 7 :
 elif mode==200:
         PLAYSTREAM(name,url,iconimage)
         
-       
 xbmcplugin.endOfDirectory(int(sys.argv[1]))

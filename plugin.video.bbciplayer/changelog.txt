@@ -1,3 +1,7 @@
+v0.3.77
+Fixed some lists not opening due to Welsh chars
+Fixed playback for live and catchup
+
 v0.0.7
 Fixed Live
 

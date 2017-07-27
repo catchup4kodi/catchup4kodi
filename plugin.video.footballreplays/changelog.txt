@@ -1,3 +1,14 @@
+v1.4.5
+Fixed Openload (Full matches now work too)
+Fixed DailyMotion
+Fixed Streamable
+Fixed raw html in some lists
+Removed Search option for now as it's broken - needs javascript
+
+TODO:
+Playwire needs fixing
+---------------------
+
 v1.2.0
 Fix Resolving Playwire
 
