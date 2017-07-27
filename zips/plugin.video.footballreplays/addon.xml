@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.footballreplays" name="Football Replays" version="1.4.0" provider-name="catchup4kodi">
+<addon id="plugin.video.footballreplays" name="Football Replays" version="1.4.5" provider-name="catchup4kodi">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.urlresolver" version="0.0.1"/>
