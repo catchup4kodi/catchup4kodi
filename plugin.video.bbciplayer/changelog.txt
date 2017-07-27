@@ -1,4 +1,4 @@
-v0.3.77
+v0.4
 Fixed some lists not opening due to Welsh chars
 Fixed playback for live and catchup
 
