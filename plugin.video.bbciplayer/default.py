@@ -174,6 +174,7 @@ def GetByChannel(url):
 def NextPageGenre(url):
 
     NEW_URL = url
+    
     link    = OPEN_URL(NEW_URL)
 
     html = link.replace('data-ip-episode', '-episode')
@@ -197,11 +198,12 @@ def NextPageGenre(url):
 
             #except:
                 #name=name
+
             if 'http://www.bbc.co.uk' not in URL:
                 
                 _URL_='http://www.bbc.co.uk%s' %URL
             else:
-                _URL = URL
+                _URL_ = URL
                 
             if not IPID in _URL_:
                 IPID=IPID
@@ -212,7 +214,6 @@ def NextPageGenre(url):
                 mode=14
             else:
                 mode=5
-                
             addDir(name,_URL_,mode,iconimage.replace('336x189','832x468') ,'',IPID)
         except:pass    
     setView('movies', 'episode-view')
