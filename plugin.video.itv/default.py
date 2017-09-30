@@ -153,16 +153,40 @@ def download_subtitles(url, offset):
     return outfile
 
 def CATS():
-        addDir('ITV Player','http://www.itv.com/_data/xml/CatchUpData/CatchUp360/CatchUpMenu.xml',1,icon,isFolder=True)
         if os.path.exists(favorites)==True:
             addDir('[COLOR yellow]Favorites[/COLOR]','url',12,'')
-        addDir('ITV1 Live','http://itv1liveios-i.akamaihd.net/hls/live/203437/itvlive/ITV1MN/master_Main1800.m3u8',7,foricon+'art/1.png',isFolder=False)#sim1
-        addDir('ITV2 Live','http://itv2liveios-i.akamaihd.net/hls/live/203495/itvlive/ITV2MN/master_Main1800.m3u8',7,foricon+'art/2.png',isFolder=False)#sim2
-        addDir('ITV3 Live','http://itv3liveios-i.akamaihd.net/hls/live/207262/itvlive/ITV3MN/master_Main1800.m3u8',7,foricon+'art/3.png',isFolder=False)#sim3
-        addDir('ITV4 Live','http://itv4liveios-i.akamaihd.net/hls/live/207266/itvlive/ITV4MN/master_Main1800.m3u8',7,foricon+'art/4.png',isFolder=False)#sim4
-        addDir('ITVBe Live','http://itvbeliveios-i.akamaihd.net/hls/live/219078/itvlive/ITVBE/master_Main1800.m3u8',7,foricon+'art/8.jpg',isFolder=False)
-        addDir('CITV Live','http://citvliveios-i.akamaihd.net/hls/live/207267/itvlive/CITVMN/master_Main1800.m3u8',7,foricon+'art/7.png',isFolder=False)#sim7
-        setView('tvshows', 'default') 
+            
+        addDir('Shows','http://www.itv.com/hub/shows',1,icon,isFolder=True)
+        addDir('Categories','cats',205,icon,isFolder=True)
+        addDir('Live','Live',206,icon,isFolder=True)
+        setView('tvshows', 'default')
+                        
+def LIVE():
+    addDir('ITV1','https://itv1liveios-i.akamaihd.net/hls/live/203437/itvlive/ITV1MN/master.m3u8',7,foricon+'art/1.png',isFolder=False)#sim1
+    addDir('ITV2','https://itv2liveios-i.akamaihd.net/hls/live/203495/itvlive/ITV2MN/master.m3u8',7,foricon+'art/2.png',isFolder=False)#sim2
+    addDir('ITV3','https://itv3liveios-i.akamaihd.net/hls/live/207262/itvlive/ITV3MN/master.m3u8',7,foricon+'art/3.png',isFolder=False)#sim3
+    addDir('ITV4','https://itv4liveios-i.akamaihd.net/hls/live/207266/itvlive/ITV4MN/master.m3u8',7,foricon+'art/4.png',isFolder=False)#sim4
+    addDir('ITVBe','https://itvbeliveios-i.akamaihd.net/hls/live/219078/itvlive/ITVBE/master.m3u8',7,foricon+'art/8.jpg',isFolder=False)
+    addDir('CITV','https://citvliveios-i.akamaihd.net/hls/live/207267/itvlive/CITVMN/master.m3u8',7,foricon+'art/7.png',isFolder=False)#sim7
+    addDir('Events/Sport','https://itvliveevents-i.akamaihd.net/hls/live/203496/itvliveevents/ITVEVTMN/master.m3u8',7,foricon+'art/9.jpg',isFolder=False)#sim9
+
+def CATEGORIES():
+        CATS= [('children', 'Children'),
+               ('comedy', 'Comedy'),
+               ('entertainment', 'Entertainment'),
+               ('drama-soaps', 'Drama & Soaps'),
+               ('factual', 'Factual'),
+               ('films', 'Films'),
+               ('news', 'News'),
+               ('sport', 'Sport')]
+
+        for url, title in CATS:
+            
+            addDir(title,'https://www.itv.com/hub/categories/%s'%url,1,icon,isFolder=True)
+        
+        setView('tvshows', 'default')
+
+        
         
 def PLAY_STREAM(name,url,iconimage):
     quality = int(__settings__.getSetting('live_stream'))
@@ -262,7 +286,7 @@ def SHOWS(url):
 
         opener = urllib2.build_opener(proxy_support, authinfo)
         urllib2.install_opener(opener)
-    f = urllib2.urlopen('http://www.itv.com/hub/shows')
+    f = urllib2.urlopen(url)
     buf = f.read()
     buf=re.sub('&amp;','&',buf)
     buf=re.sub('&middot;','',buf)
@@ -966,6 +990,12 @@ elif mode==14:
 elif mode==204:
         
         EPS(name,url)
+        
+elif mode==205:
+    CATEGORIES()
+    
+elif mode==206:
+    LIVE()   
         
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
