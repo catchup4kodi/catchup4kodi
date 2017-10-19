@@ -1,0 +1,602 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<window type="window">
+	<defaultcontrol always="true">32502</defaultcontrol>
+	<controls>
+		<control type="group">
+			<control type="image">
+				<description>background image</description>
+				<left>0</left>
+				<top></top>
+				<width>100%</width>
+				<height>100%</height>
+				<texture border="40">windowback.jpg</texture>
+			</control>
+			<control type="image">
+				<description>Dialog Header image</description>
+				<left>25</left>
+				<top></top>
+				<width>1210</width>
+				<height>60</height>
+				<texture>dialogheader.png</texture>
+			</control>
+			<control type="button" id="32504">
+				<description>Close Window button</description>
+				<left>1153</left>
+				<top>15</top>
+				<width>64</width>
+				<height>32</height>
+				<label>-</label>
+				<font>-</font>
+				<onclick>PreviousMenu</onclick>
+				<texturefocus>DialogCloseButton-focus.png</texturefocus>
+				<texturenofocus>DialogCloseButton.png</texturenofocus>
+				<onleft>32506</onleft>
+				<onright>32506</onright>
+				<onup>32502</onup>
+				<ondown>32505</ondown>
+				<animation effect="slide" end="-120,0" time="0" condition="Window.Close">Conditional</animation>
+				<visible>system.getbool(input.enablemouse)</visible>
+			</control>
+			<control type="group">
+				<visible>!IsEmpty(Window(home).Property(has_history))</visible>
+				<control type="image">
+					<description>Main Panel</description>
+					<left>65</left>
+					<top>65</top>
+					<width>1150</width>
+					<height>47</height>
+					<texture border="5">button-nofocus.png</texture>
+				</control>
+				<control type="group" id="33000">
+					<control type="button" id="32505">
+						<description>Next Page</description>
+						<posx>1000</posx>
+						<posy>70</posy>
+						<width>200</width>
+						<height>35</height>
+						<label>-</label>
+						<font>-</font>
+						<onleft>32506</onleft>
+				        <onright>32506</onright>
+				        <onup>32504</onup>
+				        <ondown>32502</ondown>
+						<texturefocus>NextFocus.png</texturefocus>
+						<texturenofocus>Next.png</texturenofocus>
+					</control>
+				</control>
+				<control type="group" id="33001">
+					<control type="button" id="32506">
+						<description>Previous Page</description>
+						<posx>75</posx>
+						<posy>70</posy>
+						<width>200</width>
+						<height>35</height>
+						<label>-</label>
+						<font>-</font>
+						<onleft>32505</onleft>
+				        <onright>32505</onright>
+				        <onup>32504</onup>
+				        <ondown>32502</ondown>
+						<texturefocus>PreviousFocus.png</texturefocus>
+						<texturenofocus>Previous.png</texturenofocus>
+					</control>
+				</control>
+				#######################
+				<control type="panel" id="32502">
+					<left>50</left>
+					<top>111</top>
+					<width>1200</width>
+					<height>575</height>
+					<onup>32505</onup>
+					<ondown>32504</ondown>
+					<onleft>32502</onleft>
+					<onright>32502</onright>
+					<scrolltime>200</scrolltime>
+					<itemlayout height="140" width="575">
+						<control type="image">
+							<left>0</left>
+							<top>0</top>
+							<width>575</width>
+							<height>140</height>
+							<texture border="5">nofocusel.png</texture>
+						</control>
+						<control type="label">
+							<description>Home Team Name</description>
+							<posx>120</posx>
+							<posy>55</posy>
+							<width>140</width>
+							<height>35</height>
+							<label>$INFO[ListItem.Property(team_a)]</label>
+							<font>intellifont</font>
+							<align>center</align>
+							<textcolor>deepskyblue</textcolor>
+							<shadowcolor>AA000000</shadowcolor>
+						</control>
+						<control type="label">
+							<description>Competition</description>
+							<posx>135</posx>
+							<posy>25</posy>
+							<width>300</width>
+							<height>35</height>
+							<label>$INFO[ListItem.Property(leagueName)]</label>
+							<font>font12</font>
+							<align>center</align>
+							<textcolor>ghostwhite</textcolor>
+							<shadowcolor>AA000000</shadowcolor>
+						</control>
+						<control type="label">
+							<description>VS</description>
+							<posx>270</posx>
+							<posy>55</posy>
+							<width>40</width>
+							<height>35</height>
+							<label>[B]VS[/B]</label>
+							<font>font16</font>
+							<align>left</align>
+							<textcolor>ghostwhite</textcolor>
+							<shadowcolor>AA000000</shadowcolor>
+						</control>
+						<control type="label">
+							<description>Date</description>
+							<posx>140</posx>
+							<posy>90</posy>
+							<width>300</width>
+							<height>35</height>
+							<label>$INFO[ListItem.Property(date)]</label>
+							<font>font12</font>
+							<align>center</align>
+							<textcolor>ghostwhite</textcolor>
+							<shadowcolor>AA000000</shadowcolor>
+						</control>
+						<control type="label">
+							<description>Away Team Name</description>
+							<posx>315</posx>
+							<posy>55</posy>
+							<width>140</width>
+							<height>35</height>
+							<label>$INFO[ListItem.Property(team_b)]</label>
+							<font>intellifont</font>
+							<align>center</align>
+							<textcolor>deepskyblue</textcolor>
+							<shadowcolor>AA000000</shadowcolor>
+						</control>
+						<control type="image">
+							<description>Away Team Badge</description>
+							<left>465</left>
+							<top>5</top>
+							<width>100</width>
+							<height>100</height>
+							<texture>$INFO[ListItem.Property(awayteambadge)]</texture>
+							<include>VisibleFadeEffect</include>
+						</control>
+					</itemlayout>
+					<focusedlayout height="140" width="575">
+						<control type="image">
+							<left>0</left>
+							<top>0</top>
+							<width>575</width>
+							<height>140</height>
+							<texture border="5">focusl.png</texture>
+							<visible>!Control.HasFocus(32502)</visible>
+							<include>VisibleFadeEffect</include>
+						</control>
+						<control type="image">
+							<left>0</left>
+							<top>0</top>
+							<width>575</width>
+							<height>140</height>
+							<texture border="5">focusl.png</texture>
+							<visible>Control.HasFocus(32502)</visible>
+							<include>VisibleFadeEffect</include>
+						</control>
+						<control type="label">
+							<description>Home Team Name</description>
+							<posx>120</posx>
+							<posy>55</posy>
+							<width>140</width>
+							<height>35</height>
+							<label>$INFO[ListItem.Property(team_a)]</label>
+							<font>intellifont</font>
+							<align>center</align>
+							<textcolor>deepskyblue</textcolor>
+							<shadowcolor>AA000000</shadowcolor>
+						</control>
+						<control type="label">
+							<description>Competition</description>
+							<posx>135</posx>
+							<posy>25</posy>
+							<width>300</width>
+							<height>35</height>
+							<label>$INFO[ListItem.Property(leagueName)]</label>
+							<font>font12</font>
+							<align>center</align>
+							<textcolor>ghostwhite</textcolor>
+							<shadowcolor>AA000000</shadowcolor>
+						</control>
+						<control type="label">
+							<description>VS</description>
+							<posx>270</posx>
+							<posy>55</posy>
+							<width>40</width>
+							<height>35</height>
+							<label>[B]VS[/B]</label>
+							<font>font16</font>
+							<align>left</align>
+							<textcolor>ghostwhite</textcolor>
+							<shadowcolor>AA000000</shadowcolor>
+						</control>
+						<control type="label">
+							<description>Date</description>
+							<posx>140</posx>
+							<posy>90</posy>
+							<width>300</width>
+							<height>35</height>
+							<label>$INFO[ListItem.Property(date)]</label>
+							<font>font12</font>
+							<align>center</align>
+							<textcolor>ghostwhite</textcolor>
+							<shadowcolor>AA000000</shadowcolor>
+						</control>
+						<control type="label">
+							<description>Away Team Name</description>
+							<posx>315</posx>
+							<posy>55</posy>
+							<width>140</width>
+							<height>35</height>
+							<label>$INFO[ListItem.Property(team_b)]</label>
+							<font>intellifont</font>
+							<align>center</align>
+							<textcolor>deepskyblue</textcolor>
+							<shadowcolor>AA000000</shadowcolor>
+						</control>
+					</focusedlayout>
+				</control>
+
+
+
+
+				<!-- <control type="list" id="32502">
+					<left>50</left>
+					<top>111</top>
+					<width>575</width>
+					<height>575</height>
+					<onup>32504</onup>
+					<ondown>32502</ondown>
+					<onleft>32503</onleft>
+					<onright>32503</onright>
+					<scrolltime>200</scrolltime>
+					<itemlayout height="114" width="575">
+						<control type="image">
+							<left>0</left>
+							<top>0</top>
+							<width>575</width>
+							<height>125</height>
+							<texture border="5">nofocusel.png</texture>
+						</control>
+						<control type="label">
+							<description>Home Team Name</description>
+							<posx>120</posx>
+							<posy>45</posy>
+							<width>140</width>
+							<height>35</height>
+							<label>$INFO[ListItem.Property(team_a)]</label>
+							<font>intellifont</font>
+							<align>center</align>
+							<textcolor>deepskyblue</textcolor>
+							<shadowcolor>AA000000</shadowcolor>
+						</control>
+						<control type="label">
+							<description>Competition</description>
+							<posx>135</posx>
+							<posy>10</posy>
+							<width>300</width>
+							<height>35</height>
+							<label>$INFO[ListItem.Property(leagueName)]</label>
+							<font>font12</font>
+							<align>center</align>
+							<textcolor>ghostwhite</textcolor>
+							<shadowcolor>AA000000</shadowcolor>
+						</control>
+						<control type="label">
+							<description>VS</description>
+							<posx>270</posx>
+							<posy>40</posy>
+							<width>40</width>
+							<height>35</height>
+							<label>[B]VS[/B]</label>
+							<font>font16</font>
+							<align>left</align>
+							<textcolor>ghostwhite</textcolor>
+							<shadowcolor>AA000000</shadowcolor>
+						</control>
+						<control type="label">
+							<description>Date</description>
+							<posx>175</posx>
+							<posy>90</posy>
+							<width>230</width>
+							<height>35</height>
+							<label>$INFO[ListItem.Property(date)]</label>
+							<font>font12</font>
+							<align>center</align>
+							<textcolor>ghostwhite</textcolor>
+							<shadowcolor>AA000000</shadowcolor>
+						</control>
+						<control type="label">
+							<description>Away Team Name</description>
+							<posx>315</posx>
+							<posy>45</posy>
+							<width>140</width>
+							<height>35</height>
+							<label>$INFO[ListItem.Property(team_b)]</label>
+							<font>intellifont</font>
+							<align>center</align>
+							<textcolor>deepskyblue</textcolor>
+							<shadowcolor>AA000000</shadowcolor>
+						</control>
+						<control type="image">
+							<description>Away Team Badge</description>
+							<left>465</left>
+							<top>5</top>
+							<width>100</width>
+							<height>100</height>
+							<texture>$INFO[ListItem.Property(awayteambadge)]</texture>
+							<include>VisibleFadeEffect</include>
+						</control>
+					</itemlayout>
+					<focusedlayout height="114" width="575">
+						<control type="image">
+							<left>0</left>
+							<top>0</top>
+							<width>575</width>
+							<height>125</height>
+							<texture border="5">focusl.png</texture>
+							<visible>!Control.HasFocus(32502)</visible>
+							<include>VisibleFadeEffect</include>
+						</control>
+						<control type="image">
+							<left>0</left>
+							<top>0</top>
+							<width>575</width>
+							<height>125</height>
+							<texture border="5">focusl.png</texture>
+							<visible>Control.HasFocus(32502)</visible>
+							<include>VisibleFadeEffect</include>
+						</control>
+						<control type="label">
+							<description>Home Team Name</description>
+							<posx>120</posx>
+							<posy>45</posy>
+							<width>140</width>
+							<height>35</height>
+							<label>$INFO[ListItem.Property(team_a)]</label>
+							<font>intellifont</font>
+							<align>center</align>
+							<textcolor>deepskyblue</textcolor>
+							<shadowcolor>AA000000</shadowcolor>
+						</control>
+						<control type="label">
+							<description>Competition</description>
+							<posx>135</posx>
+							<posy>10</posy>
+							<width>300</width>
+							<height>35</height>
+							<label>$INFO[ListItem.Property(leagueName)]</label>
+							<font>font12</font>
+							<align>center</align>
+							<textcolor>ghostwhite</textcolor>
+							<shadowcolor>AA000000</shadowcolor>
+						</control>
+						<control type="label">
+							<description>VS</description>
+							<posx>270</posx>
+							<posy>40</posy>
+							<width>40</width>
+							<height>35</height>
+							<label>[B]VS[/B]</label>
+							<font>font16</font>
+							<align>left</align>
+							<textcolor>ghostwhite</textcolor>
+							<shadowcolor>AA000000</shadowcolor>
+						</control>
+						<control type="label">
+							<description>Date</description>
+							<posx>175</posx>
+							<posy>90</posy>
+							<width>230</width>
+							<height>35</height>
+							<label>$INFO[ListItem.Property(date)]</label>
+							<font>font12</font>
+							<align>center</align>
+							<textcolor>ghostwhite</textcolor>
+							<shadowcolor>AA000000</shadowcolor>
+						</control>
+						<control type="label">
+							<description>Away Team Name</description>
+							<posx>315</posx>
+							<posy>45</posy>
+							<width>140</width>
+							<height>35</height>
+							<label>$INFO[ListItem.Property(team_b)]</label>
+							<font>intellifont</font>
+							<align>center</align>
+							<textcolor>deepskyblue</textcolor>
+							<shadowcolor>AA000000</shadowcolor>
+						</control>
+					</focusedlayout>
+				</control> -->
+				<!-- <control type="list" id="32503">
+					<right>50</right>
+					<top>111</top>
+					<width>575</width>
+					<height>580</height>
+					<onup>32504</onup>
+					<ondown>32503</ondown>
+					<onleft>32502</onleft>
+					<onright>32502</onright>
+					<scrolltime>200</scrolltime>
+					<itemlayout height="114" width="575">
+						<control type="image">
+							<left>0</left>
+							<top>0</top>
+							<width>575</width>
+							<height>125</height>
+							<texture border="5">nofocusr.png</texture>
+						</control>
+						<control type="label">
+							<description>Home Team Name</description>
+							<posx>120</posx>
+							<posy>45</posy>
+							<width>140</width>
+							<height>35</height>
+							<label>$INFO[ListItem.Property(team_a)]</label>
+							<font>intellifont</font>
+							<align>center</align>
+							<textcolor>deepskyblue</textcolor>
+							<shadowcolor>AA000000</shadowcolor>
+						</control>
+						<control type="label">
+							<description>Competition</description>
+							<posx>135</posx>
+							<posy>10</posy>
+							<width>300</width>
+							<height>35</height>
+							<label>$INFO[ListItem.Property(leagueName)]</label>
+							<font>font12</font>
+							<align>center</align>
+							<textcolor>ghostwhite</textcolor>
+							<shadowcolor>AA000000</shadowcolor>
+						</control>
+						<control type="label">
+							<description>result</description>
+							<posx>270</posx>
+							<posy>40</posy>
+							<width>40</width>
+							<height>35</height>
+							<label>[B]VS[/B]</label>
+							<font>font16</font>
+							<align>left</align>
+							<textcolor>ghostwhite</textcolor>
+							<shadowcolor>AA000000</shadowcolor>
+						</control>
+						<control type="label">
+							<description>Date</description>
+							<posx>175</posx>
+							<posy>90</posy>
+							<width>230</width>
+							<height>35</height>
+							<label>$INFO[ListItem.Property(date)]</label>
+							<font>font12</font>
+							<align>center</align>
+							<textcolor>ghostwhite</textcolor>
+							<shadowcolor>AA000000</shadowcolor>
+						</control>
+						<control type="label">
+							<description>Away Team Name</description>
+							<posx>315</posx>
+							<posy>45</posy>
+							<width>140</width>
+							<height>35</height>
+							<label>$INFO[ListItem.Property(team_b)]</label>
+							<font>intellifont</font>
+							<align>center</align>
+							<textcolor>deepskyblue</textcolor>
+							<shadowcolor>AA000000</shadowcolor>
+						</control>
+					</itemlayout>
+					<focusedlayout height="114" width="575">
+						<control type="image">
+							<left>0</left>
+							<top>0</top>
+							<width>575</width>
+							<height>125</height>
+							<texture border="5">focusr.png</texture>
+							<visible>!Control.HasFocus(32503)</visible>
+							<include>VisibleFadeEffect</include>
+						</control>
+						<control type="image">
+							<left>0</left>
+							<top>0</top>
+							<width>575</width>
+							<height>125</height>
+							<texture border="5">focusr.png</texture>
+							<visible>Control.HasFocus(32503)</visible>
+							<include>VisibleFadeEffect</include>
+						</control>
+						<control type="label">
+							<description>Home Team Name</description>
+							<posx>120</posx>
+							<posy>45</posy>
+							<width>140</width>
+							<height>35</height>
+							<label>$INFO[ListItem.Property(team_a)]</label>
+							<font>intellifont</font>
+							<align>center</align>
+							<textcolor>deepskyblue</textcolor>
+							<shadowcolor>AA000000</shadowcolor>
+						</control>
+						<control type="label">
+							<description>Competition</description>
+							<posx>135</posx>
+							<posy>10</posy>
+							<width>300</width>
+							<height>35</height>
+							<label>$INFO[ListItem.Property(leagueName)]</label>
+							<font>font12</font>
+							<align>center</align>
+							<textcolor>ghostwhite</textcolor>
+							<shadowcolor>AA000000</shadowcolor>
+						</control>
+						<control type="label">
+							<description>result</description>
+							<posx>270</posx>
+							<posy>40</posy>
+							<width>40</width>
+							<height>35</height>
+							<label>[B]VS[/B]</label>
+							<font>font16</font>
+							<align>left</align>
+							<textcolor>ghostwhite</textcolor>
+							<shadowcolor>AA000000</shadowcolor>
+						</control>
+						<control type="label">
+							<description>Date</description>
+							<posx>175</posx>
+							<posy>90</posy>
+							<width>230</width>
+							<height>35</height>
+							<label>$INFO[ListItem.Property(date)]</label>
+							<font>font12</font>
+							<align>center</align>
+							<textcolor>ghostwhite</textcolor>
+							<shadowcolor>AA000000</shadowcolor>
+						</control>
+						<control type="label">
+							<description>Away Team Name</description>
+							<posx>315</posx>
+							<posy>45</posy>
+							<width>140</width>
+							<height>35</height>
+							<label>$INFO[ListItem.Property(team_b)]</label>
+							<font>intellifont</font>
+							<align>center</align>
+							<textcolor>deepskyblue</textcolor>
+							<shadowcolor>AA000000</shadowcolor>
+						</control>
+					</focusedlayout>
+				</control> -->
+			</control>
+		</control>
+		<!--Busy control
+		<control type="image" id="32540">
+			<description>Busy animation</description>
+			<posx>450</posx>
+			<posy>270</posy>
+			<width>150</width>
+			<height>150</height>
+			<texture></texture>
+			<aspectratio>keep</aspectratio>
+			<animation effect="rotate" start="0" end="360" center="525,345" time="1200" loop="true" condition="true">conditional</animation>
+			<visible>!IsEmpty(Window(home).Property(loading))</visible>
+		</control>-->
+	</controls>
+</window>

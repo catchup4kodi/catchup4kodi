@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fonts>
+	<fontset id="Default">
+		<font>
+			<name>intellifont</name>
+			<filename>intellifont.ttf</filename>
+			<size>26</size>
+		</font>
+		<font>
+      		<name>crittafont</name>
+      		<filename>intellifont.ttf</filename>
+      		<style>uppercase</style>
+      		<size>35</size>
+    	</font>
+	</fontset>
+</fonts>
