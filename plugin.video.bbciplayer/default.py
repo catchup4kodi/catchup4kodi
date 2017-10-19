@@ -479,14 +479,19 @@ def GetEpisodes(id, page=1):
 
 
 def GetAutoPlayable(name,url,iconimage):
+    if 'http://www.bbc.co.uk' not in url:
+                
+        url='http://www.bbc.co.uk%s' %url
 
     _NAME_=name
     if 'plugin.video.bbciplayer' in iconimage:
 
         vpid=url
 
-    else:    
+    else:
+        print 'GW> ' + url    
         html = OPEN_URL(url)
+        
       
         vpid=re.compile('"versions":\[.+?"id":"(.+?)"').findall(html)[0]
     
@@ -721,37 +726,38 @@ def PLAY_STREAM(name,url,iconimage):
 
 def addDir(name,url,mode,iconimage,description,IPID=''):
         if not name =='':
-            try:
-                h = HTMLParser.HTMLParser()
-                name =h.unescape(name)
-            except:pass
+             if not'search the bbc' in name.lower():
+                try:
+                    h = HTMLParser.HTMLParser()
+                    name =h.unescape(name)
+                except:pass
 
-            try:
-                name = name.encode('ascii', 'ignore')
-            except:
-                name = name.decode('utf-8').encode('ascii', 'ignore')
+                try:
+                    name = name.encode('ascii', 'ignore')
+                except:
+                    name = name.decode('utf-8').encode('ascii', 'ignore')
 
 
-            u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&iconimage="+urllib.quote_plus(iconimage)+"&description="+urllib.quote_plus(description)+"&IPID="+urllib.quote_plus(IPID)
-            ok=True
-            #if not IPID == '':
-                #name = name + ' - [COLOR orange](More Available)[/COLOR]'
-            liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
-            liz.setInfo( type="Video", infoLabels={ "Title": name, "Plot": description} )
-            liz.setProperty('Fanart_Image', fixImage(iconimage, '1280x720'))
-            menu=[]
-            if not IPID == '':
-                menu.append(('[COLOR orange]Grab All Episodes[/COLOR]','XBMC.Container.Update(%s?mode=4&url=%s)'% (sys.argv[0],IPID)))  
-                liz.addContextMenuItems(items=menu, replaceItems=False)
-            if mode == 8:
-                menu.append(('[COLOR orange]Remove Search[/COLOR]','XBMC.Container.Update(%s?mode=12&name=%s)'% (sys.argv[0],name)))
-                liz.addContextMenuItems(items=menu, replaceItems=False)
-            if mode ==200 or mode ==6 or mode ==14:
-                liz.setProperty("IsPlayable","true")
-                ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=False)
-            else:
-                ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
-            return ok
+                u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&iconimage="+urllib.quote_plus(iconimage)+"&description="+urllib.quote_plus(description)+"&IPID="+urllib.quote_plus(IPID)
+                ok=True
+                #if not IPID == '':
+                    #name = name + ' - [COLOR orange](More Available)[/COLOR]'
+                liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
+                liz.setInfo( type="Video", infoLabels={ "Title": name, "Plot": description} )
+                liz.setProperty('Fanart_Image', fixImage(iconimage, '1280x720'))
+                menu=[]
+                if not IPID == '':
+                    menu.append(('[COLOR orange]Grab All Episodes[/COLOR]','XBMC.Container.Update(%s?mode=4&url=%s)'% (sys.argv[0],IPID)))  
+                    liz.addContextMenuItems(items=menu, replaceItems=False)
+                if mode == 8:
+                    menu.append(('[COLOR orange]Remove Search[/COLOR]','XBMC.Container.Update(%s?mode=12&name=%s)'% (sys.argv[0],name)))
+                    liz.addContextMenuItems(items=menu, replaceItems=False)
+                if mode ==200 or mode ==6 or mode ==14:
+                    liz.setProperty("IsPlayable","true")
+                    ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=False)
+                else:
+                    ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
+                return ok
             
         
 
