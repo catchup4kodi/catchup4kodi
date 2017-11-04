@@ -1,0 +1,14 @@
+<settings>
+    <category label="Zip Folder">
+        <setting id="zip" type="folder"    label="Choose USB/SDCARD Destination"      default=""/>
+    </category>
+<category label="Email Settings">
+	<setting id="server" type="labelenum" values="Custom|Gmail|Outlook/Hotmail|Office365|Yahoo Mail|Yahoo Mail Plus|Yahoo Mail Deutschland|Yahoo Mail AU/NZ|AOL|NTL @ntlworld|BT Connect|O2 Deutschland|1&1 Deutschland|Verizon|Mail|GMX" default="Gmail"/>
+	<setting id="email" type="text" label="Email Address" default=""/>
+    <setting label="" type="lsep"/>
+    <setting label="If Your Email Client is 'Custom' Enter Below" type="lsep"/>
+    <setting id="custom_server" type="text" label="SMTP" default="" enable="eq(-4,0)" />
+    <setting id="custom_port" type="text" label="Port Number" default="" enable="eq(-5,0)" />
+    <setting id="favs" type="text" label="Favorites" default="" visible="false" />
+</category>   
+</settings>

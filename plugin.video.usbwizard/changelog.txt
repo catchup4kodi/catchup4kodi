@@ -1,0 +1,45 @@
+v1.1.6
+Fixed Script Error
+
+v1.1.5
+Added Dialog To Tell Users To Input Save Path
+
+v1.1.4
+Put Cache Back In to stop common cache issue
+
+v1.1.3
+Fixed Restore When USB not selected in Addon Settings
+
+v1.0.9
+Fixed Zipfile not Zipping Before 1980
+Fixed Gusettings.xml restoring 
+
+v1.0.7
+Fixed Linux Home Icon Issues
+
+v1.0.6
+Added Fully Customizable Backup/Restore
+jUST cHOOSE what you want to backup or restore
+or do a full backup/restore
+
+
+v1.0.5
+Used Directory Listing 
+Couple Minor Fixes
+
+
+v1.0.4
+Fully Backup/Restore Your XBMC 
+Including:
+GUI Settings
+Favourites
+Sources
+
+v1.0.3
+Wizard Now Uses You Profile 
+
+v1.0.1
+Feels Better
+
+v1.0
+Initial Release
