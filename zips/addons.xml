@@ -175,4 +175,18 @@
 		<genre>livetv,tvshows,kids,sports</genre>
 	</extension>
 </addon>
+
+<addon id="script.kodilogemail" name=".[COLOR blue]K[/COLOR]odi Log Emailer" version="0.0.7" provider-name="Catchup4Kodi">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="default.py">
+        <provides>executable</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">.Kodi Log Emailer</summary>
+    <description lang="en">.Kodi Log Emailer</description>
+    <platform>all</platform>
+  </extension>
+</addon>
 </addons>
