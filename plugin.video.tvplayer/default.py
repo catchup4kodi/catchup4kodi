@@ -36,7 +36,7 @@ def login():
     password = ADDON.getSetting('password')
 
 
-    UA='Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36'
+    UA='Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36'
 
 
 
@@ -47,7 +47,7 @@ def login():
             'Cache-Control':'max-age=0',
             'Origin':'https://tvplayer.com',
             'Upgrade-Insecure-Requests':'1',
-            'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36',
+            'User-Agent':'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36',
             'Content-Type':'application/x-www-form-urlencoded',
             'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
             'Referer':'https://tvplayer.com/watch',
@@ -159,7 +159,7 @@ def GENRE(name,url):
  
 def OPEN_URL(url):                                   
     req = urllib2.Request(url)
-    req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+    req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36')
     response = urllib2.urlopen(req)
     link=response.read()
     response.close()
@@ -187,7 +187,7 @@ def tvplayer(url):
     headers={'Host': 'tvplayer.com',
             'Connection': 'keep-alive',
             'Origin': 'http://tvplayer.com',
-            'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36',
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Accept': '*/*',
             'Accept-Encoding': 'gzip, deflate',
@@ -217,7 +217,7 @@ def tvplayer(url):
     headers={'Host': 'api.tvplayer.com',
             'Connection': 'keep-alive',
             'Origin': 'http://api.tvplayer.com',
-            'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36',
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Accept': '*/*',
             'Accept-Encoding': 'gzip, deflate',
@@ -240,7 +240,7 @@ def PLAY_STREAM(name,url,iconimage):
     headers={'Host': HOST,
             'Connection': 'keep-alive',
             'Origin': 'http://'+HOST,
-            'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36'}
+            'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36'}
 
     TOKEN= open(cookie_jar).read()
     TOKEN ='AWSELB='+re.compile('AWSELB=(.+?);').findall (TOKEN)[0]
