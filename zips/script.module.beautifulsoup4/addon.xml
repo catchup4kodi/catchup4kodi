@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="script.module.beautifulsoup4"
        name="BeautifulSoup4"
-       version="4.3.2"
+       version="4.5.3"
        provider-name="Leonard Richardson (leonardr@segfault.org)">
   <requires>
     <import addon="xbmc.python" 
-    		version="2.1.0"/>
+             version="2.1.0"/>
   </requires>
   <extension point="xbmc.python.module"
              library="lib" />

@@ -16,7 +16,7 @@ support CSS selectors.
 
 Sam Ruby helped with a lot of edge cases.
 
-Jonathan Ellis was awarded the prestigous Beau Potage D'Or for his
+Jonathan Ellis was awarded the prestigious Beau Potage D'Or for his
 work in solving the nestable tags conundrum.
 
 An incomplete list of people have contributed patches to Beautiful
