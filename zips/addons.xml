@@ -465,7 +465,7 @@ AMF3, the default serialization for ActionScript 3.0, provides various advantage
        version="2.1.0"
        provider-name="kennethreitz, beenje">
   <requires>
-    <import addon="xbmc.python" version="2.14.0"/>
+    <import addon="xbmc.python" version="2.1.0"/>
   </requires>
   <extension point="xbmc.python.module"
              library="lib" />
