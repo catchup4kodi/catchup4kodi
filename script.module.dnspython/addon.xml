@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="script.module.dnspython" name="DNS Python" version="1.11.1" provider-name="dnspython">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+  </requires>
+  <extension point="xbmc.python.module" library="lib" />
+  <extension point="xbmc.addon.metadata">
+	<summary>A Pure Python DNS module</summary>
+	<description>A Pure Python DNS module</description>
+    <platform>all</platform>
+	<language></language>
+	<license></license>
+	<forum></forum>
+	<website>http://www.dnspython.org/</website>
+	<source>https://github.com/rthalley/dnspython</source>
+	<email></email>
+  </extension>
+</addon>

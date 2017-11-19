@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="script.icechannel.extn.common" version="0.5.7" name="DUCKPOOL - Common" provider-name="Mucky Duck">
+    <requires>
+        <import addon="xbmc.python" version="2.1.0"/>
+    </requires>
+	<extension library="default.py" point="xbmc.service" />
+    <extension point="xbmc.addon.metadata">
+		<summary lang="en">DUCKPOOL - Common</summary>
+		<description lang="en">DUCKPOOL - Common</description>
+		<platform></platform>
+		<language></language>
+		<license></license>
+		<forum></forum>
+		<website></website>
+		<source></source>
+		<email></email>
+    </extension>
+</addon>

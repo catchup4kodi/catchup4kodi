@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="script.icechannel.theme.default" version="1.0.3" name="DUCKPOOL Theme" provider-name="Mucky Duck">
+<extension library="default.py" point="xbmc.service" />
+<extension point="xbmc.addon.metadata">
+<summary lang="en">DUCKPOOL Theme</summary>
+<description lang="en">DUCKPOOL Theme</description>
+<platform></platform>
+<language></language>
+<license></license>
+<forum></forum>
+<website></website>
+<source></source>
+<email></email>
+</extension>
+</addon>

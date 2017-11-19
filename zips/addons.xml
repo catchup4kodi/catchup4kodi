@@ -176,6 +176,94 @@
 	</extension>
 </addon>
 
+<addon id="script.icechannel" version="1.0.0.74" name="DUCKPOOL" provider-name="Mucky Duck">
+    <requires>
+        <import addon="xbmc.python" version="2.1.0"/>
+		<import addon="script.module.urlresolver" version="0.0.1"/>
+		<import addon="script.module.universal" version="0.0.1" />
+		<import addon="script.module.beautifulsoup" version="0.0.1"/>
+		<import addon="script.module.metahandler" version="0.0.1"/>
+		<import addon="script.module.feedparser" version="0.0.1"/>
+		<import addon="script.module.pyamf" version="0.0.1"/>
+		<import addon="script.icechannel.extn.common" version="0.0.1"/>
+		<import addon="script.icechannel.theme.default" version="0.0.1"/>
+		<import addon="script.module.unidecode" version="0.0.1"/>
+		<import addon="script.module.socksipy" version="0.0.1"/>
+		<import addon="script.module.dnspython" version="0.0.1"/>
+		<import addon="script.video.F4mProxy" version="0.0.1"/>
+		<import addon="script.icechannel.dialogs" version="0.0.1"/>
+		<import addon="script.module.elementtree" version="1.2.8" />
+		<import addon="script.module.muckys.common" version="0.0.1" />
+    </requires>
+	<extension point="xbmc.python.pluginsource" library="plugin.py" >
+		<provides>video</provides>
+	</extension>
+    <extension point="xbmc.python.module" library="lib" />
+	<extension library="service.py" point="xbmc.service"  start="startup"/>
+    <extension point="xbmc.addon.metadata">
+		<summary lang="en">DUCKPOOL</summary>
+		<description lang="en">This Add-on uses the TMDb API but is not endorsed or certified by TMDb.</description>
+		<platform></platform>
+		<language></language>
+		<license></license>
+		<forum></forum>
+		<website></website>
+		<source></source>
+		<email></email>
+    </extension>
+</addon>
+
+<addon id="script.icechannel.dialogs" version="0.2.2" name="DUCKPOOL Custom Windows and Dialogs" provider-name="Muck Duck">
+    <requires>
+        <import addon="xbmc.python" version="2.1.0"/>
+    </requires>
+	<extension point="xbmc.python.module" library="lib" />
+    <extension point="xbmc.addon.metadata">
+		<summary lang="en">DUCKPOOL Custom Windows and Dialogs</summary>
+		<description lang="en">Custom UI (Windows and Dialogs) for DUCKPOOL</description>
+		<platform></platform>
+		<language></language>
+		<license></license>
+		<forum></forum>
+		<website></website>
+		<source></source>
+		<email></email>
+    </extension>
+</addon>
+
+<addon id="script.icechannel.extn.common" version="0.5.7" name="DUCKPOOL - Common" provider-name="Mucky Duck">
+    <requires>
+        <import addon="xbmc.python" version="2.1.0"/>
+    </requires>
+	<extension library="default.py" point="xbmc.service" />
+    <extension point="xbmc.addon.metadata">
+		<summary lang="en">DUCKPOOL - Common</summary>
+		<description lang="en">DUCKPOOL - Common</description>
+		<platform></platform>
+		<language></language>
+		<license></license>
+		<forum></forum>
+		<website></website>
+		<source></source>
+		<email></email>
+    </extension>
+</addon>
+
+<addon id="script.icechannel.theme.default" version="1.0.3" name="DUCKPOOL Theme" provider-name="Mucky Duck">
+<extension library="default.py" point="xbmc.service" />
+<extension point="xbmc.addon.metadata">
+<summary lang="en">DUCKPOOL Theme</summary>
+<description lang="en">DUCKPOOL Theme</description>
+<platform></platform>
+<language></language>
+<license></license>
+<forum></forum>
+<website></website>
+<source></source>
+<email></email>
+</extension>
+</addon>
+
 <addon id="script.kodilogemail" name=".[COLOR blue]K[/COLOR]odi Log Emailer" version="0.0.7" provider-name="Catchup4Kodi">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
@@ -186,6 +274,24 @@
   <extension point="xbmc.addon.metadata">
     <summary lang="en">.Kodi Log Emailer</summary>
     <description lang="en">.Kodi Log Emailer</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
+<addon id="script.module.beautifulsoup"
+       name="BeautifulSoup"
+       version="3.2.1"
+       provider-name="Leonard Richardson (leonardr@segfault.org)">
+  <requires>
+    <import addon="xbmc.python"
+    		version="2.1.0"/>
+  </requires>
+  <extension point="xbmc.python.module"
+             library="lib" />
+  <extension point="xbmc.addon.metadata">
+    <summary>HTML/XML parser for quick-turnaround applications like screen-scraping</summary>
+    <description>Beautiful Soup parses arbitrarily invalid SGML and provides a variety of methods and Pythonic idioms for iterating and searching the parse tree.</description>
+    <license>BSD</license>
     <platform>all</platform>
   </extension>
 </addon>
@@ -209,6 +315,183 @@
   </extension>
 </addon>
 
+<addon id="script.module.dnspython" name="DNS Python" version="1.11.1" provider-name="dnspython">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+  </requires>
+  <extension point="xbmc.python.module" library="lib" />
+  <extension point="xbmc.addon.metadata">
+	<summary>A Pure Python DNS module</summary>
+	<description>A Pure Python DNS module</description>
+    <platform>all</platform>
+	<language></language>
+	<license></license>
+	<forum></forum>
+	<website>http://www.dnspython.org/</website>
+	<source>https://github.com/rthalley/dnspython</source>
+	<email></email>
+  </extension>
+</addon>
+
+<addon id="script.module.elementtree"
+       name="Elementtree XML parser"
+       version="1.2.8"
+       provider-name="http://effbot.org/zone/element-index.htm">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+  </requires>
+  <extension point="xbmc.python.module"
+             library="lib" />
+  <extension point="xbmc.addon.metadata">
+    <platform>all</platform>
+  </extension>
+</addon>
+
+<addon id="script.module.feedparser" name="feedparser" version="5.1.3" provider-name="Tristan Fischer (sphere@dersphere.de)">
+    <requires>
+        <import addon="xbmc.python" version="2.1.0"/>
+    </requires>
+    <extension point="xbmc.python.module" library="lib" />
+    <extension point="xbmc.addon.metadata">
+        <language></language>
+        <summary lang="en">Python helper module</summary>
+        <description lang="en">feedparser is a Python library that parses feeds in all known formats, including Atom, RSS, and RDF. It runs on Python 2.4 all the way up to 3.2.</description>
+        <license>MIT</license>
+        <platform>all</platform>
+        <website>https://code.google.com/p/feedparser/</website>
+        <source>https://code.google.com/p/feedparser/source/browse/</source>
+        <forum></forum>
+    </extension>
+</addon>
+
+<addon id="script.module.metahandler"
+     name="metahandler"
+     version="2.9.0"
+     provider-name="Eldorado">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0" />
+    <import addon="script.module.simplejson" version="3.3.0"/>
+    <import addon="script.module.addon.common" version="2.0.0"/>
+    <import addon="script.module.myconnpy" version="1.1.6"/>
+  </requires>
+  <extension point="xbmc.python.module" library="lib" />
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Downloads Artwork for TV shows, Movies and Music videos for addons and stores them in a local SQLITE database</summary>
+    <description lang="en">Queries, stores, and returns metadata for TV shows, Movies and Musicvideos. [CR]Sources:[CR]www.thetvdb.com[CR]www.themoviedb.org[CR]www.imdb.com</description>
+    <disclaimer lang="en"></disclaimer>
+    <language></language>
+    <platform>all</platform>
+    <license>GNU GENERAL PUBLIC LICENSE. Version 2, June 1991</license>
+    <forum></forum>
+    <website></website>
+    <email></email>
+    <source></source>
+  </extension>
+</addon>
+
+<addon id="script.module.muckys.common" name="Muckys Common Libraries" version="1.3.5" provider-name="Mucky Duck">
+	<requires>
+		<import addon="xbmc.python" version="2.1.0" />
+	</requires>
+	<extension point="xbmc.python.module" library="lib" />
+	<extension point="xbmc.addon.metadata">
+		<platform>all</platform>
+		<summary lang="en">Collection of modules used by Mucky Ducks Addons</summary>
+		<description lang="en">Collection of modules used by Mucky Ducks Addons
+beautifulsoup3 v3.2.1 from https://www.crummy.com/software/BeautifulSoup :
+beautifulsoup4 v4.5.1 from https://www.crummy.com/software/BeautifulSoup :
+cfscrape 1.6.8 from https://github.com/Anorov/cloudflare-scrape :
+incapsula-cracker v0.1.3 from https://github.com/ziplokk1/incapsula-cracker :
+Js2Py v0.40 from https://github.com/PiotrDabkowski/Js2Py :
+jsbeautifier v1.6.4 from https://pypi.python.org/pypi/jsbeautifier :
+jsunfuck from tknorrois s.a.l.t.s modules:
+jsunpack from urlresolver which is a modified script from jsbeautifier:
+md_request a simple script for making web requests :
+md_tools a script with common methods in the Mucky Duck addons :
+md_view a simple script for adding views to addons :
+requests v2.12.4 from https://github.com/kennethreitz/requests :
+six v1.10.0 from https://pypi.python.org/pypi/six :
+unshortenit v0.3.0 from https://github.com/jkehler/unshortenit :
+		</description>
+		<license>GNU GENERAL PUBLIC LICENSE. Version 2, June 1991</license>
+	</extension>
+</addon>
+
+<addon id="script.module.pyamf"
+       name="PyAMF"
+       version="0.6.2"
+       provider-name="Mark Honeychurch (markhoney)">
+  <requires>
+    <import addon="xbmc.python"
+    		version="2.1.0"/>
+  </requires>
+  <extension point="xbmc.python.module"
+             library="lib" />
+  <extension point="xbmc.addon.metadata">
+    <summary>PyAMF provides Action Message Format (AMF) support for Python that is compatible with the Adobe Flash Player.</summary>
+    <description>The Adobe Integrated Runtime and Adobe Flash Player use AMF to communicate between an application and a remote server. AMF encodes remote procedure calls (RPC) into a compact binary representation that can be transferred over HTTP/HTTPS or the RTMP/RTMPS protocol. Objects and data values are serialized into this binary format, which increases performance, allowing applications to load data up to 10 times faster than with text-based formats such as XML or SOAP.
+AMF3, the default serialization for ActionScript 3.0, provides various advantages over AMF0, which is used for ActionScript 1.0 and 2.0. AMF3 sends data over the network more efficiently than AMF0. AMF3 supports sending int and uint objects as integers and supports data types that are available only in ActionScript 3.0, such as ByteArray, ArrayCollection, ObjectProxy and IExternalizable.</description>
+    <license>MIT</license>
+    <platform>all</platform>
+	<source>http://www.pyamf.org/</source>
+  </extension>
+</addon>
+
+<addon id="script.module.socksipy"
+       name="SocksiPy"
+       version="2.0.0"
+       provider-name="Mossy">
+  <requires>
+    <import addon="xbmc.python"
+    		version="2.1.0"/>
+  </requires>
+  <extension point="xbmc.python.module"
+             library="lib" />
+  <extension point="xbmc.addon.metadata">
+    <summary>A Python SOCKS client module</summary>
+    <description>Provides a socket-like interface that supports connections to any TCP service through the use of a SOCKS4, SOCKS5 or HTTP proxy. For usage see http://code.google.com/p/socksipy-branch/</description>
+    <license>BSD</license>
+    <platform>all</platform>
+  </extension>
+</addon>
+
+<addon id="script.module.unidecode" name="unidecode" version="0.4.16" provider-name="Tomaz Solc (Tomaz.solc@tablix.org)">
+	<requires>
+		<import addon="xbmc.python" version="2.1.0"/>
+	</requires>
+	<extension point="xbmc.python.module" library="lib" />
+	<extension point="xbmc.addon.metadata">
+		<platform>all</platform>
+		<language></language>
+		<summary lang="en">ASCII transliterations of Unicode text by Sean M. Burke and Tomaz Solc</summary>
+		<description lang="en">ASCII transliterations of Unicode text by Sean M. Burke and Tomaz Solc</description>
+		<disclaimer lang="en">Code taken from https://pypi.python.org/pypi/Unidecode</disclaimer>
+		<license>GNU General Public License v.2</license>
+		<website>https://pypi.python.org/pypi/Unidecode</website>
+		<source>https://pypi.python.org/pypi/Unidecode</source>
+	</extension>
+</addon>
+
+<addon id="script.module.universal" name="Universal - An Addons Toolkit" version="2.0.5" provider-name="the-one">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+	<import addon="script.module.t0mm0.common" version="0.0.1"/>
+  </requires>
+  <extension library="default.py" point="xbmc.service"  start="startup"/>
+  <extension point="xbmc.python.module" library="lib" />
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Universal - An Addons Toolkit</summary>
+    <description lang="en">Collection of common functionality for addons.</description>
+    <platform>all</platform>
+	<language></language>
+	<license>GNU GENERAL PUBLIC LICENSE. Version 3, June 2007</license>
+	<forum></forum>
+	<website>https://github.com/the-one-/script.module.universal/wiki</website>
+	<source>https://github.com/the-one-/script.module.universal</source>
+	<email>xs2the1[at]gmail[dot]com</email>
+  </extension>
+</addon>
+
 <addon id="script.module.urlresolver" name="URLResolver" version="4.0.09" provider-name="Eldorado, tknorris, jsergio">
 	<requires>
 		<import addon="xbmc.python" version="2.1.0" />
@@ -225,6 +508,22 @@
 		<description lang="en">Resolve common video host URL's to be playable in XBMC/Kodi, simplify addon development of video plugins requiring multi video hosts.</description>
 		<description lang="hr">Prilagodi najčešće URL-ove video izvora kako bi radili u XBMC/Kodiju, pojednostavnjuje razvoj priključaka za video dodatke koji zahtjevaju višestruke video izvore.</description>
         <source>https://github.com/jsergio123/script.module.urlresolver</source>
+	</extension>
+</addon>
+
+<addon id="script.video.F4mProxy" name="F4mProxy" version="2.8.7" provider-name="Shani">
+	<requires>
+		<import addon="xbmc.python" version="2.1.0"/>
+		<import addon="script.module.requests"/>
+	</requires>
+	<extension point="xbmc.python.module" library="lib"/>
+		<extension point="xbmc.python.pluginsource" library="addon.py">
+		<provides>executable</provides>
+	</extension>
+	<extension point="xbmc.addon.metadata">
+		<platform>all</platform>
+		<summary lang="en">Proxy for f4m</summary>
+		<description lang="en">Use this addon to play F4m v1 and v2 streams</description>
 	</extension>
 </addon>
 </addons>
