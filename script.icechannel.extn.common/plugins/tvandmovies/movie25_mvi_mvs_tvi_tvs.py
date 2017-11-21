@@ -23,7 +23,7 @@ class movie25(MovieIndexer, MovieSource, TVShowIndexer, TVShowSource):
     base_url = 'http://5movies.to/'
     img = common.get_themed_icon('m25.png')
     fanart = common.get_themed_fanart('m25.jpg')
-    default_indexer_enabled = 'true'
+    default_indexer_enabled = 'false'
     source_enabled_by_default = 'true'
 
 

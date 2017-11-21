@@ -231,7 +231,7 @@
     </extension>
 </addon>
 
-<addon id="script.icechannel.extn.common" version="0.5.7" name="DUCKPOOL - Common" provider-name="Mucky Duck">
+<addon id="script.icechannel.extn.common" version="0.5.8" name="DUCKPOOL - Common" provider-name="Mucky Duck">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
     </requires>
@@ -247,6 +247,24 @@
 		<source></source>
 		<email></email>
     </extension>
+</addon>
+
+<addon id="script.icechannel.extn.dandymedia" version="1.2.5" name="Dandys DuckPool Extension" provider-name="DandyMedia">
+ <requires>
+  <import addon="xbmc.python" version="2.1.0"/>
+ </requires>
+ <extension library="default.py" point="xbmc.service" />
+ <extension point="xbmc.addon.metadata">
+  <summary lang="en">Duckpool Extensions</summary>
+  <description lang="en">DandyMedia DUCKPOOL Extensions</description>
+  <platform></platform>
+  <language></language>
+  <license></license>
+  <forum></forum>
+  <website></website>
+  <source></source>
+  <email></email>
+ </extension>
 </addon>
 
 <addon id="script.icechannel.theme.default" version="1.0.3" name="DUCKPOOL Theme" provider-name="Mucky Duck">

@@ -32,17 +32,6 @@ class cooltv(TVShowSource):
             headers = {}
             headers['User-Agent'] = self.User_Agent
 
-        import sys
-        if sys.version_info < (2, 7, 9):
-
-            if 'myaddrproxy' in url:
-                url = 'https://ssl-proxy.my-addr.org' + url
-            else:
-                url = 'https://ssl-proxy.my-addr.org/myaddrproxy.php/' + url
-
-        else:
-            url = url
-
         link = requests.get(url, headers=headers, verify=False).content
         return link
 
@@ -76,10 +65,6 @@ class cooltv(TVShowSource):
                     for p in final_links:
 
                         final_url = re.compile('href="([^"]+)"').findall(p)[0]
-
-                        try:
-                            final_url = final_url.replace('/myaddrproxy.php/https/','https://')
-                        except:pass
 
                         res = re.compile('"nofollow">([^<>]*)<').findall(p)[0].upper()
 

@@ -22,7 +22,7 @@ class IceFilms(MovieIndexer, MovieSource, TVShowIndexer, TVShowSource, CustomSet
     img = common.get_themed_icon('ice.png')
     fanart = common.get_themed_fanart('ice.jpg')
     default_indexer_enabled = 'false'
-    source_enabled_by_default = 'true'
+    source_enabled_by_default = 'false'
 	
     USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.72 Safari/537.36'
     ACCEPT = 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'

@@ -26,12 +26,12 @@ class projectfreetv(TVShowSource,CustomSettings):
     img='https://raw.githubusercontent.com/Coolwavexunitytalk/images/1120740c0028d16de328516e4f0c889aa949b65e/pojectfreetv.png'
     
     #base url of the source website 
-    base_url_tv = 'http://project-free-tv.li/'
+    base_url_tv = 'http://myprojectfreetv.net/'
 
     def __init__(self):
         xml = '<settings>\n'
         xml += '<category label="General">\n'
-        xml += '<setting id="custom_url" type="labelenum" label="URL" default="http://projectfreetv.at/" values="Custom|http://projectfreetv.at/" />\n'
+        xml += '<setting id="custom_url" type="labelenum" label="URL" default="https://myprojectfreetv.net/" values="Custom|https://myprojectfreetv.net/" />\n'
         xml += '<setting id="custom_text_url" type="text" label="     Custom" default="" enable="eq(-1,0)" />\n'
         xml += '</category>\n' 
         xml += '</settings>\n'
@@ -41,7 +41,7 @@ class projectfreetv(TVShowSource,CustomSettings):
         custom_url = self.Settings().get_setting('custom_url')
         if custom_url == 'Custom':
             custom_url = self.Settings().get_setting('custom_text_url')
-        if not custom_url.startswith('http://'):
+        if not custom_url.startswith('http'):
             custom_url = ('http://' + custom_url)
         if not custom_url.endswith('/'):
             custom_url += '/'
@@ -105,11 +105,11 @@ class projectfreetv(TVShowSource,CustomSettings):
         r = '<a href="(.+?)" target="_blank" rel="nofollow"><img src=".+?domain=(.+?)"'
         match  = re.compile(r).findall(content)
         
-        
-        for url,host in match:
 
+        for url,host in match:
+            URL=self.get_url()+url
             
-            self.AddFileHost(list, 'SD', url, host=host.upper())
+            self.AddFileHost(list, 'SD', URL, host=host.upper())
 
 
     def GetFileHostsForContent(self, title, name, year, season, episode, type, list, lock, message_queue):
@@ -143,4 +143,12 @@ class projectfreetv(TVShowSource,CustomSettings):
             self.GetFileHosts(tv_url, list, lock, message_queue)
 
 
+    def Resolve(self, url):
+        from entertainment.net import Net
+        net = Net(cached=False)
+        content = net.http_GET(url.replace('net//','net/')).content
 
+        match=re.compile('<div class="video-container">.+?src="(.+?)"').findall(content)[0]
+        from entertainment import duckpool
+        play_url = duckpool.ResolveUrl(match)
+        return play_url

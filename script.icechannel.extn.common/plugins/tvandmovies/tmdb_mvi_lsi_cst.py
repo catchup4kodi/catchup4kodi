@@ -15,7 +15,7 @@ class tmdb(MovieIndexer, ListIndexer):
     base_url = 'https://www.themoviedb.org'
     img = common.get_themed_icon('tmdb.png')
     fanart = common.get_themed_fanart('tmdb.jpg')
-    default_indexer_enabled = 'true'
+    default_indexer_enabled = 'false'
 
     tmdb_api_key = common.tmdb_api_key
 

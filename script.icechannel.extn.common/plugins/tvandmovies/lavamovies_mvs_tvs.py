@@ -15,13 +15,13 @@ class lavamovies(MovieSource,TVShowSource):
     name = "LavaMovies"
     display_name = "LavaMovies"
     GETLINK='http://wowcartoon.com:8182/C4C/api/C4C/GetGenreDetail'
-    HEADERS={'Host':'lavamovies.com',
+    HEADERS={'Host':'lavamovies.se',
             'User-Agent':'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36'}
 
 
 
     source_enabled_by_default = 'true'
-    BASE ='http://lavamovies.com'
+    BASE ='http://lavamovies.se'
 
 
     
@@ -30,7 +30,7 @@ class lavamovies(MovieSource,TVShowSource):
     def GetFileHosts(self, url, list, lock, message_queue,type,season,episode):
 
         REF=url
-        GetEmbeds = 'http://lavamovies.com/UI/GetEmbeds'
+        GetEmbeds = 'http://lavamovies.se/UI/GetEmbeds'
         
         if not type == 'tv_episodes':
             episode_is='false'
@@ -52,132 +52,37 @@ class lavamovies(MovieSource,TVShowSource):
              'episode':episode_is}
 
        
-        link = json.loads(net.http_POST(GetEmbeds,data,headers=self.HEADERS).content)
+        link = net.http_POST(GetEmbeds,data,headers=self.HEADERS).content
+        match=re.compile('"hash":"(.+?)"').findall(link)
 
-         
-        data=link['content']
-
-        for field in data:
-            hashed=field['hash']
-            server=field['server']
-            LINKURL = 'http://lavacdn.xyz/stream/' +hashed
-            
-            S_HEADERS ={'Host':'lavacdn.xyz',
-                        'User-Agent':'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36',
-                        'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-                        'Referer':'%s'%LINKURL,
-                        'Accept-Encoding':'gzip, deflate',
-                        'Accept-Language':'en-US,en;q=0.8'}
-
-            
-            LINKURL_GET = net.http_GET(LINKURL,headers=S_HEADERS).content
-            if 'script src=' in LINKURL_GET:
-                if '"playlist": [' in LINKURL_GET:
-                    self.GRABIT_2(list, LINKURL_GET, UNIQUE_ID,LINKURL)
-                else:    
-                    self.GRABIT(list, LINKURL_GET, UNIQUE_ID,LINKURL)
-                
+        for hashed in  match:
+            GETURL='http://lavamovies.se/ajax/get_sources.php?hash='+hashed
+            LINKED = json.loads(net.http_GET(GETURL,headers=self.HEADERS).content)
+            DATA = LINKED['response']
+            if DATA['direct']<1:
+                FINAL = DATA['sources']
+                self.AddFileHost(list, 'HD', FINAL)
             else:
-                try:
-                    FINAL=re.compile("<iframe src='(.+?)'").findall(LINKURL_GET)[0]
-                    self.AddFileHost(list, 'DVD', FINAL)
-                except:pass
+                DATA=DATA['sources']['playlist'][0]['sources']
+                for field in DATA:
+                    res=field['label']
+                    final_url = field['file']
+                    if '1080' in res:
+                        res='1080P'                   
+                    elif '720' in res:
+                        res='720P'
+                    elif  '480' in res:
+                        res='DVD'
+                    elif '360' in res:
+                        res='SD'
+                    else:
+                        res='720P'
+                    if not 'http' in final_url:
+                        final_url='http:'+final_url
+                    self.AddFileHost(list, res, final_url)
 
 
 
-    def GRABIT(self,list, LINKURL_GET, UNIQUE_ID,REF):
-        import re,json
-        from entertainment.net import Net
-        net = Net(cached=False)
-        LINK=LINKURL_GET.split('script src')[1]
-        XY   =   re.compile("<script>_x='(.+?)', _y='(.+?)';</script>").findall(LINKURL_GET)
-        _y   =   XY[0][1]
-        _x   =   XY[0][0]
-
-        eid  =   re.compile("eid: (.+?),").findall(LINKURL_GET)[0]
-        hashed  =   re.compile("hash: '(.+?)'").findall(LINKURL_GET)[0]   
-        unique_id  =   re.compile("unique_id: '(.+?)'").findall(LINKURL_GET)[0]
-
-        
-        data={'y': _y,
-              'x': _x,
-              'eid': eid,
-              'hash': hashed,
-              'unique_id': unique_id}
-            
-        S_HEADERS ={'Host':'lavacdn.xyz',
-                    'Origin':'http://lavacdn.xyz',
-                    'X-Requested-With':'XMLHttpRequest',
-                    'User-Agent':'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36',
-                    'Accept':'application/json, text/javascript, */*; q=0.01',
-                    'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8',
-                    'Referer':'%s'%REF,
-                    'Accept-Encoding':'gzip, deflate',
-                    'Accept-Language':'en-US,en;q=0.8'}
-        
-        GETLINK='http://lavacdn.xyz/movie_sources.php'
-        
-        link = json.loads(net.http_POST(GETLINK,data,headers=S_HEADERS).content)
-        data= link['playlist']
-        for field in data:
-            try:
-                FINAL = field['sources']['file']
-                
-                self.AddFileHost(list, '720P', FINAL)
-            except:
-            
-                GET_ANOTHER = 'http://lavacdn.xyz/get_another.php'
-                
-                data={'unique_id': unique_id,
-                    'current_hash': hashed}
-                
-                link = json.loads(net.http_POST(GET_ANOTHER,data,headers=S_HEADERS).content)
-                data= link['hash']
-                FINAL = 'http://lavacdn.xyz/stream/%s/backup' % data
-                self.AddFileHost(list, '720P', FINAL)
-
-    def GRABIT_2(self,list, LINKURL_GET, UNIQUE_ID,REF):
-        import re,json
-        from entertainment.net import Net
-        net = Net(cached=False)
-
-        hashed  =   re.compile("current_hash: '(.+?)'").findall(LINKURL_GET)[0]   
-        unique_id  =   re.compile("unique_id: '(.+?)'").findall(LINKURL_GET)[0]
-
-
-            
-        S_HEADERS ={'Host':'lavacdn.xyz',
-                    'Origin':'http://lavacdn.xyz',
-                    'X-Requested-With':'XMLHttpRequest',
-                    'User-Agent':'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36',
-                    'Accept':'application/json, text/javascript, */*; q=0.01',
-                    'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8',
-                    'Referer':'%s'%REF,
-                    'Accept-Encoding':'gzip, deflate',
-                    'Accept-Language':'en-US,en;q=0.8'}
-        
-
-        link=json.loads('{"sources"'+re.compile('"sources"(.+?)}').findall(LINKURL_GET)[0]+'}]}')
-       
-        
-        data= link['sources']
-        for field in data:
-
-                FINAL = field['file']
-                
-                self.AddFileHost(list, '720P', FINAL)
-
-    
-        GET_ANOTHER = 'http://lavacdn.xyz/get_another.php'
-        
-        data={'unique_id': unique_id,
-            'current_hash': hashed}
-        
-        link = json.loads(net.http_POST(GET_ANOTHER,data,headers=S_HEADERS).content)
-        if link['status']==1:
-            data= link['hash']
-            FINAL = 'http://lavacdn.xyz/stream/%s/backup' % data
-            self.AddFileHost(list, '720P', FINAL)
                     
         
     def GetFileHostsForContent(self, title, name, year, season, episode, type, list, lock, message_queue):                 

@@ -50,11 +50,11 @@ class getmypopcornnow(MovieSource, TVShowSource):
             # self.AddFileHost(list, res, final_url)
 
 
-    def GetFileHosts(self, url, list, lock, message_queue):
+    def GetFileHosts(self, url, list, lock, message_queue,headers):
 
         from md_request import open_url
         import re
-        link = open_url(url, timeout=3).content.replace(' ', '')
+        link = open_url(url, headers=headers,timeout=3).content.replace(' ', '')
         data = re.compile('file.+?"([^"]+)"').findall(link)
         
         for final_url in data:
@@ -81,10 +81,21 @@ class getmypopcornnow(MovieSource, TVShowSource):
         import re
         
         name = self.CleanTextForSearch(name.lower()).strip()
-
+        link = open_url(self.base_url, timeout=3).content
+        cook=re.compile('document.cookie = "(.+?); ').findall(link)[0]
+        
+        headers={'Host':'getmypopcornnow.xyz',
+                'Accept':'application/json, text/javascript, */*; q=0.01',
+                'X-Requested-With':'XMLHttpRequest',
+                'User-Agent':'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36',
+                'Referer':'http://getmypopcornnow.xyz/',
+                'Accept-Encoding':'gzip, deflate',
+                'Accept-Language':'en-US,en;q=0.9',
+                'Cookie': cook}
+        
         search = '%s/?s=%s' %(self.base_url,name.replace(' ','+'))
 
-        link = open_url(search, timeout=3).content
+        link = open_url(search, headers=headers,timeout=3).content
         links = link.split('result-item')
 
         for p in links:
@@ -101,6 +112,6 @@ class getmypopcornnow(MovieSource, TVShowSource):
                         if type == 'tv_episodes':
                             item_url = item_url[:-1].replace('/tvseries/', '/episodes/') + '-%sx%s/' %(season,episode)
                         
-                        self.GetFileHosts(item_url, list, lock, message_queue)
+                        self.GetFileHosts(item_url, list, lock, message_queue,headers)
 
             except:pass

@@ -21,8 +21,8 @@ class rankerkids(MovieIndexer):
     base_url = 'http://cache.api.ranker.com/lists/%s/items?limit=50&offset=0&include=votes,wikiText'
     img = common.get_themed_icon('kids.png')
     fanart = common.get_themed_fanart('kids.jpg')
-    default_indexer_enabled = 'true'
-    source_enabled_by_default = 'true'
+    default_indexer_enabled = 'false'
+    source_enabled_by_default = 'false'
 
 
     def ExtractContentAndAddtoList(self, indexer, section, url, type, list, page='', total_pages='', sort_by='', sort_order=''): 

@@ -13,7 +13,7 @@ class xmovies(MovieSource,TVShowSource):
     
     name = "XMovies8"
     display_name = "XMovies8"
-    base_url = 'https://xmovies8.ru'
+    base_url = 'https://xmovies8.es'
     
     source_enabled_by_default = 'false'
 
@@ -31,7 +31,7 @@ class xmovies(MovieSource,TVShowSource):
                   'accept-encoding':'gzip, deflate, br',
                   'accept-language':'en-US,en;q=0.8',
                   'content-type':'application/x-www-form-urlencoded; charset=UTF-8',
-                  'origin':'https://xmovies8.ru', 'referer':url,
+                  'origin':'https://xmovies8.es', 'referer':url,
                   'user-agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36',
                   'x-requested-with':'XMLHttpRequest'}
 
@@ -50,13 +50,13 @@ class xmovies(MovieSource,TVShowSource):
                     for id in matched:
 
                         data={'id':id}
-                        content = json.loads(requests.post('https://xmovies8.ru/ajax/movie/load_player_v3',data,headers=headers,verify=False).content)
+                        content = json.loads(requests.post('https://xmovies8.es/ajax/movie/load_player_v3',data,headers=headers,verify=False).content)
                         second_url=content['value']
                         if not 'http' in second_url:
                             second_url='http:'+second_url
                         headers = {'accept':'application/json, text/javascript, */*; q=0.01',
                                    'accept-encoding':'gzip, deflate, sdch, br',
-                                   'accept-language':'en-US,en;q=0.8', 'origin':'https://xmovies8.ru',
+                                   'accept-language':'en-US,en;q=0.8', 'origin':'https://xmovies8.es',
                                    'referer':second_url, 'user-agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
 
                         content = requests.post(second_url,data,headers=headers,verify=False).content
@@ -76,13 +76,13 @@ class xmovies(MovieSource,TVShowSource):
             for id in matched:
 
                 data={'id':id}
-                content = json.loads(requests.post('https://xmovies8.ru/ajax/movie/load_player_v3',data,headers=headers,verify=False).content)
+                content = json.loads(requests.post('https://xmovies8.es/ajax/movie/load_player_v3',data,headers=headers,verify=False).content)
                 second_url=content['value']
                 if not 'http' in second_url:
                     second_url='http:'+second_url
                 headers = {'accept':'application/json, text/javascript, */*; q=0.01',
                            'accept-encoding':'gzip, deflate, sdch, br',
-                           'accept-language':'en-US,en;q=0.8', 'origin':'https://xmovies8.ru',
+                           'accept-language':'en-US,en;q=0.8', 'origin':'https://xmovies8.es',
                            'referer':second_url, 'user-agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
 
                 content = requests.post(second_url,data,headers=headers,verify=False).content
@@ -109,7 +109,7 @@ class xmovies(MovieSource,TVShowSource):
         headers= {'user-agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36',
                   'x-requested-with':'XMLHttpRequest'}
         
-        URL='https://xmovies8.ru/movies/search?s=' + name.replace(' ','+')
+        URL='https://xmovies8.es/movies/search?s=' + name.replace(' ','+')
 
         html = requests.get(URL,headers=headers,verify=False).content
 
