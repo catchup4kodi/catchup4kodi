@@ -231,7 +231,7 @@
     </extension>
 </addon>
 
-<addon id="script.icechannel.extn.common" version="0.5.8" name="DUCKPOOL - Common" provider-name="Mucky Duck">
+<addon id="script.icechannel.extn.common" version="0.5.9" name="DUCKPOOL - Common" provider-name="Mucky Duck">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
     </requires>

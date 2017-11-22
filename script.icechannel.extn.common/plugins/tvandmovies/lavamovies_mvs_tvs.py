@@ -44,8 +44,8 @@ class lavamovies(MovieSource,TVShowSource):
 
         link = net.http_GET(url,headers=self.HEADERS).content
         
-        UNIQUE_ID=re.compile('<a href="/download/(.+?)"').findall(link)[0]
-        match=re.compile('getEmbeds\((.+?)\)').findall(link)[0]
+        #UNIQUE_ID=re.compile('<a href="/download/(.+?)"').findall(link)[0]
+        match=re.compile('var movie_id = (.+?);').findall(link)[0]
         if ',' in match:
             match=match.split(',')[0]
         data={'id':match,
@@ -56,31 +56,51 @@ class lavamovies(MovieSource,TVShowSource):
         match=re.compile('"hash":"(.+?)"').findall(link)
 
         for hashed in  match:
-            GETURL='http://lavamovies.se/ajax/get_sources.php?hash='+hashed
-            LINKED = json.loads(net.http_GET(GETURL,headers=self.HEADERS).content)
-            DATA = LINKED['response']
-            if DATA['direct']<1:
-                FINAL = DATA['sources']
-                self.AddFileHost(list, 'HD', FINAL)
-            else:
-                DATA=DATA['sources']['playlist'][0]['sources']
-                for field in DATA:
-                    res=field['label']
-                    final_url = field['file']
-                    if '1080' in res:
-                        res='1080P'                   
-                    elif '720' in res:
-                        res='720P'
-                    elif  '480' in res:
-                        res='DVD'
-                    elif '360' in res:
-                        res='SD'
-                    else:
-                        res='720P'
-                    if not 'http' in final_url:
-                        final_url='http:'+final_url
-                    self.AddFileHost(list, res, final_url)
-
+            try:
+                GETURL='http://lavamovies.se/ajax/get_sources.php?hash='+hashed
+                LINKED = json.loads(net.http_GET(GETURL,headers=self.HEADERS).content)
+                DATA = LINKED['response']
+                if DATA['direct']<1:
+                    FINAL = DATA['sources']
+                    self.AddFileHost(list, 'HD', FINAL)
+                else:
+                    try:
+                        final_url=DATA['sources']['playlist'][0]['sources']['file']
+                        try:
+                            res=DATA['sources']['playlist'][0]['sources']['label']
+                        except: res='720'    
+                        if '1080' in res:
+                            res='1080P'                   
+                        elif '720' in res:
+                            res='720P'
+                        elif  '480' in res:
+                            res='DVD'
+                        elif '360' in res:
+                            res='SD'
+                        else:
+                            res='720P'
+                        if not 'http' in final_url:
+                            final_url='http:'+final_url
+                        self.AddFileHost(list, res, final_url)
+                    except:    
+                        DATA=DATA['sources']['playlist'][0]['sources']
+                        for field in DATA:
+                            res=field['label']
+                            final_url = field['file']
+                            if '1080' in res:
+                                res='1080P'                   
+                            elif '720' in res:
+                                res='720P'
+                            elif  '480' in res:
+                                res='DVD'
+                            elif '360' in res:
+                                res='SD'
+                            else:
+                                res='720P'
+                            if not 'http' in final_url:
+                                final_url='http:'+final_url
+                            self.AddFileHost(list, res, final_url)
+            except:pass
 
 
                     

@@ -14,7 +14,7 @@ class cartoonhd(MovieSource,TVShowSource):
     
     name = "Cartoon HD"
     display_name = "Cartoon HD"
-    base_url = 'https://cartoonhd.in' #'https://cartoonhd.be' #'http://cartoonhd.website/'
+    base_url = 'https://cartoonhd.life' #'https://cartoonhd.be' #'http://cartoonhd.website/'
     User_Agent = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36'
    
     source_enabled_by_default = 'true'
