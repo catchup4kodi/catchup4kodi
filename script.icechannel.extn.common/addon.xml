@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="script.icechannel.extn.common" version="0.5.9" name="DUCKPOOL - Common" provider-name="Mucky Duck">
+<addon id="script.icechannel.extn.common" version="0.6.0" name="DUCKPOOL - Common" provider-name="Mucky Duck">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
     </requires>

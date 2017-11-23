@@ -24,7 +24,7 @@ class cmovieshd(MovieSource,TVShowSource):
 
     name = 'CMoviesHD'
     display_name = 'CMoviesHD'
-    base_url = 'http://cmovieshd.net'
+    base_url = 'https://cmovieshd.net'
     User_Agent = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'
 
     source_enabled_by_default = 'true'
@@ -142,7 +142,7 @@ class cmovieshd(MovieSource,TVShowSource):
             hash_id = re.findall(r'hash: "([^"]+)"', str(link), re.I|re.DOTALL)[0]
             base_id = self.base_url.replace('http://','').replace('https://','')
             key_gen = self.random_generator()
-            request_url = 'http://play.%s/grabber-api/episode/%s?token=%s' %(base_id,episode_id,key_gen)
+            request_url = 'https://play.%s/grabber-api/episode/%s?token=%s' %(base_id,episode_id,key_gen)
             self.AddMedia(list, request_url, episode_id, key_gen, referer)
 
 

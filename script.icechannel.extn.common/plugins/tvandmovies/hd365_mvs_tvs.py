@@ -18,7 +18,7 @@ class sockshare(MovieSource,TVShowSource):
     
     name = 'HD365'
     display_name = 'HD365'
-    base_url = 'http://hdmovies365.net'
+    base_url = 'http://hdmovies365.news'
     User_Agent = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36'
     
     source_enabled_by_default = 'true'
