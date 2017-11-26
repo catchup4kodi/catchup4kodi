@@ -51,6 +51,7 @@ def getMessage():
 
 
 def send_email(TOWHO,LOG):
+    PASSWORD=EmailPass()
     dp = xbmcgui.DialogProgress()
     dp.create(".Kodi Log Emailer",'Logging Into Your Email')
     dp.update(0)
@@ -94,7 +95,7 @@ def send_email(TOWHO,LOG):
         server.ehlo()
         server.starttls()
         server.ehlo()
-        try:server.login(ADDON.getSetting('email').encode('UTF-8'),EmailPass())
+        try:server.login(ADDON.getSetting('email').encode('UTF-8'),PASSWORD.encode('UTF-8'))
         except Exception as e:
             if 'gmail' in THESMTP:
                 if '/answer/787' in str(e):
