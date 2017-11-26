@@ -404,7 +404,7 @@ def DecryptPass():
     import os, pyaes,hashlib
     key = hashlib.md5(Numeric()).hexdigest()[:16]
     aes = pyaes.AESModeOfOperationCTR (key)
-    decrypted = aes.decrypt(ADDON.getSetting('email_pass').decode("utf8"))
+    decrypted = aes.decrypt(ADDON.getSetting('email_pass'))
     return decrypted
 
 
