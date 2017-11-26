@@ -169,7 +169,7 @@ def CATEGORIES():
     addDir('Backup','url',1,'','Back Up Your Full System')
     addDir('Restore','url',5,'','Restore Your Full System')
     #addDir('Fix Repos Not Downloading Properly','url',1000,'','Restore Your Full System')
-    if not ADDON.getSetting('email_pass')=='':
+    if not ADDON.getSetting('email_pass_1')=='':
         addDir('Reset Email Pass','url',10,'','Reset Email Pass')
 
 
@@ -384,7 +384,7 @@ def Numeric():
         return keyboard   
 
 def EmailPass():
-    if ADDON.getSetting('email_pass')=='':
+    if ADDON.getSetting('email_pass_1')=='':
         search_entered = ''
         keyboard = xbmc.Keyboard(search_entered, 'Please Enter Email Password')
         keyboard.setHiddenInput(True)
@@ -404,7 +404,7 @@ def DecryptPass():
     import os, pyaes,hashlib
     key = hashlib.md5(Numeric()).hexdigest()[:16]
     aes = pyaes.AESModeOfOperationCTR (key)
-    decrypted = aes.decrypt(ADDON.getSetting('email_pass'))
+    decrypted = aes.decrypt(ADDON.getSetting('email_pass_1'))
     return decrypted
 
 
@@ -412,12 +412,12 @@ def EncryptPass(password):
     import os, pyaes,hashlib
     key = hashlib.md5(Numeric()).hexdigest()[:16]
     aes = pyaes.AESModeOfOperationCTR (key)
-    encrypted = aes.encrypt (password.encode("utf8"))
-    ADDON.setSetting('email_pass',encrypted)
+    encrypted = aes.encrypt (password)
+    ADDON.setSetting('email_pass_1',encrypted)
 
 
 def ResetPass():   
-    ADDON.setSetting('email_pass','')
+    ADDON.setSetting('email_pass_1','')
     dialog.ok('USB BACKUP/RESTORE','Pass Reset','','')
 
 

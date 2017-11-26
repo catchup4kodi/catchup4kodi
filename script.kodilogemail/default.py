@@ -11,7 +11,8 @@ def CATEGORIES():
         ADDON.openSettings()    
     addDir('Email Me My Log','ME',2,'','')            
     addDir('Email Someone Else My Log','',2,'','') 
-
+    if not ADDON.getSetting('email_pass_1')=='':
+        addDir('Reset Email Pass','url',10,'','Reset Email Pass')
 
 def search_entered():
     favs = ADDON.getSetting('favs').split(',')
@@ -181,7 +182,7 @@ def Numeric():
         return keyboard   
 
 def EmailPass():
-    if ADDON.getSetting('email_pass')=='':
+    if ADDON.getSetting('email_pass_1')=='':
         search_entered = ''
         keyboard = xbmc.Keyboard(search_entered, 'Please Enter Email Password')
         keyboard.setHiddenInput(True)
@@ -201,7 +202,7 @@ def DecryptPass():
     import os, pyaes,hashlib
     key = hashlib.md5(Numeric()).hexdigest()[:16]
     aes = pyaes.AESModeOfOperationCTR (key)
-    decrypted = aes.decrypt(ADDON.getSetting('email_pass').decode("utf8"))
+    decrypted = aes.decrypt(ADDON.getSetting('email_pass_1'))
     return decrypted
 
 
@@ -209,13 +210,13 @@ def EncryptPass(password):
     import os, pyaes,hashlib
     key = hashlib.md5(Numeric()).hexdigest()[:16]
     aes = pyaes.AESModeOfOperationCTR (key)
-    encrypted = aes.encrypt (password.encode("utf8"))
-    ADDON.setSetting('email_pass',encrypted)
+    encrypted = aes.encrypt (password)
+    ADDON.setSetting('email_pass_1',encrypted)
 
 
 def ResetPass():   
-    ADDON.setSetting('email_pass','')
-    dialog.ok('USB BACKUP/RESTORE','Pass Reset','','') 
+    ADDON.setSetting('email_pass_1','')
+    dialog.ok('KodiLog Emailer','Pass Reset','','') 
 
 
     
@@ -282,7 +283,8 @@ except:
 if mode==2:        
     EmailLog(url)
 
-
+elif mode==10:        
+    ResetPass()
 
 elif mode == 5002:
     favs = ADDON.getSetting('favs').split(",")
