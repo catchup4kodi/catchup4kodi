@@ -9,13 +9,13 @@ PROXYBASE=ADDON.getSetting('new_custom_url')
 ART = xbmc.translatePath(os.path.join('special://home/addons/plugin.video.bbciplayer/img/'))
 
 if 'just' in PROXYBASE:
-    PROXYURL = 'http://www.justproxy.co.uk/index.php?q=%s'
-    PROXYREF = 'http://www.justproxy.co.uk/'
+    PROXYURL = 'https://www.justproxy.co.uk/index.php?q=%s'
+    PROXYREF = 'https://www.justproxy.co.uk/'
     
 else:
     if 'england' in PROXYBASE:
-        PROXYURL = 'http://www.englandproxy.co.uk/'
-        PROXYREF = 'http://www.englandproxy.co.uk/'
+        PROXYURL = 'https://www.englandproxy.co.uk/'
+        PROXYREF = 'https://www.englandproxy.co.uk/'
 
     else:
         PROXYURL='http://www.joeproxy.co.uk/index.php?q=%s&hl=3cc'
