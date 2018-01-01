@@ -89,7 +89,6 @@ def GetCatList(url):
     setView('movies', 'default')     
 
 def GetEpisodes(url):
-        
     xunity='http://vschedules.uktv.co.uk/mapi/branddata/?format=json&brand_id='+url
     
     response=OPEN_URL(xunity)
@@ -103,9 +102,12 @@ def GetEpisodes(url):
         iconimage= field['episode_img_cached'].encode("utf-8")
         channel=field['channel'].encode("utf-8")
         desc=field['teaser_text'].encode("utf-8")
-        brightcove=field['brightcove_video_id']            
-        addDir(name,str(brightcove),200,iconimage,desc)
-        xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_VIDEO_TITLE)            
+        brightcove_id_from_json=field['brightcove_video_id']
+        watch_online_link=field['watch_online_link']
+        matches = re.search('video=([0-9]+)$', watch_online_link)
+        video_id_from_online_link=matches.group(1)
+        addDir(name,str(video_id_from_online_link),200,iconimage,desc)
+        xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_VIDEO_TITLE)
     setView('movies', 'default') 
 
 
@@ -216,7 +218,7 @@ def OPEN_URL(url):
 
 
 def PLAY_STREAM(name,url,iconimage):
-    url='http://c.brightcove.com/services/mobile/streaming/index/master.m3u8?videoId='+url    
+    url='http://c.brightcove.com/services/mobile/streaming/index/master.m3u8?videoId='+url
     liz = xbmcgui.ListItem(name, iconImage='DefaultVideo.png', thumbnailImage=iconimage)
     liz.setInfo(type='Video', infoLabels={'Title':name})
     liz.setProperty("IsPlayable","true")
@@ -347,7 +349,7 @@ elif mode == 12:
     except:pass
 
 elif mode==200:
-
+    xbmc.log("UKTVPlay 200: "+url,xbmc.LOGNOTICE)
     PLAY_STREAM(name,url,iconimage)
 
 else:
