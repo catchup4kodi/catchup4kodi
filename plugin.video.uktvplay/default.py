@@ -320,28 +320,30 @@ except:
 
 
 if mode==1:
-    print ""+url
+    xbmc.log(""+url,xbmc.LOGNOTICE)
     GetContent(url)
 
 elif mode==2:
-    print ""+url
+    xbmc.log(""+url,xbmc.LOGNOTICE)
     GetEpisodes(url)
 
 elif mode==3:
-    print ""+url
+    xbmc.log(""+url,xbmc.LOGNOTICE)
     GetCat(url)
 
 elif mode==4:
-    print ""+url
+    xbmc.log(""+url,xbmc.LOGNOTICE)
     GetCatList(url)
 
 elif mode==5:
     AtoZ()
 
 elif mode==8:
+    xbmc.log(""+url,xbmc.LOGNOTICE)
     FindSearch(url)
 
 elif mode==9:
+    xbmc.log(""+url,xbmc.LOGNOTICE)
     Search(url)
 
 elif mode==11:
