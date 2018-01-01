@@ -17,8 +17,8 @@ def CATEGORIES():
     addDir('Really','really',1,img+'/really.jpg','')
     addDir('Yesterday','yesterday',1,img+'/yesterday.png','')
     addDir('Drama','drama',1,img+'/drama.jpg','')
-   
-                                                                      
+
+
 def GetContent(url):
     CHANNEL = url       
     xunity='http://vschedules.uktv.co.uk/mobile/v2/most_popular?channel=%s&carousel_limit=100&platform=ios&app_ver=4.1.0' % CHANNEL
@@ -26,8 +26,6 @@ def GetContent(url):
     response=OPEN_URL(xunity)
     
     link=json.loads(response)
-
-    #data=link['brands']
 
     for field in link:
         name= field['brand_name'].encode("utf-8")
@@ -89,7 +87,7 @@ def GetCatList(url):
         addDir(name.strip(),str(brand_id),2,iconimage,'')
         xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_VIDEO_TITLE)            
     setView('movies', 'default')     
-    
+
 def GetEpisodes(url):
         
     xunity='http://vschedules.uktv.co.uk/mapi/branddata/?format=json&brand_id='+url
@@ -109,14 +107,14 @@ def GetEpisodes(url):
         addDir(name,str(brightcove),200,iconimage,desc)
         xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_VIDEO_TITLE)            
     setView('movies', 'default') 
-                   
+
 
 def char_range(c1, c2):
     
     for c in xrange(ord(c1), ord(c2)+1):
         yield chr(c)
 
- 
+
 def AtoZ():
     nameurl=[]
     urlurl=[]
@@ -150,8 +148,6 @@ def AtoZ():
     setView('movies', 'default')   
 
 
-
-
 def MySearch():
     addDir('Search','',9,'','')
     favs = ADDON.getSetting('favs').split(',')
@@ -160,8 +156,6 @@ def MySearch():
             NEW_URL='http://vschedules.uktv.co.uk/mobile/v2/search?q=%s&platform=ios&app_ver=4.1.0' % title.replace(' ','%20')        
             addDir(title,NEW_URL,8,'','')
 
-        
-    
 
 def Search(search_entered):
     favs = ADDON.getSetting('favs').split(',')
@@ -210,7 +204,8 @@ def FindSearch(url):
         addDir(name.strip(),str(brand_id),2,iconimage,'')
         xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_VIDEO_TITLE)            
     setView('movies', 'default')   
-        
+
+
 def OPEN_URL(url):
     req = urllib2.Request(url)
     req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
@@ -218,9 +213,8 @@ def OPEN_URL(url):
     link=response.read()
     response.close()
     return link
-    
-    
-    
+
+
 def PLAY_STREAM(name,url,iconimage):
     url='http://c.brightcove.com/services/mobile/streaming/index/master.m3u8?videoId='+url    
     liz = xbmcgui.ListItem(name, iconImage='DefaultVideo.png', thumbnailImage=iconimage)
@@ -229,63 +223,59 @@ def PLAY_STREAM(name,url,iconimage):
     liz.setPath(url)
     xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, liz)
 
-    
-    
+
 def get_params():
-        param=[]
-        paramstring=sys.argv[2]
-        if len(paramstring)>=2:
-                params=sys.argv[2]
-                cleanedparams=params.replace('?','')
-                if (params[len(params)-1]=='/'):
-                        params=params[0:len(params)-2]
-                pairsofparams=cleanedparams.split('&')
-                param={}
-                for i in range(len(pairsofparams)):
-                        splitparams={}
-                        splitparams=pairsofparams[i].split('=')
-                        if (len(splitparams))==2:
-                                param[splitparams[0]]=splitparams[1]
-                                
-        return param
+    param=[]
+    paramstring=sys.argv[2]
+    if len(paramstring)>=2:
+        params=sys.argv[2]
+        cleanedparams=params.replace('?','')
+        if (params[len(params)-1]=='/'):
+            params=params[0:len(params)-2]
+        pairsofparams=cleanedparams.split('&')
+        param={}
+        for i in range(len(pairsofparams)):
+            splitparams={}
+            splitparams=pairsofparams[i].split('=')
+            if (len(splitparams))==2:
+                param[splitparams[0]]=splitparams[1]
+    return param
+
 
 def addDir(name,url,mode,iconimage,description):
-        u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&iconimage="+urllib.quote_plus(iconimage)+"&description="+urllib.quote_plus(description)
-        ok=True
-        liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
-        liz.setInfo( type="Video", infoLabels={ "Title": name, "Plot": description} )
-        menu=[]
-        
-        
-        if mode == 8:
-            menu.append(('[COLOR orange]Remove Search[/COLOR]','XBMC.Container.Update(%s?mode=12&name=%s)'% (sys.argv[0],name)))
-            liz.addContextMenuItems(items=menu, replaceItems=False)
-            is_Folder=False
+    u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&iconimage="+urllib.quote_plus(iconimage)+"&description="+urllib.quote_plus(description)
+    ok=True
+    liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
+    liz.setInfo( type="Video", infoLabels={ "Title": name, "Plot": description} )
+    menu=[]
+    
+    
+    if mode == 8:
+        menu.append(('[COLOR orange]Remove Search[/COLOR]','XBMC.Container.Update(%s?mode=12&name=%s)'% (sys.argv[0],name)))
+        liz.addContextMenuItems(items=menu, replaceItems=False)
+        is_Folder=False
 
-        elif mode == 12:
-            is_Folder=False
-            
-        elif mode ==200:
-            liz.setProperty("IsPlayable","true")
-            is_Folder=False
+    elif mode == 12:
+        is_Folder=False
+        
+    elif mode ==200:
+        liz.setProperty("IsPlayable","true")
+        is_Folder=False
 
-        else:
-            is_Folder=True
-            
-        ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=is_Folder)
+    else:
+        is_Folder=True
+        
+    ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=is_Folder)
 
-        return ok
-        
-        
- 
-        
+    return ok
+
+
 def setView(content, viewType):
-        if content:
-                xbmcplugin.setContent(int(sys.argv[1]), content)
-        if ADDON.getSetting('auto-view') == 'true':#<<<----see here if auto-view is enabled(true) 
-                xbmc.executebuiltin("Container.SetViewMode(%s)" % ADDON.getSetting(viewType) )#<<<-----then get the view type
-                      
-               
+    if content:
+        xbmcplugin.setContent(int(sys.argv[1]), content)
+    if ADDON.getSetting('auto-view') == 'true':#<<<----see here if auto-view is enabled(true) 
+        xbmc.executebuiltin("Container.SetViewMode(%s)" % ADDON.getSetting(viewType) )#<<<-----then get the view type
+
 params=get_params()
 url=None
 name=None
@@ -320,30 +310,30 @@ except:
 
 
 if mode==1:
-    xbmc.log(""+url,xbmc.LOGNOTICE)
+    xbmc.log("UKTVPlay 1: "+url,xbmc.LOGNOTICE)
     GetContent(url)
 
 elif mode==2:
-    xbmc.log(""+url,xbmc.LOGNOTICE)
+    xbmc.log("UKTVPlay 2: "+url,xbmc.LOGNOTICE)
     GetEpisodes(url)
 
 elif mode==3:
-    xbmc.log(""+url,xbmc.LOGNOTICE)
+    xbmc.log("UKTVPlay 3: "+url,xbmc.LOGNOTICE)
     GetCat(url)
 
 elif mode==4:
-    xbmc.log(""+url,xbmc.LOGNOTICE)
+    xbmc.log("UKTVPlay 4: "+url,xbmc.LOGNOTICE)
     GetCatList(url)
 
 elif mode==5:
     AtoZ()
 
 elif mode==8:
-    xbmc.log(""+url,xbmc.LOGNOTICE)
+    xbmc.log("UKTVPlay 8: "+url,xbmc.LOGNOTICE)
     FindSearch(url)
 
 elif mode==9:
-    xbmc.log(""+url,xbmc.LOGNOTICE)
+    xbmc.log("UKTVPlay 9: "+url,xbmc.LOGNOTICE)
     Search(url)
 
 elif mode==11:
