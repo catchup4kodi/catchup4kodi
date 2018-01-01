@@ -295,61 +295,57 @@ description=None
 
 
 try:
-        url=urllib.unquote_plus(params["url"])
+    url=urllib.unquote_plus(params["url"])
 except:
-        pass
+    pass
 try:
-        name=urllib.unquote_plus(params["name"])
+    name=urllib.unquote_plus(params["name"])
 except:
-        pass
+    pass
 try:
-        iconimage=urllib.unquote_plus(params["iconimage"])
+    iconimage=urllib.unquote_plus(params["iconimage"])
 except:
-        pass
+    pass
+try:
+    mode=int(params["mode"])
+except:
+    pass
 try:        
-        mode=int(params["mode"])
+    description=urllib.unquote_plus(params["description"])
 except:
-        pass
-try:        
-        description=urllib.unquote_plus(params["description"])
-except:
-        pass
+    pass
 
-   
-        
 
-       
+
+
+
 if mode==1:
-        print ""+url
-        GetContent(url)
+    print ""+url
+    GetContent(url)
 
 elif mode==2:
-        print ""+url
-        GetEpisodes(url)        
+    print ""+url
+    GetEpisodes(url)
 
 elif mode==3:
-        print ""+url
-        GetCat(url)
+    print ""+url
+    GetCat(url)
 
 elif mode==4:
-        print ""+url
-        GetCatList(url)
+    print ""+url
+    GetCatList(url)
 
 elif mode==5:
-
-        AtoZ()
-
+    AtoZ()
 
 elif mode==8:
-        FindSearch(url)
+    FindSearch(url)
 
-        
 elif mode==9:
-        Search(url)    
-      
+    Search(url)
 
 elif mode==11:
-        MySearch()
+    MySearch()
 
 elif mode == 12:
     favs = ADDON.getSetting('favs').split(",")
@@ -357,13 +353,13 @@ elif mode == 12:
         favs.remove(name)
         ADDON.setSetting('favs', ",".join(favs))
     except:pass
-    
-    
-    
+
 elif mode==200:
 
-        PLAY_STREAM(name,url,iconimage)
-    
+    PLAY_STREAM(name,url,iconimage)
+
 else:
-    CATEGORIES() 
+    CATEGORIES()
+
+
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
