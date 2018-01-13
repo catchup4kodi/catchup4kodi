@@ -47,22 +47,29 @@ def login():
             'Cache-Control':'max-age=0',
             'Origin':'https://tvplayer.com',
             'Upgrade-Insecure-Requests':'1',
-            'User-Agent':'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36',
+            'User-Agent':'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36',
             'Content-Type':'application/x-www-form-urlencoded',
             'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-            'Referer':'https://tvplayer.com/watch',
+            'Referer':'https://tvplayer.com/account/login',
             'Accept-Encoding':'gzip, deflate, br',
-            'Accept-Language':'en-US,en;q=0.8'}
+            'Accept-Language':'en-GB,en-US;q=0.9,en;q=0.8'}
+
+
+    
 
     link=net.http_GET(loginurl, headers).content
     net.save_cookies(cookie_jar)
     token=re.compile('name="token" value="(.+?)"').findall(link)[0]
-    data={'email':email,'password':str(password),'token':token}
+    data={'email':email,'password':str(password),'token':str(token)}
+
 
     net.set_cookies(cookie_jar)
 
-    net.http_POST(loginurl, data, headers)
+    yo=net.http_POST(loginurl, data, headers).content
+
     net.save_cookies(cookie_jar)
+
+    
 
     
 def CATEGORIES():
@@ -86,6 +93,10 @@ def CATEGORIES():
         icon= field['logo']['colour']
         title=field['programmes'][0]['title']
         GENRE=field["genre"]
+        if str(GENRE)=='None':
+                GENRE=field["group"]
+        if str(GENRE)=='None':
+                GENRE=field['programmes'][0]['category']          
         try:desc=field['programmes'][0]['synopsis'].encode("utf-8")
         except:desc=''
         if field['type']=='free':
@@ -133,6 +144,10 @@ def GENRE(name,url):
         icon= field['logo']['colour']
         title=field['programmes'][0]['title']
         GENRE=field["genre"]
+        if str(GENRE)=='None':
+                GENRE=field["group"]
+        if str(GENRE)=='None':
+                GENRE=field['programmes'][0]['category']
         try:desc=field['programmes'][0]['synopsis'].encode("utf-8")
         except:desc=''
         if field['type']=='free':
@@ -183,7 +198,7 @@ def OPEN_URL_STREAM_URL(url):
 def tvplayer(url):
     if ADDON.getSetting('premium')== 'true':
         login()
-        net.set_cookies(cookie_jar)
+    net.set_cookies(cookie_jar)
     headers={'Host': 'tvplayer.com',
             'Connection': 'keep-alive',
             'Origin': 'http://tvplayer.com',
@@ -196,9 +211,11 @@ def tvplayer(url):
     html=net.http_GET('http://tvplayer.com/watch/', headers).content
     
     DATA_TOKEN=re.compile('data-token="(.+?)"').findall(html)[0]
-
-    URL='http://tvplayer.com/watch/context?resource=%s&gen=%s' % (url,DATA_TOKEN)
+ 
+    URL='https://tvplayer.com/watch/context?resource=%s&gen=%s' % (url,DATA_TOKEN)
+  
     html=net.http_GET(URL, headers).content
+
     VALIDATE=re.compile('"validate":"(.+?)"').findall(html)[0]
     
     
@@ -222,11 +239,20 @@ def tvplayer(url):
             'Accept': '*/*',
             'Accept-Encoding': 'gzip, deflate',
             'Accept-Language': 'en-US,en;q=0.8'}
-    LINK=net.http_POST(POSTURL, data,headers=headers).content
-    net.save_cookies(cookie_jar)
-    
-    return re.compile('stream": "(.+?)"').findall(LINK)[0]
-
+    try:
+            LINK=net.http_POST(POSTURL, data,headers=headers).content
+            net.save_cookies(cookie_jar)
+         
+            return re.compile('stream":"(.+?)"').findall(LINK)[0].replace(' ','')
+    except Exception as e:
+                if '401' in str(e):
+                    add='Please Sign up for free account and enter details in addon settings'
+                else:
+                    add=''
+                dialog = xbmcgui.Dialog()
+                dialog.ok("TV Player", '',str(e), add)
+                return None
+            
     #GET WORKS TOO
     #POSTURL='http://api.tvplayer.com/api/v2/stream/live?service=1&platform=website&id=%stoken=null&validate=%s'% (url,VALIDATE)
     #LINK=net.http_GET(POSTURL,headers=headers).content
@@ -235,6 +261,8 @@ def tvplayer(url):
 def PLAY_STREAM(name,url,iconimage):
 
     STREAM =tvplayer(url)
+    if not STREAM:
+            return ''
     HOST=STREAM.split('//')[1]
     HOST=HOST.split('/')[0]
     headers={'Host': HOST,
