@@ -1,3 +1,5 @@
+v1.1.6
+Workaround for brightcove_video_id not being correct
 v1.1.5
 Added Play All
 
