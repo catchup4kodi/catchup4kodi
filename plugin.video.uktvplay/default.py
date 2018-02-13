@@ -312,30 +312,30 @@ except:
 
 
 if mode==1:
-    xbmc.log("UKTVPlay 1: "+url,xbmc.LOGNOTICE)
+    xbmc.log("UKTVPlay 1: "+str(url),xbmc.LOGNOTICE)
     GetContent(url)
 
 elif mode==2:
-    xbmc.log("UKTVPlay 2: "+url,xbmc.LOGNOTICE)
+    xbmc.log("UKTVPlay 2: "+str(url),xbmc.LOGNOTICE)
     GetEpisodes(url)
 
 elif mode==3:
-    xbmc.log("UKTVPlay 3: "+url,xbmc.LOGNOTICE)
+    xbmc.log("UKTVPlay 3: "+str(url),xbmc.LOGNOTICE)
     GetCat(url)
 
 elif mode==4:
-    xbmc.log("UKTVPlay 4: "+url,xbmc.LOGNOTICE)
+    xbmc.log("UKTVPlay 4: "+str(url),xbmc.LOGNOTICE)
     GetCatList(url)
 
 elif mode==5:
     AtoZ()
 
 elif mode==8:
-    xbmc.log("UKTVPlay 8: "+url,xbmc.LOGNOTICE)
+    xbmc.log("UKTVPlay 8: "+str(url),xbmc.LOGNOTICE)
     FindSearch(url)
 
 elif mode==9:
-    xbmc.log("UKTVPlay 9: "+url,xbmc.LOGNOTICE)
+    xbmc.log("UKTVPlay 9: "+str(url),xbmc.LOGNOTICE)
     Search(url)
 
 elif mode==11:
@@ -349,7 +349,7 @@ elif mode == 12:
     except:pass
 
 elif mode==200:
-    xbmc.log("UKTVPlay 200: "+url,xbmc.LOGNOTICE)
+    xbmc.log("UKTVPlay 200: "+str(url),xbmc.LOGNOTICE)
     PLAY_STREAM(name,url,iconimage)
 
 else:
