@@ -191,6 +191,22 @@
 	</extension>
 </addon>
 
+<addon id="repository.kodikaraoke" name="Kodi Karaoke Repo" version="0.0.2" provider-name="Kodi Karaoke Repo">
+	<extension point="xbmc.addon.repository" name="Kodi Karaoke Repo">
+	<dir>
+		<info compressed="false">http://kodikaraoke.com/repository/zips/addons.xml</info>
+		<checksum>http://kodikaraoke.com/repository/zips/addons.xml.md5</checksum>
+		<datadir zip="true">http://kodikaraoke.com/repository/zips/</datadir>
+	</dir>
+	</extension>
+	<extension point="xbmc.addon.metadata">
+		<summary>Kodi Karaoke Repo</summary>
+		<description>Kodi Karaoke Repo</description>
+		<disclaimer>Kodi Karaoke Repo</disclaimer>
+		<platform>all</platform>
+	</extension>
+</addon>
+
 <addon id="script.icechannel.extn.common" version="0.6.1" name="DUCKPOOL - Common" provider-name="Mucky Duck">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
