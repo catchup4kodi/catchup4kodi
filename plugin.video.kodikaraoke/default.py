@@ -377,7 +377,7 @@ def SEARCH(search_entered):
         PAGE=1
         favs = ADDON.getSetting('favs').split(',')
         if 'url' in search_entered:
-            keyboard = xbmc.Keyboard('', 'Search')
+            keyboard = xbmc.Keyboard('', 'KODIKARAOKE.COM')
             keyboard.doModal()
             if keyboard.isConfirmed() and len(keyboard.getText())>0:
                search_entered = keyboard.getText()
