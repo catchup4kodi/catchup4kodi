@@ -91,7 +91,8 @@ def CATEGORIES():
         id= str(field['id'])
         name= field['name']
         icon= field['logo']['colour']
-        title=field['programmes'][0]['title']
+        try:title=field['programmes'][0]['title']
+        except:title=''
         GENRE=field["genre"]
         if str(GENRE)=='None':
                 GENRE=field["group"]
@@ -105,7 +106,8 @@ def CATEGORIES():
                 add=' [COLOR magenta]  -  (Premium)[/COLOR]'     
         name   = '[COLOR royalblue]'+name.encode("utf-8")+'[/COLOR] - [COLOR white]'+title.encode("utf-8")+'[/COLOR]'+add
         status = field['status']
-        fanart=field['programmes'][0]['thumbnail']
+        try:fanart=field['programmes'][0]['thumbnail']
+        except:fanart=''
         if status=='online':
             if ADDON.getSetting('genre')== 'false':
                 if ADDON.getSetting('premium')== 'true':
