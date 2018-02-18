@@ -384,20 +384,15 @@ def Numeric():
         return keyboard   
 
 def EmailPass():
-    if ADDON.getSetting('email_pass_1')=='':
-        search_entered = ''
-        keyboard = xbmc.Keyboard(search_entered, 'Please Enter Email Password')
-        keyboard.setHiddenInput(True)
-        keyboard.doModal()
-        if keyboard.isConfirmed():
-            THEPASS = keyboard.getText()
-        if dialog.yesno("USB BACKUP/RESTORE", "Do you Want To Save Your Password ?", 'Its Fully AES Encrypted','Just Enter Secret 4 Digit Number'):
-            
-            EncryptPass(THEPASS)
-            
-        return THEPASS    
-    else:
-        return DecryptPass()
+    search_entered = ''
+    keyboard = xbmc.Keyboard(search_entered, 'Please Enter Email Password')
+    keyboard.setHiddenInput(True)
+    keyboard.doModal()
+    if keyboard.isConfirmed():
+        return keyboard.getText()
+
+  
+
 
     
 def DecryptPass():

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="repository.catchup4kodi" name="Catchup4Kodi Repo" version="1.3" provider-name="catchup4kodi">
-	<extension point="xbmc.addon.repository" name="Catchup4Kodi Repo">
+<addon id="repository.catchup4kodi" name="LittleWiz Repo" version="1.4" provider-name="LittleWiz">
+	<extension point="xbmc.addon.repository" name="LittleWiz Repo">
 		<dir>
 		<info compressed="false">https://raw.githubusercontent.com/catchup4kodi/catchup4kodi/master/zips/addons.xml</info>
 		<checksum>https://raw.githubusercontent.com/catchup4kodi/catchup4kodi/master/zips/addons.xml.md5</checksum>
