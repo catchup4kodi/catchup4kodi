@@ -207,23 +207,6 @@
 	</extension>
 </addon>
 
-<addon id="script.icechannel.extn.common" version="0.6.1" name="DUCKPOOL - Common" provider-name="Mucky Duck">
-    <requires>
-        <import addon="xbmc.python" version="2.1.0"/>
-    </requires>
-    <extension point="xbmc.addon.metadata">
-		<summary lang="en">DUCKPOOL - Common</summary>
-		<description lang="en">DUCKPOOL - Common</description>
-		<platform></platform>
-		<language></language>
-		<license></license>
-		<forum></forum>
-		<website></website>
-		<source></source>
-		<email></email>
-    </extension>
-</addon>
-
 <addon id="script.kodilogemail" name=".[COLOR blue]K[/COLOR]odi Log Emailer" version="0.1.0" provider-name="LittleWiz">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
