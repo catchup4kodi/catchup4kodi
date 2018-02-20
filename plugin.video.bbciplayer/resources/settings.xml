@@ -7,8 +7,8 @@
 <category label="Stream Options">
 	<setting id="livehd" type="bool" label="HD Live Streams" default="true"/>
 	<setting label="AutoPlay" type="bool" default="true" id="autoplay"/>
-	<setting label="Catchup Source" type="enum" default="0" id="catchup" enable="eq(-1,true)" values="HLS|RTMP"/>
-	<setting label="Supplier" type="enum" default="0" id="supplier" enable="eq(-2,true)" values="AKAMAI|LIMELIGHT"/>
+	<setting label="Catchup Source" type="enum" default="0" id="catchup" enable="eq(-1,true)" values="HLS"/>
+	<setting label="Supplier" type="enum" default="0" id="supplier" enable="eq(-2,true)" values="AKAMAI|LIMELIGHT|BIDI"/>
 </category>
 <category label="Auto-View">
 	<setting id="sort" type="bool" label="Sort Alphabetically" default="false"/>

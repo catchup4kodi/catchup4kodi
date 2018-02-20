@@ -162,12 +162,12 @@ def CATS():
         setView('tvshows', 'default')
                         
 def LIVE():
-    addDir('ITV1','https://itv1liveios-i.akamaihd.net/hls/live/203437/itvlive/ITV1MN/master.m3u8',7,foricon+'art/1.png',isFolder=False)#sim1
-    addDir('ITV2','https://itv2liveios-i.akamaihd.net/hls/live/203495/itvlive/ITV2MN/master.m3u8',7,foricon+'art/2.png',isFolder=False)#sim2
-    addDir('ITV3','https://itv3liveios-i.akamaihd.net/hls/live/207262/itvlive/ITV3MN/master.m3u8',7,foricon+'art/3.png',isFolder=False)#sim3
-    addDir('ITV4','https://itv4liveios-i.akamaihd.net/hls/live/207266/itvlive/ITV4MN/master.m3u8',7,foricon+'art/4.png',isFolder=False)#sim4
-    addDir('ITVBe','https://itvbeliveios-i.akamaihd.net/hls/live/219078/itvlive/ITVBE/master.m3u8',7,foricon+'art/8.jpg',isFolder=False)
-    addDir('CITV','https://citvliveios-i.akamaihd.net/hls/live/207267/itvlive/CITVMN/master.m3u8',7,foricon+'art/7.png',isFolder=False)#sim7
+    addDir('ITV1','sim1',7,foricon+'art/1.png',isFolder=False)#sim1   https://itv1liveios-i.akamaihd.net/hls/live/203437/itvlive/ITV1MN/master.m3u8
+    addDir('ITV2','sim2',7,foricon+'art/2.png',isFolder=False)#sim2   https://itv2liveios-i.akamaihd.net/hls/live/203495/itvlive/ITV2MN/master.m3u8
+    addDir('ITV3','sim3',7,foricon+'art/3.png',isFolder=False)#sim3   https://itv3liveios-i.akamaihd.net/hls/live/207262/itvlive/ITV3MN/master.m3u8
+    addDir('ITV4','sim4',7,foricon+'art/4.png',isFolder=False)#sim4   https://itv4liveios-i.akamaihd.net/hls/live/207266/itvlive/ITV4MN/master.m3u8
+    #addDir('ITVBe','https://itvbeliveios-i.akamaihd.net/hls/live/219078/itvlive/ITVBE/master.m3u8',7,foricon+'art/8.jpg',isFolder=False)#    https://itvbeliveios-i.akamaihd.net/hls/live/219078/itvlive/ITVBE/master.m3u8
+    addDir('CITV','sim7',7,foricon+'art/7.png',isFolder=False)#sim7  https://citvliveios-i.akamaihd.net/hls/live/207267/itvlive/CITVMN/master.m3u8
     addDir('Events/Sport','https://itvliveevents-i.akamaihd.net/hls/live/203496/itvliveevents/ITVEVTMN/master.m3u8',7,foricon+'art/9.jpg',isFolder=False)#sim9
 
 def CATEGORIES():
@@ -205,20 +205,10 @@ def PLAY_STREAM(name,url,iconimage):
             r='CDATA\[(citv.+?)\]'
         else:
             r='CDATA\[(itv.+?)\]'
-        playpath=re.compile(r,re.DOTALL).findall(response) 
+        playpath=re.compile(r,re.DOTALL).findall(response) [0]
 
 
-        if (quality == 0):
-            playpath = playpath[0] 
-        elif (quality == 1):
-            playpath = playpath[1] 
-        elif (quality == 2):
-            playpath = playpath[2]
-        elif (quality == 3):
-            playpath = playpath[3]
-        elif (quality == 4):
-            playpath = playpath[4]
-            
+
         STREAM=rtmp+' playpath='+playpath+' swfUrl=http://www.itv.com/mediaplayer/ITVMediaPlayer.swf live=true timeout=10 swfvfy=true'
        
         
