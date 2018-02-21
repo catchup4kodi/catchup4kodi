@@ -179,7 +179,7 @@
 <addon id="plugin.video.youtube" name="YouTube" version="5.5.1" provider-name="bromix">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
-        <import addon="script.module.six" version="0.0.1""/>
+        <import addon="script.module.six" version="0.0.1"/>
         <import addon="script.module.requests" version="0.0.1"/>
     </requires>
     <extension point="xbmc.python.pluginsource" library="resources/lib/default.py">
@@ -191,28 +191,28 @@
         <summary lang="en_gb">Plugin for YouTube</summary>
         <description lang="en_gb">YouTube is one of the biggest video-sharing websites of the world.</description>
         <disclaimer lang="en_gb">This plugin is not endorsed by Google</disclaimer>
-        <summary lang="he_il">תוסף עבור YouTube</summary>
-        <description lang="he_il">YouTube הוא אחד מאתרי שיתוף הווידאו הגדולים בעולם.</description>
+        <summary lang="he_il">???? ???? YouTube</summary>
+        <description lang="he_il">YouTube ??? ??? ????? ????? ??????? ??????? ?????.</description>
         <summary lang="de_de">Plugin für YouTube</summary>
         <description lang="de_de">YouTube ist eines der größten Video-Sharing-Websites der Welt.</description>
         <summary lang="pl_pl">Wtyczka YouTube</summary>
-        <description lang="pl_pl">YouTube jest jednym z największych na świecie serwisów udostępniania wideo.</description>
-        <summary lang="hu_hu">YouTube kiegészítő</summary>
+        <description lang="pl_pl">YouTube jest jednym z najwiekszych na swiecie serwisów udostepniania wideo.</description>
+        <summary lang="hu_hu">YouTube kiegészíto</summary>
         <description lang="hu_hu">A YouTube világ egyik legnagyobb videómegosztó weboldala.</description>
         <summary lang="es_es">Plugin para YouTube</summary>
         <description lang="es_es">YouTube es uno de los mayores sitios web de intercambio de vídeos del mundo.</description>
         <disclaimer lang="es_es">Este add-on no esta respaldado por Google</disclaimer>
-        <summary lang="ru_ru">Видеодополнение YouTube</summary>
-        <description lang="ru_ru">Данное дополнение позволяет находить и смотреть видео на всеми любимом сайте.</description>
+        <summary lang="ru_ru">??????????????? YouTube</summary>
+        <description lang="ru_ru">?????? ?????????? ????????? ???????? ? ???????? ????? ?? ????? ??????? ?????.</description>
         <summary lang="fr_fr">Plugin pour YouTube</summary>
         <description lang="fr_fr">YouTube est l'un des plus grands sites de partage vidéos du monde.</description>
-        <summary lang="zh_cn">YouTube附加元件</summary>
-        <description lang="zh_cn">「Youtube」是全世界最大的影片分享網站</description>
-        <summary lang="bg_bg">Добавка за YouTube</summary>
-        <description lang="bg_bg">YouTube е един от най-големите уеб сайтове за споделяне на видео в целия свят.</description>
-        <summary lang="el_gr">Πρόσθετο YouTube</summary>
-        <description lang="el_gr">Το YouTube είναι μία από τις μεγαλύτερες ιστοσελίδες διαμοιρασμού βίντεο στον κόσμο.</description>
-        <disclaimer lang="el_gr">Η παρούσα μικροεφαρμογή δεν έχει υϊοθετηθεί από την Google</disclaimer>
+        <summary lang="zh_cn">YouTube????</summary>
+        <description lang="zh_cn">?Youtube??????????????</description>
+        <summary lang="bg_bg">??????? ?? YouTube</summary>
+        <description lang="bg_bg">YouTube ? ???? ?? ???-???????? ??? ??????? ?? ????????? ?? ????? ? ????? ????.</description>
+        <summary lang="el_gr">???s?et? YouTube</summary>
+        <description lang="el_gr">?? YouTube e??a? µ?a ap? t?? µe?a??te?e? ?st?se??de? d?aµ???asµ?? ß??te? st?? ??sµ?.</description>
+        <disclaimer lang="el_gr">? pa???sa µ????efa?µ??? de? ??e? ????et??e? ap? t?? Google</disclaimer>
         <summary lang="nb_no">Tillegg for YouTube</summary>
         <description lang="nb_no">YouTube er en av verdens største nettsider for videodeling.</description>
         <language></language>
