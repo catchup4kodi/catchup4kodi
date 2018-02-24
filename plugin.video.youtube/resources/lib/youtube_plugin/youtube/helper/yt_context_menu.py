@@ -1,5 +1,6 @@
 __author__ = 'bromix'
 
+import re
 from ... import kodion
 
 

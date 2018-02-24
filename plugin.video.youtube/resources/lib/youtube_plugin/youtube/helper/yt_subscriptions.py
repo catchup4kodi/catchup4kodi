@@ -1,6 +1,7 @@
+from ...kodion.items import UriItem
+
 __author__ = 'bromix'
 
-from ...kodion.items import UriItem
 from ... import kodion
 from ...youtube.helper import v3
 

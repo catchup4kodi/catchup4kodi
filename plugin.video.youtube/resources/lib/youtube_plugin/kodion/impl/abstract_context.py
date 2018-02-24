@@ -1,9 +1,8 @@
-from six.moves import urllib
-
 import os
+import urllib
 
 from .. import constants
-from ..logging import log
+from ..logging import *
 from ..utils import *
 
 
@@ -20,7 +19,7 @@ class AbstractContext(object):
         self._watch_later_list = None
         self._access_manager = None
 
-        self._plugin_name = str(plugin_name)
+        self._plugin_name = unicode(plugin_name)
         self._version = 'UNKNOWN'
         self._plugin_id = plugin_id
         self._path = create_path(path)
@@ -74,7 +73,7 @@ class AbstractContext(object):
 
     def get_access_manager(self):
         if not self._access_manager:
-            self._access_manager = AccessManager(self)
+            self._access_manager = AccessManager(self.get_settings())
         return self._access_manager
 
     def get_video_playlist(self):
@@ -101,9 +100,9 @@ class AbstractContext(object):
 
         uri = create_uri_path(path)
         if uri:
-            uri = "%s://%s%s" % ('plugin', str(self._plugin_id), uri)
+            uri = "%s://%s%s" % ('plugin', self._plugin_id.encode('utf-8'), uri)
         else:
-            uri = "%s://%s/" % ('plugin', str(self._plugin_id))
+            uri = "%s://%s/" % ('plugin', self._plugin_id.encode('utf-8'))
 
         if len(params) > 0:
             # make a copy of the map
@@ -116,7 +115,7 @@ class AbstractContext(object):
                     params[param] = str(params[param])
 
                 uri_params[param] = to_utf8(params[param])
-            uri += '?' + urllib.parse.urlencode(uri_params)
+            uri += '?' + urllib.urlencode(uri_params)
 
         return uri
 
@@ -181,6 +180,7 @@ class AbstractContext(object):
 
     def log(self, text, log_level=constants.log.NOTICE):
         log_line = '[%s] %s' % (self.get_id(), text)
+
         log(log_line, log_level)
 
     def log_warning(self, text):

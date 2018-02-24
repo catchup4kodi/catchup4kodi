@@ -1,20 +1,12 @@
 __author__ = 'bromix'
 
 __all__ = ['create_path', 'create_uri_path', 'strip_html_from_text', 'print_items', 'find_best_fit', 'to_utf8',
-           'to_unicode', 'select_stream', 'make_dirs']
+           'to_unicode', 'select_stream']
 
-from six.moves import urllib
-from six import next
-from six import string_types
-
-import os
+import urllib
 import re
-
 from ..constants import localize
-
-import xbmc
 import xbmcaddon
-import xbmcvfs
 
 
 def loose_version(v):
@@ -26,22 +18,16 @@ def loose_version(v):
 
 def to_utf8(text):
     result = text
-    if isinstance(text, string_types):
-        try:
-            result = text.encode('utf-8')
-        except UnicodeDecodeError:
-            pass
+    if isinstance(text, unicode):
+        result = text.encode('utf-8')
 
     return result
 
 
 def to_unicode(text):
     result = text
-    if isinstance(text, string_types):
-        try:
-            result = text.decode('utf-8')
-        except (AttributeError, UnicodeEncodeError):
-            pass
+    if isinstance(text, str):
+        result = text.decode('utf-8')
 
     return result
 
@@ -56,7 +42,7 @@ def find_best_fit(data, compare_method=None):
 
     last_fit = -1
     if isinstance(data, dict):
-        for key in list(data.keys()):
+        for key in data.keys():
             item = data[key]
             fit = abs(compare_method(item))
             if last_fit == -1 or fit < last_fit:
@@ -72,14 +58,14 @@ def find_best_fit(data, compare_method=None):
     return result
 
 
-def select_stream(context, stream_data_list, quality_map_override=None, ask_for_quality=None):
+def select_stream(context, stream_data_list, quality_map_override=None):
     # sort - best stream first
     def _sort_stream_data(_stream_data):
         return _stream_data.get('sort', 0)
 
     settings = context.get_settings()
     use_dash = settings.use_dash()
-    ask_for_quality = context.get_settings().ask_for_video_quality() if ask_for_quality is None else ask_for_quality
+    ask_for_quality = context.get_settings().ask_for_video_quality()
     video_quality = settings.get_video_quality(quality_map_override=quality_map_override)
     audio_only = False if ask_for_quality else settings.audio_only()  # don't filter streams to audio only if we're asking for quality
 
@@ -153,7 +139,7 @@ def create_path(*args):
         if isinstance(arg, list):
             return create_path(*arg)
 
-        comps.append(str(arg.strip('/').replace('\\', '/').replace('//', '/')))
+        comps.append(unicode(arg.strip('/').replace('\\', '/').replace('//', '/')))
 
     uri_path = '/'.join(comps)
     if uri_path:
@@ -168,11 +154,11 @@ def create_uri_path(*args):
         if isinstance(arg, list):
             return create_uri_path(*arg)
 
-        comps.append(str(arg.strip('/').replace('\\', '/').replace('//', '/')))
+        comps.append(arg.strip('/').replace('\\', '/').replace('//', '/').encode('utf-8'))
 
     uri_path = '/'.join(comps)
     if uri_path:
-        return urllib.parse.quote('/%s/' % uri_path)
+        return urllib.quote('/%s/' % uri_path)
 
     return '/'
 
@@ -196,23 +182,4 @@ def print_items(items):
         items = []
 
     for item in items:
-        print(item)
-
-
-def make_dirs(path):
-    if not path.endswith('/'):
-        path += '/'
-    path = xbmc.translatePath(path)
-    if not xbmcvfs.exists(path):
-        try:
-            r = xbmcvfs.mkdirs(path)
-        except:
-            pass
-        if not xbmcvfs.exists(path):
-            try:
-                os.makedirs(path)
-            except:
-                pass
-        return xbmcvfs.exists(path)
-
-    return True
+        print item

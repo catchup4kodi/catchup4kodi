@@ -5,7 +5,7 @@ import time
 
 from youtube_plugin.kodion.impl import Context
 from youtube_plugin.kodion.constants import setting
-from youtube_plugin.kodion.utils import YouTubeMonitor, YouTubePlayer
+from youtube_plugin.kodion.utils import Monitor
 
 context = Context(plugin_id='plugin.video.youtube')
 
@@ -47,7 +47,7 @@ def get_stamp_diff(current_stamp):
     time_delta = current_datetime - stamp_datetime
     total_seconds = 0
     if time_delta:
-        total_seconds = ((time_delta.seconds + time_delta.days * 24 * 3600) * 10 ** 6) // (10 ** 6)
+        total_seconds = ((time_delta.seconds + time_delta.days * 24 * 3600) * 10 ** 6) / 10 ** 6
     return total_seconds
 
 
@@ -56,23 +56,22 @@ ping_delay_time = 60
 ping_timestamp = None
 first_run = True
 
-player = YouTubePlayer(context=context)
-monitor = YouTubeMonitor()
+if mpd_addon:
+    monitor = Monitor()
+    while not monitor.abortRequested():
 
-while not monitor.abortRequested():
+        ping_diff = get_stamp_diff(ping_timestamp)
 
-    ping_diff = get_stamp_diff(ping_timestamp)
+        if (ping_timestamp is None) or (ping_diff >= ping_delay_time):
+            ping_timestamp = str(datetime.now())
 
-    if (ping_timestamp is None) or (ping_diff >= ping_delay_time):
-        ping_timestamp = str(datetime.now())
+            if monitor.dash_proxy and not monitor.ping_proxy():
+                monitor.restart_proxy()
 
-        if monitor.httpd and not monitor.ping_httpd():
-            monitor.restart_httpd()
+        if first_run:
+            first_run = False
 
-    if first_run:
-        first_run = False
-
-    if monitor.waitForAbort(sleep_time):
-        if monitor.httpd:
-            monitor.shutdown_httpd()
-        break
+        if monitor.waitForAbort(sleep_time):
+            if monitor.dash_proxy:
+                monitor.shutdown_proxy()
+            break

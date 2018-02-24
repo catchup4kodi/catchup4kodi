@@ -1,5 +1,6 @@
 __author__ = 'bromix'
 
+import xbmc
 import xbmcgui
 import xbmcplugin
 
@@ -21,7 +22,7 @@ class XbmcRunner(AbstractProviderRunner):
         results = None
         try:
             results = provider.navigate(context)
-        except KodionException as ex:
+        except KodionException, ex:
             if provider.handle_exception(context, ex):
                 context.log_error(ex.__str__())
                 xbmcgui.Dialog().ok("Exception in ContentProvider", ex.__str__())

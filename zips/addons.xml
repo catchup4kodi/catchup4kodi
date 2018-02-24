@@ -176,10 +176,9 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.youtube" name="YouTube" version="5.5.1a" provider-name="bromix">
+<addon id="plugin.video.youtube" name="YouTube" version="5.5.1b" provider-name="bromix">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
-        <import addon="script.module.six" version="0.0.1"/>
         <import addon="script.module.requests" version="0.0.1"/>
     </requires>
     <extension point="xbmc.python.pluginsource" library="resources/lib/default.py">
@@ -189,33 +188,7 @@
     <extension point="xbmc.python.module" library="resources/lib/"/>
     <extension point="xbmc.addon.metadata">
         <news>
-[add] Saved Playlists
-[add] Audio only: Settings -> General
-[add] Age gate enforcement: Settings -> General
-[add] Quick search and Quick search (Incognito)
-    - Settings -> Folders
-    - incognito doesn't add to search history or run post play events (add to watch history)
-[add] Quick search to channels (no history)
-[add] Live folder to channels
-[fix] My Channel videos incl. private
-[fix] mpeg-dash vods, proxy required
-    - Settings - MPEG-DASH
-    - Thanks to Schtek for generating the needed mpd file
-[fix/upd] use select dialog for subtitle settings
-    - [add] Configure subtitles: Settings -> General
-    - [add] Current language with No auto-generated subtitles option
-[fix/upd] subtitles default to non asr track when possible
-[fix/upd] Watch Later
-    - Clear: Settings - Folders - Custom Watch Later playlist id
-    - Settings - Folders - Retrieve Watch Later playlist id
-[fix/upd] History
-    - cannot add to history from add-on
-    - Clear: Settings - Folders - Custom History playlist id
-[rem] SPMC mpeg-dash support
-[upd] Hebrew strings [Eng2Heb]
-[upd] Polish strings [Etharr]
-[upd] Italian strings [DjDiabolik]
-[upd] Hungarian strings [lacesz-sh]
+[fix] Signature deciphering
         </news>
         <assets>
             <icon>icon.png</icon>
@@ -253,7 +226,7 @@
         <website>https://www.youtube.com</website>
         <email>ytplugin at datanet dot ws</email>
         <source>https://github.com/jdf76/plugin.video.youtube</source>
-        <size>1775888</size>
+        <size>1420144</size>
     </extension>
 </addon>
 
@@ -318,26 +291,6 @@
     <license>BSD</license>
     <platform>all</platform>
     <website>http://www.crummy.com/software/BeautifulSoup/</website>
-  </extension>
-</addon>
-
-<addon id="script.module.six"
-       name="six"
-       version="1.11.0"
-       provider-name="gutworth">
-  <requires>
-    <import addon="xbmc.python"
-    		version="2.1.0"/>
-  </requires>
-  <extension point="xbmc.python.module"
-             library="lib" />
-  <extension point="xbmc.addon.metadata">
-    <summary>Python 2 and 3 compatibility utilities.</summary>
-    <description>Six is a Python 2 and 3 compatibility library. It provides utility functions for smoothing over the differences between the Python versions with the goal of writing Python code that is compatible on both Python versions. See the documentation for more information on what is provided.</description>
-    <platform>all</platform>
-    <license>MIT</license>
-    <source>https://pypi.python.org/pypi/six</source>
-    <website>https://pypi.python.org/pypi/six</website>
   </extension>
 </addon>
 </addons>

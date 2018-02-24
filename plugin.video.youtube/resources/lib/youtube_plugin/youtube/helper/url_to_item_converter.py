@@ -1,8 +1,7 @@
 __author__ = 'bromix'
 
-from six.moves import urllib
-
 import re
+import urlparse
 from ...kodion.items import VideoItem, DirectoryItem
 from . import utils
 
@@ -25,9 +24,9 @@ class UrlToItemConverter(object):
         self._channel_ids = []
 
     def add_url(self, url, provider, context):
-        url_components = urllib.parse.urlparse(url)
+        url_components = urlparse.urlparse(url)
         if url_components.hostname.lower() == 'youtube.com' or url_components.hostname.lower() == 'www.youtube.com':
-            params = dict(urllib.parse.parse_qsl(url_components.query))
+            params = dict(urlparse.parse_qsl(url_components.query))
             if url_components.path.lower() == '/watch':
                 video_id = params.get('v', '')
                 if video_id:

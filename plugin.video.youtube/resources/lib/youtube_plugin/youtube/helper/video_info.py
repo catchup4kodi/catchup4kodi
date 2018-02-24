@@ -1,17 +1,15 @@
 __author__ = 'bromix'
 
-from six.moves import range
-from six import string_types
-from six.moves import urllib
-
+import urllib
+import urlparse
 import re
 import json
 
 import requests
-from ...kodion.utils import is_httpd_live, make_dirs
+from ...kodion.utils.dash_proxy import is_proxy_live
 from ..youtube_exceptions import YouTubeException
 from .signature.cipher import Cipher
-from .subtitles import Subtitles
+from subtitles import Subtitles
 
 import xbmcvfs
 
@@ -455,7 +453,7 @@ class VideoInfo(object):
             player_config['args'] = dict()
 
         player_response = player_config['args'].get('player_response', dict())
-        if isinstance(player_response, string_types):
+        if isinstance(player_response, basestring):
             try:
                 player_response = json.loads(player_response)
             except TypeError:
@@ -547,7 +545,7 @@ class VideoInfo(object):
                 cookies_list.append('{0}={1};'.format(c.name, c.value))
             if cookies_list:
                 curl_headers = 'Cookie={cookies}'\
-                    .format(cookies=urllib.parse.quote(' '.join(cookies_list)))
+                    .format(cookies=urllib.quote(' '.join(cookies_list)))
         else:
             cookies = dict()
 
@@ -594,7 +592,7 @@ class VideoInfo(object):
             http_params['el'] = el
             result = requests.get(url, params=http_params, headers=headers, cookies=cookies, verify=self._verify, allow_redirects=True)
             data = result.text
-            params = dict(urllib.parse.parse_qsl(data))
+            params = dict(urlparse.parse_qsl(data))
             if params.get('url_encoded_fmt_stream_map') or params.get('live_playback', '0') == '1':
                 break
 
@@ -659,7 +657,7 @@ class VideoInfo(object):
         mpd_url = params.get('dashmpd', player_args.get('dashmpd'))
         if not mpd_url and params.get('live_playback', '0') == '0' and \
                 self._context.get_settings().use_dash_proxy() and \
-                is_httpd_live(port=self._context.get_settings().httpd_port()):
+                is_proxy_live(port=self._context.get_settings().dash_proxy_port()):
             mpd_url = self.generate_mpd(video_id, params.get('adaptive_fmts', player_args.get('adaptive_fmts', '')), params.get('length_seconds', '0'), cipher)
         use_cipher_signature = 'True' == params.get('use_cipher_signature', None)
         if mpd_url:
@@ -690,7 +688,7 @@ class VideoInfo(object):
 
         def parse_to_stream_list(stream_map_list):
             for item in stream_map_list:
-                stream_map = dict(urllib.parse.parse_qsl(item))
+                stream_map = dict(urlparse.parse_qsl(item))
 
                 url = stream_map.get('url', None)
                 conn = stream_map.get('conn', None)
@@ -719,7 +717,7 @@ class VideoInfo(object):
                     video_stream.update(yt_format)
                     stream_list.append(video_stream)
                 elif conn:
-                    url = '%s?%s' % (conn, urllib.parse.unquote(stream_map['stream']))
+                    url = '%s?%s' % (conn, urllib.unquote(stream_map['stream']))
                     itag = stream_map['itag']
                     yt_format = self.FORMAT.get(itag, None)
                     if not yt_format:
@@ -751,25 +749,18 @@ class VideoInfo(object):
         return stream_list
 
     def generate_mpd(self, video_id, adaptive_fmts, duration, cipher):
-        basepath = 'special://temp/plugin.video.youtube/'
-        if not make_dirs(basepath):
-            self._context.log_debug('Failed to create directories: %s' % basepath)
-            return None
-        ipaddress = self._context.get_settings().httpd_listen()
-        if ipaddress == '0.0.0.0':
-            ipaddress = '127.0.0.1'
         supported_mime_types = ['audio/mp4', 'video/mp4']
         fmts_list = adaptive_fmts.split(',')
         data = {}
         for item in fmts_list:
-            stream_map = dict(urllib.parse.parse_qsl(item))
+            stream_map = dict(urlparse.parse_qsl(item))
 
             t = stream_map.get('type')
-            t = urllib.parse.unquote(t)
+            t = urllib.unquote(t).decode('utf8')
             t = t.split(';')
             mime = t[0]
             i = stream_map.get('itag')
-            if mime not in data:
+            if not data.has_key(mime):
                 data[mime] = {}
             data[mime][i] = {}
 
@@ -785,7 +776,7 @@ class VideoInfo(object):
             data[mime][i]['bandwidth'] = stream_map.get('bitrate')
             data[mime][i]['frameRate'] = stream_map.get('fps')
 
-            url = urllib.parse.unquote(stream_map.get('url'))
+            url = urllib.unquote(stream_map.get('url')).decode('utf8')
 
             if 'sig' in stream_map:
                 url += '&signature=%s' % stream_map['sig']
@@ -833,14 +824,11 @@ class VideoInfo(object):
                 n = n + 1
         out += '\t</Period>\n</MPD>\n'
 
-        filepath = '{base_path}{video_id}.mpd'.format(base_path=basepath, video_id=video_id)
+        filepath = 'special://temp/temp/{video_id}.mpd'.format(video_id=video_id)
         try:
             f = xbmcvfs.File(filepath, 'w')
-            try:
-                result = f.write(out.encode('utf-8'))
-            except TypeError:
-                result = f.write(str(out))
+            f.write(out.encode('utf-8'))
             f.close()
-            return 'http://{ipaddress}:{port}/{video_id}.mpd'.format(ipaddress=ipaddress, port=self._context.get_settings().httpd_port(), video_id=video_id)
+            return 'http://127.0.0.1:{port}/{video_id}.mpd'.format(port=self._context.get_settings().dash_proxy_port(), video_id=video_id)
         except:
             return None

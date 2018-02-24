@@ -22,7 +22,6 @@ def _process_list_response(provider, context, json_data):
         return result
 
     incognito = str(context.get_param('incognito', False)).lower() == 'true'
-    addon_id = context.get_param('addon_id', '')
 
     for yt_item in yt_items:
         yt_kind = yt_item.get('kind', '')
@@ -34,8 +33,6 @@ def _process_list_response(provider, context, json_data):
             item_params = {'video_id': video_id}
             if incognito:
                 item_params.update({'incognito': incognito})
-            if addon_id:
-                item_params.update({'addon_id': addon_id})
             item_uri = context.create_uri(['play'], item_params)
             video_item = items.VideoItem(title, item_uri, image=image)
             if incognito:
@@ -51,8 +48,6 @@ def _process_list_response(provider, context, json_data):
             item_params = {}
             if incognito:
                 item_params.update({'incognito': incognito})
-            if addon_id:
-                item_params.update({'addon_id': addon_id})
             item_uri = context.create_uri(['channel', channel_id], item_params)
             channel_item = items.DirectoryItem(title, item_uri, image=image)
             channel_item.set_fanart(provider.get_fanart(context))
@@ -71,8 +66,6 @@ def _process_list_response(provider, context, json_data):
             item_params = {'guide_id': guide_id}
             if incognito:
                 item_params.update({'incognito': incognito})
-            if addon_id:
-                item_params.update({'addon_id': addon_id})
             item_uri = context.create_uri(['special', 'browse_channels'], item_params)
             guide_item = items.DirectoryItem(title, item_uri)
             guide_item.set_fanart(provider.get_fanart(context))
@@ -84,8 +77,6 @@ def _process_list_response(provider, context, json_data):
             item_params = {}
             if incognito:
                 item_params.update({'incognito': incognito})
-            if addon_id:
-                item_params.update({'addon_id': addon_id})
             item_uri = context.create_uri(['channel', channel_id], item_params)
             channel_item = items.DirectoryItem(snippet['title'], item_uri, image=image)
             channel_item.set_fanart(provider.get_fanart(context))
@@ -109,8 +100,6 @@ def _process_list_response(provider, context, json_data):
             item_params = {}
             if incognito:
                 item_params.update({'incognito': incognito})
-            if addon_id:
-                item_params.update({'addon_id': addon_id})
             item_uri = context.create_uri(['channel', channel_id, 'playlist', playlist_id], item_params)
             playlist_item = items.DirectoryItem(title, item_uri, image=image)
             playlist_item.set_fanart(provider.get_fanart(context))
@@ -128,8 +117,6 @@ def _process_list_response(provider, context, json_data):
             item_params = {'video_id': video_id}
             if incognito:
                 item_params.update({'incognito': incognito})
-            if addon_id:
-                item_params.update({'addon_id': addon_id})
             item_uri = context.create_uri(['play'], item_params)
             video_item = items.VideoItem(title, item_uri, image=image)
             if incognito:
@@ -157,8 +144,6 @@ def _process_list_response(provider, context, json_data):
             item_params = {'video_id': video_id}
             if incognito:
                 item_params.update({'incognito': incognito})
-            if addon_id:
-                item_params.update({'addon_id': addon_id})
             item_uri = context.create_uri(['play'], item_params)
             video_item = items.VideoItem(title, item_uri, image=image)
             if incognito:
@@ -178,8 +163,6 @@ def _process_list_response(provider, context, json_data):
                 item_params = {'video_id': video_id}
                 if incognito:
                     item_params.update({'incognito': incognito})
-                if addon_id:
-                    item_params.update({'addon_id': addon_id})
                 item_uri = context.create_uri(['play'], item_params)
                 video_item = items.VideoItem(title, item_uri, image=image)
                 if incognito:
@@ -202,8 +185,6 @@ def _process_list_response(provider, context, json_data):
                 item_params = {}
                 if incognito:
                     item_params.update({'incognito': incognito})
-                if addon_id:
-                    item_params.update({'addon_id': addon_id})
                 item_uri = context.create_uri(['channel', channel_id, 'playlist', playlist_id], item_params)
                 playlist_item = items.DirectoryItem(title, item_uri, image=image)
                 playlist_item.set_fanart(provider.get_fanart(context))
@@ -217,8 +198,6 @@ def _process_list_response(provider, context, json_data):
                 item_params = {}
                 if incognito:
                     item_params.update({'incognito': incognito})
-                if addon_id:
-                    item_params.update({'addon_id': addon_id})
                 item_uri = context.create_uri(['channel', channel_id], item_params)
                 channel_item = items.DirectoryItem(title, item_uri, image=image)
                 channel_item.set_fanart(provider.get_fanart(context))
