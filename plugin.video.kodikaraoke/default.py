@@ -254,16 +254,14 @@ def KaraokeSource(url):
     
   
 def CATEGORIES():  
-        addDir('[COLOR '+newfont+']'+'Lite[/COLOR] Karaoke','url',19,art+'Main/free.png','none',1)
-        #addDir('[COLOR '+newfont+']'+'Pro[/COLOR] Karaoke','url',20,art+'Main/pro.png','none',1)
-        #addDir('[COLOR '+newfont+']'+'Favourites[/COLOR]','url',2,art+'Main/pro.png','none',1)
-        setView('movies', 'MAIN')
+        freeyoutube('url')
 
 
         
             
 def freeyoutube(url):
-        addDir('[COLOR '+newfont+']'+'Search[/COLOR]-[COLOR '+newfont+']'+'F[/COLOR]ree Karaoke','url',5003,art+'Main/Search.png','none',1)
+        addDir('[COLOR '+newfont+']'+'Visit[/COLOR] [COLOR lime]>>> [/COLOR][COLOR orange]kodikaraoke.com[/COLOR] [COLOR lime]<<< [/COLOR][COLOR '+newfont+']'+'for pro features[/COLOR]','url',15,art+'Main/favorites.png','',1)
+        addDir('[COLOR '+newfont+']'+'Search[/COLOR]-[COLOR '+newfont+']'+'L[/COLOR]ite Version','url',5003,art+'Main/Search.png','none',1)
         if ADDON.getSetting('downloads') == 'true':
             addDir('[COLOR '+newfont+']'+'D[/COLOR]ownloads','url',15,art+'Main/favorites.png','',1)
         addDir('[COLOR '+newfont+']'+'Most[/COLOR] Popular','http://www.sunflykaraoke.com/tracks?dir=asc&limit=200&order=popular',7,art+'AtoZ/P.png','none',1)
@@ -366,7 +364,7 @@ def FirstSearchDir(name):
 
     else:
         mode=3
-        addDir('[COLOR '+newfont+']'+'Search[/COLOR]-[COLOR '+newfont+']'+'F[/COLOR]ree Karaoke','url',3,art+'Main/Search.png','none',1)
+        addDir('[COLOR '+newfont+']'+'Search[/COLOR]-[COLOR '+newfont+']'+'L[/COLOR]ite Version','url',3,art+'Main/Search.png','none',1)
         
     favs = ADDON.getSetting('favs').split(',')
     for title in favs:
