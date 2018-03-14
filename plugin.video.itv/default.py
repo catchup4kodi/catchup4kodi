@@ -254,6 +254,7 @@ def BESTOFEPS(name,url):
                 addDir(name,url,3,'',isFolder=False)
         
 def SHOWS(url):
+        
     if __settings__.getSetting('proxy_use') == 'true':
         proxy_server = None
         proxy_type_id = 0
@@ -287,17 +288,23 @@ def SHOWS(url):
         try:
             linkurl= re.compile('href="(.+?)"').findall (p)[0]
             #print linkurl
-            image= re.compile('srcset="(.+?)"').findall (p)[0].replace('w=304&h=174','w=800&h=450')
+            image= re.compile('srcset="(.+?)"').findall (p)[0]
+            if '?' in image:
+                image=image.split('?')[0] +'?w=512&h=288'
             #print image
             name= re.compile('"tout__title complex-link__target theme__target">(.+?)</h3',re.DOTALL).findall (p)[0].strip()
             #print name
             episodes = re.compile('"tout__meta theme__meta">(.+?)</p',re.DOTALL).findall (p)[0].strip()
+            if 'mins' in episodes:
+               episodes = re.compile('>(.+?)</',re.DOTALL).findall (episodes)[0].strip() 
             #print episodes
-            if 'day left' in episodes or 'days left' in episodes :
-                addDir2(name+' - '+episodes,linkurl,3,'', '',image,'',isFolder=False)
+            if 'day left' in episodes or 'days left' in episodes or episodes=='1 episode' or 'mins' in episodes:
+                if not 'mins' in episodes:
+                    linkurl = linkurl+'##'
+                addDir2(name+' - [COLOR orange]%s[/COLOR]'%episodes,linkurl,3,'', '',image,'',isFolder=False)
             else:
                 if not 'no episodes' in episodes.lower():
-                    addDir(name+' - '+episodes,linkurl,2,image)
+                    addDir(name+' - [COLOR orange]%s[/COLOR]'%episodes,linkurl,2,image)
         except:pass        
     setView('tvshows', 'show') 
             
@@ -374,7 +381,7 @@ def parse_Date(date_string,format,thestrip):
     return DATE    
     
 def EPS(name,url):
-    xbmc.log(url)
+
     if __settings__.getSetting('proxy_use') == 'true':
         proxy_server = None
         proxy_type_id = 0
@@ -412,8 +419,9 @@ def EPS(name,url):
         try:
             linkurl= re.compile('href="(.+?)"').findall (p)[0]
             #print linkurl
-            image= re.compile('srcset="(.+?)"').findall (p)[0].replace('w=304&h=174','w=800&h=450')
-            #print image
+            image= re.compile('srcset="(.+?)"').findall (p)[0]
+            if '?' in image:
+                image=image.split('?')[0] +'?w=512&h=288'
             name= re.compile('"tout__title complex-link__target theme__target.+?>(.+?)</h',re.DOTALL).findall (p)[0].strip()
             
             if 'datetime' in name:
@@ -434,6 +442,7 @@ def EPS(name,url):
             
             if ADDDATE not in uniques:
                 uniques.append(ADDDATE)
+                #xbmc.log(str(linkurl))
                 addDir2(NAME + ' - ' + ADDDATE,linkurl,3,date, name,image,description,isFolder=False)
         except:pass  
                                 
@@ -490,8 +499,18 @@ def getip():
 
 
 def HLS(url,iconimage):
-
-
+    #xbmc.log(str(url))  
+    if url.endswith('##'):
+        url=url.split('##')[0]
+        if ADDON.getSetting('proxy')=='false':
+            buf = OPEN_URL(url)
+        else:
+            buf = OPEN_URL_PROXY(url)
+            
+        link=buf.split('data-episode-current')[1]
+        url=re.compile('href="(.+?)"').findall(link)[0]
+    
+    #xbmc.log(str(url))            
     ENDING=''
     
     if ADDON.getSetting('proxy')=='false':
@@ -525,14 +544,18 @@ def HLS(url,iconimage):
     req.add_header('Referer',url)
 
 
-    data={"user":{"itvUserId":"","entitlements":[],"token":""},"device":{"manufacturer":"Apple","model":"iPhone","os":{"name":"iPad OS","version":"9.3","type":"ios"}},"client":{"version":"4.1","id":"browser"},"variantAvailability":{"featureset":{"min":["hls","aes"],"max":["hls","aes"]},"platformTag":"mobile"}}
+    data={"user":{"itvUserId":"","entitlements":[],"token":""},"device":{"manufacturer":"Apple","model":"iPhone","os":{"name":"iPad OS","version":"11.2.5","type":"ios"}},"client":{"version":"4.1","id":"browser"},"variantAvailability":{"featureset":{"min":["hls","aes"],"max":["hls","aes"]},"platformTag":"mobile"}}
 
     try:
         content = urllib2.urlopen(req, json.dumps(data)).read()
     except:
+        
         dialog = xbmcgui.Dialog()
-        dialog.ok('ITV Player', 'Ooops Seems Your Uk IP Adress','[COLOR green]%s[/COLOR] Is Out Of Date' %IP, 'Gonna Grab New One Now')
-        import grabnewip
+        if ADDON.getSetting('proxy')=='true':
+            dialog.ok('ITV Player', 'Ooops Seems Your Uk IP Adress','[COLOR green]%s[/COLOR] Is Out Of Date' %IP, 'Gonna Grab New One Now')
+            import grabnewip
+        else:
+            dialog.ok('ITV Player', '','Not Available', '')
         return ''
 
 
@@ -879,13 +902,15 @@ def addLink(name,url):
         return ok
 
 def addDir(name,url,mode,iconimage,plot='',isFolder=True):
+    
         try:
-            PID = iconimage.split('productionId=')[1]
+            PID = iconimage.split('episode/')[1].split('?')[0]
         except:pass    
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&iconimage="+urllib.quote_plus(iconimage)
         ok=True
         liz=xbmcgui.ListItem(name,iconImage="DefaultVideo.png", thumbnailImage=iconimage)
         liz.setInfo( type="Video", infoLabels={ "Title": name, "Plot": plot,'Premiered' : '2012-01-01','Episode' : '7-1' } )
+        liz.setProperty('Fanart_Image', iconimage.replace('w=512&h=288','w=1280&h=720'))
         menu=[]
         if mode == 2:
             menu.append(('[COLOR yellow]Add To Favourites[/COLOR]','XBMC.RunPlugin(%s?mode=13&url=%s&name=%s&iconimage=%s)'% (sys.argv[0],url,name,PID)))
@@ -904,6 +929,7 @@ def addDir2(name,url,mode,date, episode,iconimage,plot='',isFolder=True):
         ok=True
         liz=xbmcgui.ListItem(name,iconImage="DefaultVideo.png", thumbnailImage=iconimage)
         liz.setInfo( type="Video", infoLabels={ "Title": name, "Plot": plot,'Premiered' : date,'Episode' : episode } )
+        liz.setProperty('Fanart_Image', iconimage.replace('w=512&h=288','w=1280&h=720'))
         menu = []
         if isFolder==False:
             liz.setProperty("IsPlayable","true")        
