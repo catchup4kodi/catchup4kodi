@@ -114,41 +114,10 @@ def download_subtitles(url, offset):
         fw.write("1\n0:00:00,001 --> 0:01:00,001\nNo subtitles available\n\n")
         fw.close() 
         return outfile
-    txt = httpget(url)
-    try:
-        txt = txt.decode("utf-16")
-    except UnicodeDecodeError:
-        txt = txt[:-1].decode("utf-16")
-    txt = txt.encode('latin-1')
-    txt = re.sub("<br/>"," ",txt)
-    #print "SUBS %s" % txt
-    p= re.compile('^\s*<p.*?begin=\"(.*?)\.([0-9]+)\"\s+.*?end=\"(.*?)\.([0-9]+)\"\s*>(.*?)</p>')
-    i=0
-    prev = None
+    txt = OPEN_URL(url)
 
-    entry = None
-    for line in txt.splitlines():
-        subtitles1 = re.findall('<p.*?begin="(...........)" end="(...........)".*?">(.*?)</p>',line)
-        if subtitles1:
-            for start_time, end_time, text in subtitles1:
-                r = re.compile('<[^>]*>')
-                text = r.sub('',text)
-                start_hours = re.findall('(..):..:..:..',start_time)
-                start_mins = re.findall('..:(..):..:..', start_time)
-                start_secs = re.findall('..:..:(..):..', start_time)
-                start_msecs = re.findall('..:..:..:(..)',start_time)
-#               start_mil = start_msecs +'0'
-                end_hours = re.findall('(..):..:..:..',end_time)
-                end_mins = re.findall('..:(..):..:..', end_time)
-                end_secs = re.findall('..:..:(..):..', end_time)
-                end_msecs = re.findall('..:..:..:(..)',end_time)
-#               end_mil = end_msecs +'0'
-                entry = "%d\n%s:%s:%s,%s --> %s:%s:%s,%s\n%s\n\n" % (i, start_hours[0], start_mins[0], start_secs[0], start_msecs[0], end_hours[0], end_mins[0], end_secs[0], end_msecs[0], text)
-                i=i+1
-                #print "ENTRY" + entry
-        if entry: 
-            fw.write(entry)
-    
+
+    fw.write(txt)
     fw.close()    
     return outfile
 
@@ -544,7 +513,9 @@ def HLS(url,iconimage):
     req.add_header('Referer',url)
 
 
-    data={"user":{"itvUserId":"","entitlements":[],"token":""},"device":{"manufacturer":"Apple","model":"iPhone","os":{"name":"iPad OS","version":"11.2.5","type":"ios"}},"client":{"version":"4.1","id":"browser"},"variantAvailability":{"featureset":{"min":["hls","aes"],"max":["hls","aes"]},"platformTag":"mobile"}}
+    #data  = {"user":{"itvUserId":"","entitlements":[],"token":""},"device":{"manufacturer":"Apple","model":"iPhone","os":{"name":"iPad OS","version":"11.2.5","type":"ios"}},"client":{"version":"4.1","id":"browser"},"variantAvailability":{"featureset":{"min":["hls","aes"],"max":["hls","aes"]},"platformTag":"mobile"}}
+    data  = {"user": {"itvUserId": "", "entitlements": [], "token": ""}, "device": {"manufacturer": "Safari", "model": "5", "os": {"name": "Windows NT", "version": "6.1", "type": "desktop"}}, "client": {"version": "4.1", "id": "browser"}, "variantAvailability": {"featureset": {"min": ["hls", "aes", "outband-webvtt"], "max": ["hls", "aes", "outband-webvtt"]}, "platformTag": "dotcom"}}
+
 
     try:
         content = urllib2.urlopen(req, json.dumps(data)).read()
@@ -564,13 +535,23 @@ def HLS(url,iconimage):
 
     BEG = link['Playlist']['Video']['Base']
     bb= link['Playlist']['Video']['MediaFiles']
+    SUBLINK = link['Playlist']['Video']['Subtitles'][0]['Href']
 
     for k in bb:
         END = bb[0]['Href']
 
-                        
+    if __settings__.getSetting('subtitles_control') == 'true':
+        subtitles_file = download_subtitles(SUBLINK, '')
+        print "Subtitles at ", subtitles_file
+        there_are_subtitles=1
+        
     STREAM =  BEG+END
-    liz = xbmcgui.ListItem(TITLE, iconImage='DefaultVideo.png', thumbnailImage=iconimage)      
+    
+    liz = xbmcgui.ListItem(TITLE, iconImage='DefaultVideo.png', thumbnailImage=iconimage)
+    try:
+        if there_are_subtitles == 1:
+            liz.setSubtitles([subtitles_file])
+    except:pass     
     liz.setInfo(type='Video', infoLabels={'Title':TITLE})
     liz.setProperty("IsPlayable","true")
     liz.setPath(STREAM+ENDING)
@@ -579,9 +560,9 @@ def HLS(url,iconimage):
     
 def VIDEO(url,iconimage):
 
-    if ADDON.getSetting('hls')=='true':
-        return HLS(url,iconimage)
-    if __settings__.getSetting('proxy_use') == 'true':
+    #if ADDON.getSetting('hls')=='true':
+    return HLS(url,iconimage)
+    '''if __settings__.getSetting('proxy_use') == 'true':
         proxy_server = None
         proxy_type_id = 0
         proxy_port = 8080
@@ -757,7 +738,7 @@ def VIDEO(url,iconimage):
 
     except:
         dialog = xbmcgui.Dialog()
-        dialog.ok("ITV Player", "Sorry Cannot Resolve This Stream", "")
+        dialog.ok("ITV Player", "Sorry Cannot Resolve This Stream", "")'''
 
                 
                 
