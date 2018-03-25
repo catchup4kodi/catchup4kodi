@@ -535,15 +535,21 @@ def HLS(url,iconimage):
 
     BEG = link['Playlist']['Video']['Base']
     bb= link['Playlist']['Video']['MediaFiles']
-    SUBLINK = link['Playlist']['Video']['Subtitles'][0]['Href']
-
+    try:
+        SUBLINK = link['Playlist']['Video']['Subtitles'][0]['Href']
+        subtitles_exist = 1
+    except:
+        subtitles_exist = 0
+        there_are_subtitles=0
+        
     for k in bb:
         END = bb[0]['Href']
 
     if __settings__.getSetting('subtitles_control') == 'true':
-        subtitles_file = download_subtitles(SUBLINK, '')
-        print "Subtitles at ", subtitles_file
-        there_are_subtitles=1
+        if subtitles_exist == 1:
+            subtitles_file = download_subtitles(SUBLINK, '')
+            print "Subtitles at ", subtitles_file
+            there_are_subtitles=1
         
     STREAM =  BEG+END
     
