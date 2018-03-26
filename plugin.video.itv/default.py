@@ -42,46 +42,13 @@ if not os.path.isdir(SUBTITLES_DIR):
 if not os.path.isdir(IMAGE_DIR):
     os.makedirs(IMAGE_DIR)
 
-def get_proxy():
-    proxy_server = None
-    proxy_type_id = 0
-    proxy_port = 8080
-    proxy_user = None
-    proxy_pass = None
-    try:
-        proxy_server = __settings__.getSetting('proxy_server')
-        proxy_type_id = __settings__.getSetting('proxy_type')
-        proxy_port = int(__settings__.getSetting('proxy_port'))
-        proxy_user = __settings__.getSetting('proxy_user')
-        proxy_pass = __settings__.getSetting('proxy_pass')
-        
-    except:
-        pass
 
-    if   proxy_type_id == '0': proxy_type = socks.PROXY_TYPE_HTTP_NO_TUNNEL
-    elif proxy_type_id == '1': proxy_type = socks.PROXY_TYPE_HTTP
-    elif proxy_type_id == '2': proxy_type = socks.PROXY_TYPE_SOCKS4
-    elif proxy_type_id == '3': proxy_type = socks.PROXY_TYPE_SOCKS5
-
-    proxy_dns = True
-    
-    return (proxy_type, proxy_server, proxy_port, proxy_dns, proxy_user, proxy_pass)
 
 def get_httplib():
-    http = None
-    try:
-        if __settings__.getSetting('proxy_use') == 'true':
-            (proxy_type, proxy_server, proxy_port, proxy_dns, proxy_user, proxy_pass) = get_proxy()
-            logging.info("Using proxy: type %i rdns: %i server: %s port: %s user: %s pass: %s", proxy_type, proxy_dns, proxy_server, proxy_port, "***", "***")
-            http = httplib2.Http(proxy_info = httplib2.ProxyInfo(proxy_type, proxy_server, proxy_port, proxy_dns, proxy_user, proxy_pass))
-        else:
-          logging.info("No Proxy\n")
-          http = httplib2.Http()
-    except:
-        raise
-        logging.error('Failed to initialize httplib2 module')
+ 
 
-    return http
+
+    return httplib2.Http()
 
 http = get_httplib()
 
@@ -104,7 +71,7 @@ def httpget(url):
     return data
     
     
-def download_subtitles(url, offset):
+def download_subtitles_HLS(url, offset):
 
     logging.info('subtitles at =%s' % url)
     outfile = os.path.join(SUBTITLES_DIR, 'itv.srt')
@@ -121,6 +88,57 @@ def download_subtitles(url, offset):
     fw.close()    
     return outfile
 
+
+def download_subtitles(url, offset):
+
+    logging.info('subtitles at =%s' % url)
+    outfile = os.path.join(SUBTITLES_DIR, 'itv.srt')
+    fw = open(outfile, 'w')
+    
+    if not url:
+        fw.write("1\n0:00:00,001 --> 0:01:00,001\nNo subtitles available\n\n")
+        fw.close() 
+        return outfile
+    txt = httpget(url)
+    try:
+        txt = txt.decode("utf-16")
+    except UnicodeDecodeError:
+        txt = txt[:-1].decode("utf-16")
+    txt = txt.encode('latin-1')
+    txt = re.sub("<br/>"," ",txt)
+    #print "SUBS %s" % txt
+    p= re.compile('^\s*<p.*?begin=\"(.*?)\.([0-9]+)\"\s+.*?end=\"(.*?)\.([0-9]+)\"\s*>(.*?)</p>')
+    i=0
+    prev = None
+
+    entry = None
+    for line in txt.splitlines():
+        subtitles1 = re.findall('<p.*?begin="(...........)" end="(...........)".*?">(.*?)</p>',line)
+        if subtitles1:
+            for start_time, end_time, text in subtitles1:
+                r = re.compile('<[^>]*>')
+                text = r.sub('',text)
+                start_hours = re.findall('(..):..:..:..',start_time)
+                start_mins = re.findall('..:(..):..:..', start_time)
+                start_secs = re.findall('..:..:(..):..', start_time)
+                start_msecs = re.findall('..:..:..:(..)',start_time)
+#               start_mil = start_msecs +'0'
+                end_hours = re.findall('(..):..:..:..',end_time)
+                end_mins = re.findall('..:(..):..:..', end_time)
+                end_secs = re.findall('..:..:(..):..', end_time)
+                end_msecs = re.findall('..:..:..:(..)',end_time)
+#               end_mil = end_msecs +'0'
+                entry = "%d\n%s:%s:%s,%s --> %s:%s:%s,%s\n%s\n\n" % (i, start_hours[0], start_mins[0], start_secs[0], start_msecs[0], end_hours[0], end_mins[0], end_secs[0], end_msecs[0], text)
+                i=i+1
+                #print "ENTRY" + entry
+        if entry: 
+            fw.write(entry)
+    
+    fw.close()    
+    return outfile
+
+
+
 def CATS():
         if os.path.exists(favorites)==True:
             addDir('[COLOR yellow]Favorites[/COLOR]','url',12,'')
@@ -135,7 +153,7 @@ def LIVE():
     addDir('ITV2','sim2',7,foricon+'art/2.png',isFolder=False)#sim2   https://itv2liveios-i.akamaihd.net/hls/live/203495/itvlive/ITV2MN/master.m3u8
     addDir('ITV3','sim3',7,foricon+'art/3.png',isFolder=False)#sim3   https://itv3liveios-i.akamaihd.net/hls/live/207262/itvlive/ITV3MN/master.m3u8
     addDir('ITV4','sim4',7,foricon+'art/4.png',isFolder=False)#sim4   https://itv4liveios-i.akamaihd.net/hls/live/207266/itvlive/ITV4MN/master.m3u8
-    #addDir('ITVBe','https://itvbeliveios-i.akamaihd.net/hls/live/219078/itvlive/ITVBE/master.m3u8',7,foricon+'art/8.jpg',isFolder=False)#    https://itvbeliveios-i.akamaihd.net/hls/live/219078/itvlive/ITVBE/master.m3u8
+    addDir('ITVBe','https://itvbeliveios-i.akamaihd.net/hls/live/219078/itvlive/ITVBE/master.m3u8',7,foricon+'art/8.jpg',isFolder=False)#    https://itvbeliveios-i.akamaihd.net/hls/live/219078/itvlive/ITVBE/master.m3u8
     addDir('CITV','sim7',7,foricon+'art/7.png',isFolder=False)#sim7  https://citvliveios-i.akamaihd.net/hls/live/207267/itvlive/CITVMN/master.m3u8
     addDir('Events/Sport','https://itvliveevents-i.akamaihd.net/hls/live/203496/itvliveevents/ITVEVTMN/master.m3u8',7,foricon+'art/9.jpg',isFolder=False)#sim9
 
@@ -158,6 +176,7 @@ def CATEGORIES():
         
         
 def PLAY_STREAM(name,url,iconimage):
+    ENDING=''
     quality = int(__settings__.getSetting('live_stream'))
     
     if len(url)>4:
@@ -167,6 +186,16 @@ def PLAY_STREAM(name,url,iconimage):
     else:    
         SoapMessage=TEMPLATE(url,'itv'+url.replace('sim',''))
         headers={'Content-Length':'%d'%len(SoapMessage),'Content-Type':'text/xml; charset=utf-8','Host':'mercury.itv.com','Origin':'http://www.itv.com','Referer':'http://www.itv.com/Mercury/Mercury_VideoPlayer.swf?v=null','SOAPAction':"http://tempuri.org/PlaylistService/GetPlaylist",'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36'}
+
+        if ADDON.getSetting('proxy')=='true':
+            if ADDON.getSetting('custom_ip')=='':
+                IP=getip()
+            else:
+                IP=ADDON.getSetting('custom_ip')
+            headers={"X-Forwarded-For":IP,'Content-Length':'%d'%len(SoapMessage),'Content-Type':'text/xml; charset=utf-8','Host':'mercury.itv.com','Origin':'http://www.itv.com','Referer':'http://www.itv.com/Mercury/Mercury_VideoPlayer.swf?v=null','SOAPAction':"http://tempuri.org/PlaylistService/GetPlaylist",'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36'}
+
+            ENDING='|X-Forwarded-For='+IP
+
         res, response = http.request("http://mercury.itv.com/PlaylistService.svc", 'POST', headers=headers, body=SoapMessage)
 
         rtmp=re.compile('<MediaFiles base="(.+?)"').findall(response)[0]
@@ -184,7 +213,7 @@ def PLAY_STREAM(name,url,iconimage):
     liz = xbmcgui.ListItem(name, iconImage='DefaultVideo.png', thumbnailImage=iconimage)
     liz.setInfo(type='Video', infoLabels={'Title':name})
     liz.setProperty("IsPlayable","true")
-    liz.setPath(STREAM)
+    liz.setPath(STREAM+ENDING)
     xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, liz)
 
     
@@ -547,7 +576,7 @@ def HLS(url,iconimage):
 
     if __settings__.getSetting('subtitles_control') == 'true':
         if subtitles_exist == 1:
-            subtitles_file = download_subtitles(SUBLINK, '')
+            subtitles_file = download_subtitles_HLS(SUBLINK, '')
             print "Subtitles at ", subtitles_file
             there_are_subtitles=1
         
@@ -565,35 +594,33 @@ def HLS(url,iconimage):
 
     
 def VIDEO(url,iconimage):
+    #xbmc.log(url)
+    if ADDON.getSetting('proxy')=='false':
+        if ADDON.getSetting('hls')=='true':
+            return HLS(url,iconimage)
 
-    #if ADDON.getSetting('hls')=='true':
-    return HLS(url,iconimage)
-    '''if __settings__.getSetting('proxy_use') == 'true':
-        proxy_server = None
-        proxy_type_id = 0
-        proxy_port = 8080
-        proxy_user = None
-        proxy_pass = None
-        try:
-            proxy_server = __settings__.getSetting('proxy_server')
-            proxy_type_id = __settings__.getSetting('proxy_type')
-            proxy_port = __settings__.getSetting('proxy_port')
-            proxy_user = __settings__.getSetting('proxy_user')
-            proxy_pass = __settings__.getSetting('proxy_pass')
-        except:
-            pass
-        passmgr = urllib2.HTTPPasswordMgrWithDefaultRealm()
-        proxy_details = 'http://' + proxy_server + ':' + proxy_port
-        passmgr.add_password(None, proxy_details, proxy_user, proxy_pass) 
-        authinfo = urllib2.ProxyBasicAuthHandler(passmgr)
-        proxy_support = urllib2.ProxyHandler({"http" : proxy_details})
+    if url.endswith('##'):
+        url=url.split('##')[0]
+        if ADDON.getSetting('proxy')=='false':
+            buf = OPEN_URL(url)
+        else:
+            buf = OPEN_URL_PROXY(url)
+            
+        link=buf.split('data-episode-current')[1]
+        url=re.compile('href="(.+?)"').findall(link)[0]
 
-        opener = urllib2.build_opener(proxy_support, authinfo)
-        urllib2.install_opener(opener)
-    pDialog = xbmcgui.DialogProgress()
-    pDialog.create('ITV Stream', 'Loading stream info')
-    productionID = iconimage.split('productionId=')[1]
-    productionID = urllib.unquote(productionID)
+        
+    if ADDON.getSetting('proxy')=='false':
+        buf = OPEN_URL(url)
+    else:
+        buf = OPEN_URL_PROXY(url)
+        
+        if ADDON.getSetting('custom_ip')=='':
+            IP=getip()
+        else:
+            IP=ADDON.getSetting('custom_ip')
+
+    productionID=re.compile('data-video-production-id="(.+?)"').findall(buf)[0]
     
     SM_TEMPLATE = """<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/" xmlns:itv="http://schemas.datacontract.org/2004/07/Itv.BB.Mercury.Common.Types" xmlns:com="http://schemas.itv.com/2009/05/Common">
       <soapenv:Header/>
@@ -654,6 +681,7 @@ def VIDEO(url,iconimage):
     else:
         headers = {"Host":"mercury.itv.com","Referer":"http://www.itv.com/mercury/Mercury_VideoPlayer.swf?v=1.6.479/[[DYNAMIC]]/2","Content-type":"text/xml; charset=utf-8","Content-length":"%d" % len(SoapMessage),"SOAPAction":"http://tempuri.org/PlaylistService/GetPlaylist"}
         ENDING=''
+        
     response, res = http.request("http://mercury.itv.com/PlaylistService.svc", 'POST', headers=headers, body=SoapMessage)
     title1= res.split("<ProgrammeTitle>")
 
@@ -744,7 +772,7 @@ def VIDEO(url,iconimage):
 
     except:
         dialog = xbmcgui.Dialog()
-        dialog.ok("ITV Player", "Sorry Cannot Resolve This Stream", "")'''
+        dialog.ok("ITV Player", "Sorry Cannot Resolve This Stream", "")
 
                 
                 
