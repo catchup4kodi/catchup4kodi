@@ -261,7 +261,7 @@
 	</extension>
 </addon>
 
-<addon id="script.kodilogemail" name=".[COLOR blue]K[/COLOR]odi Log Emailer" version="0.1.0" provider-name="LittleWiz">
+<addon id="script.kodilogemail" name=".[COLOR blue]K[/COLOR]odi Log Emailer" version="0.1.1" provider-name="LittleWiz">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
   </requires>
