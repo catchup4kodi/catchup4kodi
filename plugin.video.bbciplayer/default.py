@@ -642,7 +642,8 @@ def GetPlayable(name,url,iconimage):
                 TITLE='[COLOR green][%s kbps][/COLOR] - [COLOR white]RTMP %s[/COLOR] - %s'%(resolution, supplier.upper(),server.upper())
             else:
                 TITLE='[COLOR red][%s kbps][/COLOR] - [COLOR white]RTMP %s[/COLOR] - %s'%(resolution, supplier.upper(),server.upper())
-            addDir(TITLE + ' : ' + _NAME_,url,200,iconimage,'')
+            if not '.xml' in url:
+                addDir(TITLE + ' : ' + _NAME_,url,200,iconimage,'')
         NEW_URL= "http://open.live.bbc.co.uk/mediaselector/5/select/version/2.0/mediaset/iptv-all/vpid/%s" % vpid
         html = OPEN_URL(NEW_URL,True)
     else:
@@ -676,9 +677,11 @@ def GetPlayable(name,url,iconimage):
 
                 if 'dash' in Format.lower():
                     if xbmc_version >= 16.9:
-                        addDir(TITLE + ' : ' + _NAME_,url,200,iconimage,'')
+                        if not '.xml' in url:
+                            addDir(TITLE + ' : ' + _NAME_,url,200,iconimage,'')
                 else:
-                    addDir(TITLE + ' : ' + _NAME_,url,200,iconimage,'')
+                    if not '.xml' in url:
+                        addDir(TITLE + ' : ' + _NAME_,url,200,iconimage,'')
         except:pass
     xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_VIDEO_TITLE)
 
