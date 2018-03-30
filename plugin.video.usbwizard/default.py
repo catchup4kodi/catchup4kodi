@@ -30,25 +30,25 @@ if zip=='' and ADDON.getSetting('email')=='':
         ADDON.openSettings()
 
 
-def XfinityInstaller():
+def Fusion_Installer():
     path = os.path.join(xbmc.translatePath('special://home'),'userdata', 'sources.xml')
     if not os.path.exists(path):
         f = open(path, mode='w')
-        f.write('<sources><files><source><name>.[COLOR blue]X[/COLOR]finity Installer</name><path pathversion="1">http://xunitytalk.me/xfinity</path></source></files></sources>')
+        f.write('<sources><files><source><name>.Fusion</name><path pathversion="1">http://fusion.tvaddons.co/</path></source></files></sources>')
         f.close()
         return
         
     f   = open(path, mode='r')
     str = f.read()
     f.close()
-    if not'xunitytalk.me/xfinity' in str:
+    if not'fusion.tvaddons.co' in str:
         if '</files>' in str:
-            str = str.replace('</files>','<source><name>.[COLOR blue]X[/COLOR]finity Installer</name><path pathversion="1">http://xunitytalk.me/xfinity</path></source></files>')
+            str = str.replace('</files>','<source><name>.Fusion</name><path pathversion="1">http://fusion.tvaddons.co/</path></source></files>')
             f = open(path, mode='w')
             f.write(str)
             f.close()
         else:
-            str = str.replace('</sources>','<files><source><name>.[COLOR blue]X[/COLOR]finity Installer</name><path pathversion="1">http://xunitytalk.me/xfinity</path></source></files></sources>')
+            str = str.replace('</sources>','<files><source><name>.Fusion</name><path pathversion="1">http://fusion.tvaddons.co/</path></source></files></sources>')
             f = open(path, mode='w')
             f.write(str)
             f.close()
@@ -152,7 +152,7 @@ def RESTORE():
     dp.update(0,"", "Extracting Zip Please Wait")
     extract.all(lib,HOME,dp)
     time.sleep(1)
-    XfinityInstaller()
+    Fusion_Installer()
     xbmc.executebuiltin('UpdateLocalAddons ')    
     xbmc.executebuiltin("UpdateAddonRepos")
     time.sleep(1)
@@ -291,7 +291,7 @@ def RESTORE_ZIP_FILE(name,url):
         extract.all(ZIPFILE,DIR,dp)
         
         time.sleep(1)
-        XfinityInstaller()
+        Fusion_Installer()
         xbmc.executebuiltin('UpdateLocalAddons ')    
         xbmc.executebuiltin("UpdateAddonRepos")
         Kodi17()
@@ -390,30 +390,6 @@ def EmailPass():
     keyboard.doModal()
     if keyboard.isConfirmed():
         return keyboard.getText()
-
-  
-
-
-    
-def DecryptPass():
-    import os, pyaes,hashlib
-    key = hashlib.md5(Numeric()).hexdigest()[:16]
-    aes = pyaes.AESModeOfOperationCTR (key)
-    decrypted = aes.decrypt(ADDON.getSetting('email_pass_1'))
-    return decrypted
-
-
-def EncryptPass(password):
-    import os, pyaes,hashlib
-    key = hashlib.md5(Numeric()).hexdigest()[:16]
-    aes = pyaes.AESModeOfOperationCTR (key)
-    encrypted = aes.encrypt (password)
-    ADDON.setSetting('email_pass_1',encrypted)
-
-
-def ResetPass():   
-    ADDON.setSetting('email_pass_1','')
-    dialog.ok('USB BACKUP/RESTORE','Pass Reset','','')
 
 
     
@@ -641,45 +617,37 @@ def BackupEmail(url):
         for DEPEND in glob.glob(os.path.join(ADDONS,'*.*')):
           
             if not '.zip' in DEPEND:
-                if not 'script.icechannel' in DEPEND:
-                    if not 'istream' in DEPEND:
-                        if not 'plugin.video.nhlgcl' in DEPEND:
-                            if not 'plugin.video.mlbtv' in DEPEND:
-                                if not 'plugin.video.nba' in DEPEND:
-                                    if not 'plugin.video.espn-player' in DEPEND:
-                                        if not 'plugin.video.salts' in DEPEND:
-                                            if not 'exodus' in DEPEND:
-                                                try:dependencies.append(DEPEND.rsplit('\\', 1)[1])
-                                                except:dependencies.append(DEPEND.rsplit('/', 1)[1])
+
+                try:dependencies.append(DEPEND.rsplit('\\', 1)[1])
+                except:dependencies.append(DEPEND.rsplit('/', 1)[1])
 
 
         for THEPLUGIN in dependencies:
-            if not 'icechannel' in THEPLUGIN or not 'istream' in THEPLUGIN:
-                TEMPPATH=xbmc.translatePath(os.path.join(TEMP,THEPLUGIN))
-                TEMPXML =xbmc.translatePath(os.path.join(TEMPPATH,'addon.xml'))
-                if os.path.exists(TEMPPATH)==False:
-                    os.makedirs(TEMPPATH)
-                   
-                a=open(xbmc.translatePath(os.path.join(ADDONS,THEPLUGIN,'addon.xml'))).read()
-                if 'Team Kodi' in a:
-                    try:
-                        os.remove(TEMPPATH)
-                    except:
-                        shutil.rmtree(TEMPPATH)
+            TEMPPATH=xbmc.translatePath(os.path.join(TEMP,THEPLUGIN))
+            TEMPXML =xbmc.translatePath(os.path.join(TEMPPATH,'addon.xml'))
+            if os.path.exists(TEMPPATH)==False:
+                os.makedirs(TEMPPATH)
+               
+            a=open(xbmc.translatePath(os.path.join(ADDONS,THEPLUGIN,'addon.xml'))).read()
+            if 'Team Kodi' in a:
+                try:
+                    os.remove(TEMPPATH)
+                except:
+                    shutil.rmtree(TEMPPATH)
+            else:
+                if 'repository.' in THEPLUGIN:
+                    f = open(TEMPXML, mode='w')
+                    f.write(a)
+                    f.close()
+                    
                 else:
-                    if 'repository.' in THEPLUGIN:
-                        f = open(TEMPXML, mode='w')
-                        f.write(a)
-                        f.close()
-                        
-                    else:
-                        
-                        r='id="%s".+?version.+?"(.+?)"' %THEPLUGIN
-                        match=re.compile(r,re.DOTALL).findall(a)[0]
-                       
-                        f = open(TEMPXML, mode='w')
-                        f.write(a.replace(match,'0.0.1'))
-                        f.close()
+                    
+                    r='id="%s".+?version.+?"(.+?)"' %THEPLUGIN
+                    match=re.compile(r,re.DOTALL).findall(a)[0]
+                   
+                    f = open(TEMPXML, mode='w')
+                    f.write(a.replace(match,'0.0.1'))
+                    f.close()
             
         zipobj = zipfile.ZipFile(ZIPFILE , 'w', zipfile.ZIP_DEFLATED)
         rootlen = len(DIR)
@@ -729,14 +697,11 @@ def BackupEmail(url):
 
                        if not '.js' in file:
                            if not 'guide' in fn:
-                               if not 'exodus' in fn:
-                                   if not 'salts' in fn:
-                                       if not 'specto' in fn: 
-                                           import time
-                                           CUNT= '01/01/1980'
-                                           FILE_DATE=time.strftime('%d/%m/%Y', time.gmtime(os.path.getmtime(fn)))
-                                           if FILE_DATE > CUNT:
-                                               zipobj.write(fn, fn[rootlen:]) 
+                               import time
+                               CUNT= '01/01/1980'
+                               FILE_DATE=time.strftime('%d/%m/%Y', time.gmtime(os.path.getmtime(fn)))
+                               if FILE_DATE > CUNT:
+                                   zipobj.write(fn, fn[rootlen:]) 
     zipobj.close()
     dp.close()
     EmailLog(ZIPFILE)
@@ -759,7 +724,7 @@ def RESTORE_EMAIL_FILE(ZIPFILE):
     extract.all(ZIPFILE,DIR,dp)
     
     time.sleep(1)
-    XfinityInstaller()
+    Fusion_Installer()
     xbmc.executebuiltin('UpdateLocalAddons ')    
     xbmc.executebuiltin("UpdateAddonRepos")
     Kodi17()
