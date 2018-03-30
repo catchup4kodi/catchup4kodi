@@ -1,5 +1,8 @@
 import urllib,urllib2,sys,re,xbmcplugin,xbmcgui,xbmcaddon,xbmc,os
 import HTMLParser
+import net
+
+net=net.Net()
 
 #ee3fa
 ADDON = xbmcaddon.Addon(id='plugin.video.bbciplayer')
@@ -17,9 +20,9 @@ else:
 
 
     
-if 'just' in PROXYBASE:
-    PROXYURL = 'http://www.justproxy.co.uk/index.php?q=%s'
-    PROXYREF = 'http://www.justproxy.co.uk/'
+if 'speedproxy' in PROXYBASE:
+    PROXYURL = 'http://www.speedproxy.co.uk/'
+    PROXYREF = 'http://www.speedproxy.co.uk/'
     
 
 if 'england' in PROXYBASE:
@@ -513,7 +516,7 @@ def GetAutoPlayable(name,url,iconimage):
     uniques=[]
     NEW_URL= "http://open.live.bbc.co.uk/mediaselector/5/select/version/2.0/mediaset/iptv-all/vpid/%s" % vpid
     
-    if ADDON.getSetting('proxy')=='true':
+    if ADDON.getSetting('new_proxy')=='true':
         NEW_URL= "http://open.live.bbc.co.uk/mediaselector/5/select/version/2.0/mediaset/apple-ipad-hls/vpid/%s" % vpid
         html = OPEN_URL(NEW_URL,True)
 
@@ -613,7 +616,7 @@ def GetPlayable(name,url,iconimage):
     uniques=[]
     NEW_URL= "http://open.live.bbc.co.uk/mediaselector/5/select/version/2.0/mediaset/iptv-all/vpid/%s" % vpid
     
-    if ADDON.getSetting('proxy')=='true':
+    if ADDON.getSetting('new_proxy')=='true':
         NEW_URL= "http://open.live.bbc.co.uk/mediaselector/5/select/version/2.0/mediaset/apple-ipad-hls/vpid/%s" % vpid
         html = OPEN_URL(NEW_URL,True)
         match=re.compile('application="(.+?)".+?String="(.+?)".+?identifier="(.+?)".+?protocol="(.+?)".+?server="(.+?)".+?supplier="(.+?)"').findall(html.replace('amp;',''))
@@ -700,25 +703,54 @@ def GetLivePlayable(name,url,iconimage):
 
  
 def OPEN_URL(url,resolve=False):
-    #print url
-    if ADDON.getSetting('proxy')=='false':
-        req = urllib2.Request(url)
+
+    headers = {'User-Agent':'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36'}
+    
+    if ADDON.getSetting('new_proxy')=='false':
+        headers = {'User-Agent':'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36'}
+        
     else:
         if resolve==True:
             import base64
             if 'england' in PROXYREF:
                 url=url.split('//')[1]
-                req = urllib2.Request(PROXYURL + url)
-            else:    
-                req = urllib2.Request(PROXYURL % base64.b64encode(url))
-            req.add_header('Referer', PROXYREF)                
-        else:
-            req = urllib2.Request(url)
-                                      
-    req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-    response = urllib2.urlopen(req)
-    link=response.read()
-    response.close()
+                url=PROXYURL + url
+                headers = {'Referer':PROXYREF,'User-Agent':'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36'}
+
+            else:
+                thedata={'data':url.split('//')[1]}
+
+                data = thedata
+
+                headers={'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+                        'Accept-Encoding':'gzip, deflate',
+                        'Accept-Language':'en-US,en;q=0.9',
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Pragma': 'no-cache',
+                        'Upgrade-Insecure-Requests': '1',
+                        'Host':'www.speedproxy.co.uk',
+                        'Origin':'http://www.speedproxy.co.uk',
+                        'Referer':'http://www.speedproxy.co.uk/',
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36'}
+
+
+
+                grr = net.http_GET('http://www.speedproxy.co.uk',headers=headers).get_headers()
+                for k in grr:
+                    if 'token' in k:
+                        token = 'token='+k.split('token=')[1].split(';')[0]
+
+                headers['Cookie'] = token
+
+
+                link = net.http_POST('http://www.speedproxy.co.uk/?do=search',data,headers=headers).get_url()
+
+            
+        
+    link = net.http_GET(url,headers).content
+                                  
+    
+    
     return link
     
     
