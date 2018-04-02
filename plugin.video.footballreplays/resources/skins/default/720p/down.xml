@@ -59,7 +59,7 @@
               <posy>130</posy>
               <texturefocus colordiffuse="DDFFFFFF" border="5">DialogBack.png</texturefocus>
               <texturenofocus colordiffuse="DDFFFFFF" border="5">DialogBack.png</texturenofocus>
-              <label>Sorry The Source Website May Be Down</label>
+              <label>Sorry The Source is Down</label>
               <width>500</width>
               <height>50</height>
               <align>center</align>

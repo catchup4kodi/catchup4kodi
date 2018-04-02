@@ -31,143 +31,96 @@ if os.path.exists(cookie_path) == False:
         os.makedirs(cookie_path)
         net.save_cookies(cookie_jar)
 
-def CATEGORIES():
-    addDir('Full Matches','url',3,'','1')
-    addDir('Highlights','url',5 ,'','1')
-    addDir('Find a Team','url',4,'','1')
+def CATEGORIES():           
+    addDir('Latest Matches','http://footballfullmatch.com/',3,'','1')
     addDir('Pick a League','url',11,'','1')
+    addDir('Find a Team','url',4,'','1')
     addDir('Upcoming Matches','http://livefootballvideo.com/streaming',12,'','1')
     setView('movies', 'movie-view')
        #setView is setting the automatic view.....first is what section "movies"......second is what you called it in the settings xml
 
-def CATEGORIES2():
-    link=iiNT3LiiCheckURL('http://livefootballvideo.com/fullmatch')
 
+
+
+
+def CATEGORIES2(url):
+
+    
+    link=net.http_GET(url, headers={'User-Agent':'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'}).content
+    
     if link != False:
-        r='<div class="cover"><a href="(.+?)" rel="bookmark" title="(.+?) vs (.+?)".+?<img src="(.+?)".+? longdate" rel=".+?">(.+?)/(.+?)/(.+?)</p>'
-        match=re.compile(r,re.DOTALL).findall(link)
-
-        for url,team_a,team_b,iconimage,month,day,year in match:
-            _date='%s-%s-%s'%(month,day,year)
-            _name = '[COLOR ghostwhite]'+team_a+'[/COLOR]  [COLOR deepskyblue]vs[/COLOR]  [COLOR ghostwhite]'+team_b+'[/COLOR] '+' : '+' '+_date
+        r= '<div class="post-thumb"><a href="(.+?)" title="(.+?) vs (.+?)">\n.+?src="(.+?)"' 
+        #r='<div class="cover"><a href="(.+?)" rel="bookmark" title="(.+?) vs (.+?)".+?<img src="(.+?)".+? longdate" rel=".+?">(.+?)/(.+?)/(.+?)</p>'
+        match=re.compile(r).findall(link)
+        try:cat = re.compile('"cat":"(.+?)"').findall(link)[0]
+        except:cat = re.compile('"cat":(.+?),').findall(link)[0]
+        currentday = re.compile('"currentday":"(.+?)"').findall(link)[0]
+        for url,team_a,team_b,iconimage in match:
+            if '?' in iconimage:
+                    iconimage=iconimage.split('?')[0]
+                    
+            _name = '[COLOR ghostwhite]'+team_a+'[/COLOR]  [COLOR deepskyblue]vs[/COLOR]  [COLOR ghostwhite]'+team_b+'[/COLOR]'
             addDir(_name,url,1,iconimage,'')
-        addDir('[COLOR deepskyblue]Next Page[/COLOR] [COLOR ghostwhite]>>[/COLOR]','url',2,'','1')
-        setView('movies', 'movie-view')
-        #setView is setting the automatic view.....first is what section "movies"......second is what you called it in the settings xml
-
-    else:
-        iiNT3LiiFLAG()
-
-def NEXTPAGE(page):
-    pagenum=int(page) +1
-    link=iiNT3LiiCheckURL('http://livefootballvideo.com/fullmatch/page/'+str(pagenum))
-
-    if link != False:
-        r='<div class="cover"><a href="(.+?)" rel="bookmark" title="(.+?) vs (.+?)">.+?<img src="(.+?)".+?<p class="postmetadata longdate" rel=".+?">(.+?)/(.+?)/(.+?)</p>'
-        match=re.compile(r,re.DOTALL).findall(link)
-        print match
-        for url,team_a,team_b,iconimage,month,day,year in match:
-            _date='%s-%s-%s'%(month,day,year)
-            _name = '[COLOR ghostwhite]'+team_a+'[/COLOR]  [COLOR deepskyblue]vs[/COLOR]  [COLOR ghostwhite]'+team_b+'[/COLOR] '+' : '+' '+_date
-            addDir(_name,url,1,iconimage,'')
-        addDir('[COLOR deepskyblue]Next Page[/COLOR] [COLOR ghostwhite]>>[/COLOR]','url',2,'','1')
+        addDir('[COLOR deepskyblue]Next Page[/COLOR] [COLOR ghostwhite]>>[/COLOR]','url',2,'',cat+'#'+currentday+'#1')
         setView('movies', 'movie-view')
 
     else:
-        iiNT3LiiFLAG()
+        Show_Red_Flag()
 
-def GETLINKS(name,url):#  cause mode is empty in this one it will go back to first directory
+def NEXTPAGE(SPLITME):
 
-    links=OPEN_URL(url)
-    links= links.split("class='heading-more open'><span>")
+    SPLITME = SPLITME.split('#')    
 
-    for link in links:
-        # try:
-            language=link.split('<')[0]
-            if len(language)>1:
-                addDir ('[COLOR green]%s[/COLOR]'%language, url , 200 , '', '' )
+    pagenum = int(SPLITME[2])+1
+    currentday = SPLITME[1]
+    cat = SPLITME[0]
+    
+    data ={'action':'infinite_scroll',
+        'page':'%s' % str(pagenum),
+        'currentday':currentday,
+        'order':'DESC'}
 
-            if "proxy.link=lfv*" in link :
-                import base64
-                import decrypter
-                match = re.compile('proxy\.link=lfv\*(.+?)&').findall(link)
-                match = uniqueList(match)
-                match = [decrypter.decrypter(198,128).decrypt(i,base64.urlsafe_b64decode('Y0ZNSENPOUhQeHdXbkR4cWJQVlU='),'ECB').split('\0')[0] for i in match]
-                print match
-                for url in match:
+    if cat.replace('-','').replace(',','').replace(' ','').isdigit():
+            data['query_args[cat]']=cat
+    else:
+            data['query_args[s]']=cat
+            
+    link=net.http_POST('http://footballfullmatch.com/?infinity=scrolling',data, headers={'User-Agent':'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'}).content.replace('\\','')
 
-                    url = replaceHTMLCodes(url)
-                    if url.startswith('//') : url = 'http:' + url
-                    url = url.encode('utf-8')
-                    _name=url.split('://')[1]
-                    _name=_name.split('/')[0].upper()
-                    addDir( name+' - [COLOR red]%s[/COLOR]'%_name , url , 200 , '' , '' )
-            if "www.youtube.com/embed/" in link :
-                r = 'youtube.com/embed/(.+?)"'
-                match = re.compile(r,re.DOTALL).findall(link)
-                yt= match[0]
-                iconimage = 'http://i.ytimg.com/vi/%s/0.jpg' % yt.replace('?rel=0','')
-                url = 'plugin://plugin.video.youtube/play/?video_id=%s' % yt.replace('?rel=0','')
-                addDir( name+' - [COLOR red]YOUTUBE[/COLOR]' , url , 200 , iconimage , '' )
-            if "dailymotion.com" in link :
-                r = 'src="//www.dailymotion.com/embed/video/(.+?)"'
-                match = re.compile(r,re.DOTALL).findall(link)
+    if link != False:
 
-                for url in match :
-                    addDir ( name+' - [COLOR red]DAILYMOTION[/COLOR]' , url , 200 , GETTHUMB(url), '' )
-            if "streamable.com" in link :
-                # r = 'src="https://streamable.com/s/.+?/(.+?)\?.+?"></iframe>'
-                r = '<iframe src="(.+?)"'
-                match = re.compile(r,re.DOTALL).findall(link)
-                for url in match:
-                    if 'streamable' in url:
-                        addDir ( name+' - [COLOR red]STREAMABLE[/COLOR]' , url , 200 , GETTHUMB(url), '' )
-            if "http://videa" in link :
-                r = 'http://videa.+?v=(.+?)"'
-                match = re.compile(r,re.DOTALL).findall(link)
-                for url in match :
-                    addDir (name+' - [COLOR red]VIDEA[/COLOR]',url,200,'', '' )
+        r= '<div class="post-thumb"><a href="(.+?)" title="(.+?) vs (.+?)">.+?src="(.+?)"' 
+        #r='<div class="cover"><a href="(.+?)" rel="bookmark" title="(.+?) vs (.+?)".+?<img src="(.+?)".+? longdate" rel=".+?">(.+?)/(.+?)/(.+?)</p>'
+        match=re.compile(r,re.DOTALL).findall(link)
 
-            if "rutube.ru" in link :
-                r = 'ttp://rutube.ru/video/embed/(.+?)\?'
-                match = re.compile(r,re.DOTALL).findall(link)
-                print match
-                for url in match :
-                    addDir (name+' - [COLOR red]RUTUBE[/COLOR]',url,200,'', '' )
-            if 'cdn.playwire.com' in link :
-                r = 'data-config="(.+?)"'
-                match = re.compile(r,re.DOTALL).findall(link)
-                for vid in match :
-                    if not 'http' in vid:
-                            vid='http:'+vid
-                    url=vid.replace('zeus.json','manifest.f4m')
-                    addDir (name+' - [COLOR red]PLAYWIRE[/COLOR]',url,200,'', '' )
-            if "vk.com" in link :
-                r = 'vk.com/(.+?)"'
-                match = re.compile(r,re.DOTALL).findall(link)
-                for url in match :
-                    addDir (name+' - [COLOR red]VK.COM[/COLOR]','http://vk.com/'+url,200,'', '' )
-            if "mail.ru" in link :
-                r = 'http://videoapi.my.mail.ru/videos/embed/(.+?)\.html'
-                match = re.compile(r,re.DOTALL).findall(link)
-                for url in match :
-                    addDir (name+' - [COLOR red]MAIL.RU[/COLOR]','http://videoapi.my.mail.ru/videos/%s.json'%url,200,'', '' )
-            if "openload.co" in link :
-                r = 'data-lazy-src="(.+?)"'
-                match = re.compile(r,re.DOTALL).findall(link)
-                for url in match :
-                    addDir (name+' - [COLOR red]OPENLOAD.CO[/COLOR]',url,200,'', '' )
-                r = 'iframe src="(.+?)"'
-                match = re.compile(r,re.DOTALL).findall(link)
-                for url in match :
-                    if 'openload' in url:
-                        addDir (name+' - [COLOR red]OPENLOAD.CO[/COLOR]',url,200,'', '' )
-            if "ok.ru" in link :
-                r = 'src="(https://ok.ru/.+?)"'
-                match = re.compile(r,re.DOTALL).findall(link)
-                for url in match :
-                    addDir (name+' - [COLOR red]OK.RU[/COLOR]',url,200,'', '' )
-        # except:pass
+        for url,team_a,team_b,iconimage in match:
+            #_date='%s-%s-%s'%(month,day,year)
+            _name = '[COLOR ghostwhite]'+team_a+'[/COLOR]  [COLOR deepskyblue]vs[/COLOR]  [COLOR ghostwhite]'+team_b+'[/COLOR]'
+            addDir(_name,url,1,iconimage,'')
+        addDir('[COLOR deepskyblue]Next Page[/COLOR] [COLOR ghostwhite]>>[/COLOR]','url',2,'',cat+'#'+currentday+'#%s' % str(pagenum))
+        setView('movies', 'movie-view')
+
+    else:
+        Show_Red_Flag()
+
+def GETLINKS(name,url,iconimage):#  cause mode is empty in this one it will go back to first directory
+
+    link=OPEN_URL(url)
+    NAME=[]
+    url=[]
+    
+    match =re.compile("<li data-index='(.+?)'.+?>(.+?)<").findall(link.replace("class='active'","").replace(">"," >"))
+    for num , named in match:
+        NAME.append(named)
+        url.append(num)
+
+    GRAB = url[xbmcgui.Dialog().select('Please Select Game', NAME)]
+
+    THEGRAB = re.compile('var videoSelector = \[(.+?)\]').findall(link)[0]
+
+    thefeed= re.compile('src="(.+?)"').findall(THEGRAB.replace('\\',''))[int(GRAB)]
+    
+    PLAYSTREAM(name,thefeed,iconimage)
 
 
 
@@ -233,7 +186,7 @@ def HIGHLIGHTS():
         setView('movies', 'movie-view')
 
     else:
-        iiNT3LiiFLAG()
+        Show_Red_Flag()
 
 def HIGHLIGHTS_NEXTPAGE( page ):
     showScore = xbmcaddon.Addon(id='plugin.video.footballreplays').getSetting('highScore')
@@ -260,10 +213,10 @@ def HIGHLIGHTS_NEXTPAGE( page ):
         setView('movies', 'movie-view')
 
     else:
-        iiNT3LiiFLAG()
+        Show_Red_Flag()
 
 def HIGHLIGHTS_LINKS(name,url):
-    GETLINKS(name,url)
+    GETLINKS(name,url,iconimage)
 
 ###############################################################################################################################
 ##### Some Qoodoo
@@ -313,7 +266,7 @@ def iiNT3LiiCheckURL(url):
         return False
 
 
-def iiNT3LiiFLAG():
+def Show_Red_Flag():
 
     class flagDialog(xbmcgui.WindowXMLDialog):
 
@@ -425,7 +378,7 @@ class upcomingDialog(xbmcgui.WindowXMLDialog):
 
 
         else:
-            iiNT3LiiFLAG()
+            Show_Red_Flag()
 
 
 
@@ -516,7 +469,7 @@ def iiNT3LiiHLIGHTS(baseURL):
         setView('movies', 'movie-view')
 
     else:
-        iiNT3LiiFLAG()
+        Show_Red_Flag()
 
 
 
@@ -555,39 +508,51 @@ def iiNT3LiiFULL(baseURL):
             setView('movies', 'movie-view')
 
     else:
-        iiNT3LiiFLAG()
+        Show_Red_Flag()
 
 
 
-def iiNT3LiiT3AM():
-    theURL = "http://livefootballvideo.com/teams"
-    theSource = iiNT3LiiCheckURL(theURL)
+def Find_A_Team():
+        
+    keyboard = xbmc.Keyboard('', 'Type Exact Team Name !')
+    keyboard.doModal()
+    if keyboard.isConfirmed():
+        search_entered = keyboard.getText()
 
-    if theSource != False:
-        theRegex = r'<a href="(/teams/[^"]*)" title="[^"]*">(.+?)</a>'
-        theTeams = re.compile(theRegex).findall(theSource)
-        for url,name in sorted(theTeams, key=lambda theTeams: theTeams[1]):
-            addDir(to_utf8(name),"http://livefootballvideo.com"+url,10,'',1)
+    
+    link=net.http_GET('http://footballfullmatch.com/search/'+search_entered.lower().replace(' ','+') , headers={'User-Agent':'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'}).content
+    
+    if link != False:
+        r= '<div class="post-thumb"><a href="(.+?)" title="(.+?) vs (.+?)">\n.+?src="(.+?)"' 
+        #r='<div class="cover"><a href="(.+?)" rel="bookmark" title="(.+?) vs (.+?)".+?<img src="(.+?)".+? longdate" rel=".+?">(.+?)/(.+?)/(.+?)</p>'
+        match=re.compile(r).findall(link)
+        cat = search_entered.lower()
+        currentday = re.compile('"currentday":"(.+?)"').findall(link)[0]
+        for url,team_a,team_b,iconimage in match:
+            if '?' in iconimage:
+                    iconimage=iconimage.split('?')[0]
+                    
+            _name = '[COLOR ghostwhite]'+team_a+'[/COLOR]  [COLOR deepskyblue]vs[/COLOR]  [COLOR ghostwhite]'+team_b+'[/COLOR]'
+            addDir(_name,url,1,iconimage,'')
+        addDir('[COLOR deepskyblue]Next Page[/COLOR] [COLOR ghostwhite]>>[/COLOR]','url',2,'',cat+'#'+currentday+'#1')
         setView('movies', 'movie-view')
 
     else:
-        iiNT3LiiFLAG()
+        Show_Red_Flag()
 
 
 
-def iiNT3LiiL3AGU3():
-    theURL = "http://livefootballvideo.com/competitions"
-    theSource = iiNT3LiiCheckURL(theURL)
+def Pick_A_league():
 
-    if theSource != False:
-        theRegex = r'<a href="(/competitions/[^"]*)" title="[^"]*">(.+?)</a>'
-        theTeams = re.compile(theRegex).findall(theSource)
-        for url,name in sorted(theTeams, key=lambda theTeams: theTeams[1]):
-            addDir(to_utf8(name),"http://livefootballvideo.com"+url,10,'',1)
-        setView('movies', 'movie-view')
+    uniques = []
+    link=net.http_GET('http://footballfullmatch.com', headers={'User-Agent':'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'}).content.replace('\\','')
+    match= re.compile('<li id="menu-item-.+?" class="menu-item menu-item-type-taxonomy menu-item-object-category.+?<a href="(.+?)">(.+?)</a>').findall(link)
 
-    else:
-        iiNT3LiiFLAG()
+    for url , name in match:
+            if 'home' not in name.lower() or not 'classic' in name.lower():
+                    if name not in uniques:
+                            uniques.append(name)
+                            addDir(name,url,3,'','1')
 
 
 
@@ -671,11 +636,14 @@ def GrabVidea(id):
 
 
 def OKRU(url):
+        
         name=[]
         URL=[]
         linked = OPEN_URL(url).replace("\&quot;",'"').replace("\\\u0026",'&')
         r = '"name":"(.+?)","url":"(.+?)"'
         match = re.compile(r,re.DOTALL).findall(linked)
+        if not match:
+            return Show_Red_Flag()
         for quality,stream in match:
                 quality = quality.upper()
                 if 'HD' in quality:
@@ -751,53 +719,8 @@ def LOGIN_VK(number,password,GET_URL):
     return html
 
 def PLAYSTREAM(name,url,iconimage):
-        if 'YOUTUBE' in name:
-            link = str(url)
-        elif 'VIDEA' in name:
-            try:
-                url=url.split('-')[1]
-            except:
-                url=url
-            link = GrabVidea(url)
-        elif 'VK.COM' in name:
-            link = GrabVK(url)
-
-        elif 'MAIL.RU' in name:
-            link = GrabMailRu(url)
-
-        elif 'RUTUBE' in name:
-            try:
-                html = 'http://rutube.ru/api/play/trackinfo/%s/?format=xml'% url.replace('_ru','')
-                print html
-                link = OPEN_URL(html)
-                r = '<m3u8>(.+?)</m3u8>'
-                match = re.compile(r,re.DOTALL).findall(link)
-                if match:
-                    link=match[0]
-                else:
-                    dialog = xbmcgui.Dialog()
-                    dialog.ok("Football Replays", '','Sorry Video Is Private', '')
-                    return
-            except:
-                dialog = xbmcgui.Dialog()
-                dialog.ok("Football Replays", '','Sorry Video Is Private', '')
-                return
-        elif 'PLAYWIRE' in name:
-            link = OPEN_URL(url)
-            r = '<baseURL>(.+?)</baseURL>'
-            base=  re.compile(r,re.DOTALL).findall(link)[0]
-            h='media url="(.+?)"'
-            files = re.compile(h,re.DOTALL).findall(link)[0]
-
-            if base:
-                link=base+'/'+files
-
-        elif 'DAILYMOTION' in name:
-            import urlresolver
-            link = 'http://www.dailymotion.com/embed/video/'+url
-            link=urlresolver.resolve(str(link))
-
-        elif 'OK.RU' in name:
+        
+        if 'ok.ru' in url:
             link = OKRU(url)
 
 
@@ -848,11 +771,12 @@ def get_params():
 
 # this is the listing of the items
 def addDir(name,url,mode,iconimage,page):
+        
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&iconimage="+urllib.quote_plus(iconimage)+"&page="+str(page)
         ok=True
         liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
         liz.setInfo( type="Video", infoLabels={ "Title": name} )
-        if mode == 200:
+        if mode == 200 or mode ==1:
             liz.setProperty("IsPlayable","true")
             ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=False)
         elif mode == 12:
@@ -961,7 +885,10 @@ try:
         page=int(params["page"])
 except:
         pass
-
+try:
+        page=urllib.unquote_plus(params["page"])
+except:
+        pass
 
 
 
@@ -970,16 +897,16 @@ if mode==None or url==None or len(url)<1:
         CATEGORIES()
 
 elif mode==1:
-        GETLINKS(name,url)
+        GETLINKS(name,url,iconimage)
 
 elif mode==2:
         NEXTPAGE(page)
 
 elif mode==3:
-        CATEGORIES2()
+        CATEGORIES2(url)
 
 elif mode == 4:
-        iiNT3LiiT3AM()
+        Find_A_Team()
 
 elif mode==5:
         HIGHLIGHTS()
@@ -1000,7 +927,7 @@ elif mode == 10:
     iiNT3LiiM3NU(name,url)
 
 elif mode == 11:
-    iiNT3LiiL3AGU3()
+    Pick_A_league()
 
 elif mode == 12:
     iiNT3LiiLiiV3(url)
