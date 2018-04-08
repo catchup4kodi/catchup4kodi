@@ -147,15 +147,48 @@ def CATS():
         addDir('Categories','cats',205,icon,isFolder=True)
         addDir('Live','Live',206,icon,isFolder=True)
         setView('tvshows', 'default')
+
+        
+                        
+def getsim(channel):
+    if 'ITV' == channel.upper():return 'sim1'
+
+    if 'ITV2' in channel.upper():return 'sim2'
+
+    if 'ITV3' in channel.upper():return 'sim3'
+
+    if 'ITV4' in channel.upper():return 'sim4'
+
+    if 'CITV' in channel.upper():return 'sim7'
+
+    if 'ITVBE' in channel.upper():return 'sim8'
+
+    
                         
 def LIVE():
-    addDir('ITV1','sim1',7,foricon+'art/1.png',isFolder=False)#sim1   https://itv1liveios-i.akamaihd.net/hls/live/203437/itvlive/ITV1MN/master.m3u8
-    addDir('ITV2','sim2',7,foricon+'art/2.png',isFolder=False)#sim2   https://itv2liveios-i.akamaihd.net/hls/live/203495/itvlive/ITV2MN/master.m3u8
-    addDir('ITV3','sim3',7,foricon+'art/3.png',isFolder=False)#sim3   https://itv3liveios-i.akamaihd.net/hls/live/207262/itvlive/ITV3MN/master.m3u8
-    addDir('ITV4','sim4',7,foricon+'art/4.png',isFolder=False)#sim4   https://itv4liveios-i.akamaihd.net/hls/live/207266/itvlive/ITV4MN/master.m3u8
-    addDir('ITVBe','https://itvbeliveios-i.akamaihd.net/hls/live/219078/itvlive/ITVBE/master.m3u8',7,foricon+'art/8.jpg',isFolder=False)#    https://itvbeliveios-i.akamaihd.net/hls/live/219078/itvlive/ITVBE/master.m3u8
-    addDir('CITV','sim7',7,foricon+'art/7.png',isFolder=False)#sim7  https://citvliveios-i.akamaihd.net/hls/live/207267/itvlive/CITVMN/master.m3u8
-    addDir('Events/Sport','https://itvliveevents-i.akamaihd.net/hls/live/203496/itvliveevents/ITVEVTMN/master.m3u8',7,foricon+'art/9.jpg',isFolder=False)#sim9
+    try:
+        link = OPEN_URL('https://www.itv.com/hub/tv-guide')
+
+        link = link.split('class="guide__item')
+        for p in link:
+            if 'watch live' in p.lower():
+
+                title = '[COLOR orange]'+re.compile('title="(.+?)"').findall(p)[0].replace('amp;','')+'[/COLOR]'
+                channel = re.compile('live on (.+?)"').findall(p)[0]
+                sim=getsim(channel)
+                
+                addDir(channel + ' - '+title,sim,7,foricon+'art/%s.png' % sim.split('m')[1],isFolder=False)
+
+        addDir('Events/Sport','https://itvliveevents-i.akamaihd.net/hls/live/203496/itvliveevents/ITVEVTMN/master.m3u8',7,foricon+'art/9.jpg',isFolder=False)#sim9
+        
+    except: 
+        addDir('ITV1','sim1',7,foricon+'art/1.png',isFolder=False)#sim1   https://itv1liveios-i.akamaihd.net/hls/live/203437/itvlive/ITV1MN/master.m3u8
+        addDir('ITV2','sim2',7,foricon+'art/2.png',isFolder=False)#sim2   https://itv2liveios-i.akamaihd.net/hls/live/203495/itvlive/ITV2MN/master.m3u8
+        addDir('ITV3','sim3',7,foricon+'art/3.png',isFolder=False)#sim3   https://itv3liveios-i.akamaihd.net/hls/live/207262/itvlive/ITV3MN/master.m3u8
+        addDir('ITV4','sim4',7,foricon+'art/4.png',isFolder=False)#sim4   https://itv4liveios-i.akamaihd.net/hls/live/207266/itvlive/ITV4MN/master.m3u8
+        addDir('ITVBe','sim8',7,foricon+'art/8.jpg',isFolder=False)#    https://itvbeliveios-i.akamaihd.net/hls/live/219078/itvlive/ITVBE/master.m3u8
+        addDir('CITV','sim7',7,foricon+'art/7.png',isFolder=False)#sim7  https://citvliveios-i.akamaihd.net/hls/live/207267/itvlive/CITVMN/master.m3u8
+        addDir('Events/Sport','https://itvliveevents-i.akamaihd.net/hls/live/203496/itvliveevents/ITVEVTMN/master.m3u8',7,foricon+'art/9.jpg',isFolder=False)#sim9
 
 def CATEGORIES():
         CATS= [('children', 'Children'),
