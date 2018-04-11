@@ -710,10 +710,10 @@ def VIDEO(url,iconimage):
         else:
             IP=ADDON.getSetting('custom_ip')
         headers = {"X-Forwarded-For":IP,"Host":"mercury.itv.com","Referer":"http://www.itv.com/mercury/Mercury_VideoPlayer.swf?v=1.6.479/[[DYNAMIC]]/2","Content-type":"text/xml; charset=utf-8","Content-length":"%d" % len(SoapMessage),"SOAPAction":"http://tempuri.org/PlaylistService/GetPlaylist"}
-        ENDING='|X-Forwarded-For='+IP
+        
     else:
         headers = {"Host":"mercury.itv.com","Referer":"http://www.itv.com/mercury/Mercury_VideoPlayer.swf?v=1.6.479/[[DYNAMIC]]/2","Content-type":"text/xml; charset=utf-8","Content-length":"%d" % len(SoapMessage),"SOAPAction":"http://tempuri.org/PlaylistService/GetPlaylist"}
-        ENDING=''
+        
         
     response, res = http.request("http://mercury.itv.com/PlaylistService.svc", 'POST', headers=headers, body=SoapMessage)
     title1= res.split("<ProgrammeTitle>")
@@ -791,7 +791,7 @@ def VIDEO(url,iconimage):
         playpath = re.compile('(mp4:[^\]]+)').findall(mediafile[selected_stream])[0]
         rtmp = rtmp.replace('&amp;','&')
     
-        url = rtmp + " swfurl=http://www.itv.com/mercury/Mercury_VideoPlayer.swf playpath=" + playpath + " swfvfy=true"
+        url = rtmp + " swfurl=http://www.itv.com/mediaplayer/ITVMediaPlayer.swf playpath=" + playpath + " swfvfy=true"
  
         liz = xbmcgui.ListItem(title2[0], iconImage='DefaultVideo.png', thumbnailImage=iconimage)
         try:
@@ -800,7 +800,7 @@ def VIDEO(url,iconimage):
         except:pass        
         liz.setInfo(type='Video', infoLabels={'Title':name})
         liz.setProperty("IsPlayable","true")
-        liz.setPath(url+ENDING)
+        liz.setPath(url)
         xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, liz)
 
     except:
