@@ -493,6 +493,12 @@ def GetEpisodes(id, page=1):
 
 
 def GetAutoPlayable(name,url,iconimage):
+    if int(ADDON.getSetting('catchup'))==2:
+            if xbmc_version >= 16.9:
+                dialog = xbmcgui.Dialog()
+                return dialog.ok("BBC iPlayer", 'You Cannot Have Dash Enabled If Kodi Version','Is Less That 17', '')
+
+            
     if 'http://www.bbc.co.uk' not in url:
                 
         url='http://www.bbc.co.uk%s' %url
@@ -570,21 +576,41 @@ def GetAutoPlayable(name,url,iconimage):
             
                 for url , supplier, Format in match:
                     url=url.replace('amp;','')
+                    
                     Format = Format.lower()
 
-                    if Format == 'hls':
-                        if int(ADDON.getSetting('supplier'))==0:
-                            if 'akamai' in supplier.lower():
-                            
-                                URL.append([(eval(res)),url])
-                        if int(ADDON.getSetting('supplier'))==1:
-                            if 'limelight' in supplier.lower():
-                      
-                                URL.append([(eval(res)),url])
-                        if int(ADDON.getSetting('supplier'))==2:
-                            if 'bidi' in supplier.lower():
+                       
+                    if int(ADDON.getSetting('catchup'))==2:
+                        if 'dash' in Format.lower():
 
-                                URL.append([(eval(res)),url])
+                            if xbmc_version >= 16.9:
+                                if int(ADDON.getSetting('supplier'))==0:
+                                    if 'akamai' in supplier.lower():
+                                        
+                                    
+                                        URL.append([(eval(res)),url])
+                                if int(ADDON.getSetting('supplier'))==1:
+                                    if 'limelight' in supplier.lower():
+                              
+                                        URL.append([(eval(res)),url])
+                                if int(ADDON.getSetting('supplier'))==2:
+                                    if 'bidi' in supplier.lower():
+
+                                        URL.append([(eval(res)),url])
+                    else:
+                        if Format == 'hls':
+                            if int(ADDON.getSetting('supplier'))==0:
+                                if 'akamai' in supplier.lower():
+                                
+                                    URL.append([(eval(res)),url])
+                            if int(ADDON.getSetting('supplier'))==1:
+                                if 'limelight' in supplier.lower():
+                          
+                                    URL.append([(eval(res)),url])
+                            if int(ADDON.getSetting('supplier'))==2:
+                                if 'bidi' in supplier.lower():
+
+                                    URL.append([(eval(res)),url])
                                 
 
             except:pass    

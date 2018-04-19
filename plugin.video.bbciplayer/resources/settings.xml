@@ -1,14 +1,14 @@
 <settings>
-<category label="Settings">
-	<setting id="new_proxy" type="bool" label="Use Proxy" default="false"/>
-	<setting id="PROXYBASE" type="labelenum" label="Proxy Url" default="http://www.englandproxy.co.uk/" values="http://www.englandproxy.co.uk/|http://www.speedproxy.co.uk/" enable="!eq(-1,false)" />
-    <setting id="favs" type="text" label="Favorites" default="" visible="false" />
-</category>
 <category label="Stream Options">
 	<setting id="livehd" type="bool" label="HD Live Streams" default="true"/>
 	<setting label="AutoPlay" type="bool" default="true" id="autoplay"/>
-	<setting label="Catchup Source" type="enum" default="0" id="catchup" enable="eq(-1,true)" values="HLS|RTMP"/>
+	<setting label="Catchup Source" type="enum" default="0" id="catchup" enable="eq(-1,true)" values="HLS|RTMP|DASH Kodi 17+"/>
 	<setting label="Supplier" type="enum" default="0" id="supplier" enable="eq(-2,true)" values="AKAMAI|LIMELIGHT|BIDI"/>
+</category>
+<category label="Geo Proxy Settings">
+	<setting id="new_proxy" type="bool" label="Use Proxy" default="false"/>
+	<setting id="PROXYBASE" type="labelenum" label="Proxy Url" default="http://www.englandproxy.co.uk/" values="http://www.englandproxy.co.uk/|http://www.speedproxy.co.uk/" enable="!eq(-1,false)" />
+    <setting id="favs" type="text" label="Favorites" default="" visible="false" />
 </category>
 <category label="Auto-View">
 	<setting id="sort" type="bool" label="Sort Alphabetically" default="false"/>
