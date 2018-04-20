@@ -12,11 +12,19 @@ PROXYBASE=ADDON.getSetting('PROXYBASE')
 ART = xbmc.translatePath(os.path.join('special://home/addons/plugin.video.bbciplayer/img/'))
 
 
-xbmc_version =  re.search('^(\d+)', xbmc.getInfoLabel( "System.BuildVersion" ))
+json_query = xbmc.executeJSONRPC('{ "jsonrpc": "2.0", "method": "Application.GetProperties", '
+                                 '"params": {"properties": ["version", "name"]}, "id": 1 }')
+json_query = unicode(json_query, 'utf-8', errors='ignore')
+json_query = json.loads(json_query)
+
+xbmc_version = str(json_query['result']['version']['major'])+'.'+str(json_query['result']['version']['minor'])
+
+
 if xbmc_version:
-    xbmc_version = int(xbmc_version.group(1))
+    xbmc_version = float(xbmc_version)
+
 else:
-    xbmc_version = 1    
+    xbmc_version = 1       
 
 
     
