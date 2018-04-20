@@ -494,7 +494,7 @@ def GetEpisodes(id, page=1):
 
 def GetAutoPlayable(name,url,iconimage):
     if int(ADDON.getSetting('catchup'))==2:
-            if xbmc_version < = 16.5:
+            if xbmc_version <= 16.5:
                 dialog = xbmcgui.Dialog()
                 return dialog.ok("BBC iPlayer", 'You Cannot Have Dash Enabled If Kodi Version','Is Less That 17', '')
 
