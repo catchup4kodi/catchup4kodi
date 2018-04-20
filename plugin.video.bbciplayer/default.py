@@ -494,7 +494,7 @@ def GetEpisodes(id, page=1):
 
 def GetAutoPlayable(name,url,iconimage):
     if int(ADDON.getSetting('catchup'))==2:
-            if xbmc_version >= 16.9:
+            if xbmc_version < = 16.5:
                 dialog = xbmcgui.Dialog()
                 return dialog.ok("BBC iPlayer", 'You Cannot Have Dash Enabled If Kodi Version','Is Less That 17', '')
 
@@ -583,7 +583,7 @@ def GetAutoPlayable(name,url,iconimage):
                     if int(ADDON.getSetting('catchup'))==2:
                         if 'dash' in Format.lower():
 
-                            if xbmc_version >= 16.9:
+                            if xbmc_version >= 16.5:
                                 if int(ADDON.getSetting('supplier'))==0:
                                     if 'akamai' in supplier.lower():
                                         
@@ -702,7 +702,7 @@ def GetPlayable(name,url,iconimage):
                 TITLE='[COLOR %s][%sP][/COLOR] - [COLOR white]%s[/COLOR] [COLOR royalblue]- %s [/COLOR]'%(color,res, supplier.upper(),Format.upper())
 
                 if 'dash' in Format.lower():
-                    if xbmc_version >= 16.9:
+                    if xbmc_version >= 16.5:
                         if not '.xml' in url:
                             addDir(TITLE + ' : ' + _NAME_,url,200,iconimage,'')
                 else:
