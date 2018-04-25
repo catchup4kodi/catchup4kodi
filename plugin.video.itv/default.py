@@ -151,17 +151,17 @@ def CATS():
         
                         
 def getsim(channel):
-    if 'ITV' == channel.upper():return 'sim1'
+    if 'ITV' == channel.upper():return ('ITV','2')
 
-    if 'ITV2' in channel.upper():return 'sim2'
+    if 'ITV2' in channel.upper():return ('ITV2','3')
 
-    if 'ITV3' in channel.upper():return 'sim3'
+    if 'ITV3' in channel.upper():return ('ITV3','4')
 
-    if 'ITV4' in channel.upper():return 'sim4'
+    if 'ITV4' in channel.upper():return ('ITV4','5')
 
-    if 'CITV' in channel.upper():return 'sim7'
+    if 'CITV' in channel.upper():return ('CITV','6')
 
-    if 'ITVBE' in channel.upper():return 'sim8'
+    if 'ITVBE' in channel.upper():return ('ITVBe','7')
 
     
                         
@@ -175,9 +175,9 @@ def LIVE():
 
                 title = '[COLOR orange]'+re.compile('title="(.+?)"').findall(p)[0].replace('amp;','')+'[/COLOR]'
                 channel = re.compile('live on (.+?)"').findall(p)[0]
-                sim=getsim(channel)
+                sim, icon_num=getsim(channel)
                 
-                addDir(channel + ' - '+title,sim,7,foricon+'art/%s.png' % sim.split('m')[1],isFolder=False)
+                addDir(channel + ' - '+title,sim,8,foricon+'art/%s.png' % icon_num,isFolder=False)
 
         addDir('Events/Sport','https://itvliveevents-i.akamaihd.net/hls/live/203496/itvliveevents/ITVEVTMN/master.m3u8',7,foricon+'art/9.jpg',isFolder=False)#sim9
         
@@ -229,7 +229,7 @@ def PLAY_STREAM(name,url,iconimage):
 
             ENDING='|X-Forwarded-For='+IP
 
-        res, response = http.request("http://mercury.itv.com/PlaylistService.svc", 'POST', headers=headers, body=SoapMessage)
+        res, response = http.request("http://secure-mercury.itv.com/PlaylistService.svc", 'POST', headers=headers, body=SoapMessage)
 
         rtmp=re.compile('<MediaFiles base="(.+?)"').findall(response)[0]
         if 'CITV' in name:
@@ -529,6 +529,95 @@ def getip():
     return ip
 
 
+
+def PLAY_STREAM_HLS_LIVE(name,url,iconimage):
+     
+    ENDING=''
+    
+    if ADDON.getSetting('proxy')=='false':
+        buf = OPEN_URL('https://www.itv.com/hub/'+url.lower())
+    else:
+        buf = OPEN_URL_PROXY('https://www.itv.com/hub/'+url.lower())
+        
+        if ADDON.getSetting('custom_ip')=='':
+            IP=getip()
+        else:
+            IP=ADDON.getSetting('custom_ip')
+
+    TITLE= name
+    POSTURL='https://magni.itv.com/playlist/itvonline/'+url
+    hmac=re.compile('data-video-hmac="(.+?)"').findall(buf)[0]
+    
+    req = urllib2.Request(POSTURL)
+    req.add_header('Host','magni.itv.com')
+    req.add_header('hmac',hmac)
+    req.add_header('Accept','application/vnd.itv.vod.playlist.v2+json')
+    req.add_header('Proxy-Connection','keep-alive')
+    req.add_header('Accept-Language','en-gb')
+    req.add_header('Accept-Encoding','gzip, deflate')
+    req.add_header('Content-Type','application/json')
+    req.add_header('Origin','http://www.itv.com')
+    req.add_header('Connection','keep-alive')
+    if ADDON.getSetting('proxy')=='true':
+        req.add_header('X-Forwarded-For',IP)
+        ENDING='|X-Forwarded-For='+IP
+    req.add_header('User-Agent','Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_3 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13G34 Safari/601.1')       
+    req.add_header('Referer',url)
+
+
+    #data  = {"user":{"itvUserId":"","entitlements":[],"token":""},"device":{"manufacturer":"Apple","model":"iPhone","os":{"name":"iPad OS","version":"11.2.5","type":"ios"}},"client":{"version":"4.1","id":"browser"},"variantAvailability":{"featureset":{"min":["hls","aes"],"max":["hls","aes"]},"platformTag":"mobile"}}
+    data  = {"user": {"itvUserId": "", "entitlements": [], "token": ""}, "device": {"manufacturer": "Safari", "model": "5", "os": {"name": "Windows NT", "version": "6.1", "type": "desktop"}}, "client": {"version": "4.1", "id": "browser"}, "variantAvailability": {"featureset": {"min": ["hls", "aes"], "max": ["hls", "aes"]}, "platformTag": "dotcom"}}
+
+
+    try:
+        content = urllib2.urlopen(req, json.dumps(data)).read()
+    except:
+        
+        dialog = xbmcgui.Dialog()
+        if ADDON.getSetting('proxy')=='true':
+            dialog.ok('ITV Player', 'Ooops Seems Your Uk IP Adress','[COLOR green]%s[/COLOR] Is Out Of Date' %IP, 'Gonna Grab New One Now')
+            import grabnewip
+        else:
+            dialog.ok('ITV Player', '','Not Available', '')
+        return ''
+
+
+    link=json.loads(content)
+
+
+    BEG = link['Playlist']['Video']['Base']
+    bb= link['Playlist']['Video']['MediaFiles']
+    try:
+        SUBLINK = link['Playlist']['Video']['Subtitles'][0]['Href']
+        subtitles_exist = 1
+    except:
+        subtitles_exist = 0
+        there_are_subtitles=0
+        
+    for k in bb:
+        END = bb[0]['Href']
+
+    if __settings__.getSetting('subtitles_control') == 'true':
+        if subtitles_exist == 1:
+            subtitles_file = download_subtitles_HLS(SUBLINK, '')
+            print "Subtitles at ", subtitles_file
+            there_are_subtitles=1
+        
+    STREAM =  BEG+END
+    
+    liz = xbmcgui.ListItem(TITLE, iconImage='DefaultVideo.png', thumbnailImage=iconimage)
+    try:
+        if there_are_subtitles == 1:
+            liz.setSubtitles([subtitles_file])
+    except:pass     
+    liz.setInfo(type='Video', infoLabels={'Title':TITLE})
+    liz.setProperty("IsPlayable","true")
+    liz.setPath(STREAM+ENDING)
+    xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, liz)
+
+
+
+    
 def HLS(url,iconimage):
     #xbmc.log(str(url))  
     if url.endswith('##'):
@@ -559,7 +648,7 @@ def HLS(url,iconimage):
     hmac=re.compile('data-video-hmac="(.+?)"').findall(buf)[0]
     
     req = urllib2.Request(POSTURL)
-    req.add_header('Host','old-origin-api.itv.com')
+    req.add_header('Host','magni.itv.com')
     req.add_header('hmac',hmac)
     req.add_header('Accept','application/vnd.itv.vod.playlist.v2+json')
     req.add_header('Proxy-Connection','keep-alive')
@@ -709,15 +798,15 @@ def VIDEO(url,iconimage):
             IP=getip()
         else:
             IP=ADDON.getSetting('custom_ip')
-        headers = {"X-Forwarded-For":IP,"Host":"mercury.itv.com","Referer":"http://www.itv.com/mercury/Mercury_VideoPlayer.swf?v=1.6.479/[[DYNAMIC]]/2","Content-type":"text/xml; charset=utf-8","Content-length":"%d" % len(SoapMessage),"SOAPAction":"http://tempuri.org/PlaylistService/GetPlaylist"}
+        headers = {"X-Forwarded-For":IP,"Host":"secure-mercury.itv.com","Referer":"http://www.itv.com/mercury/Mercury_VideoPlayer.swf?v=1.6.479/[[DYNAMIC]]/2","Content-type":"text/xml; charset=utf-8","Content-length":"%d" % len(SoapMessage),"SOAPAction":"http://tempuri.org/PlaylistService/GetPlaylist"}
         
     else:
-        headers = {"Host":"mercury.itv.com","Referer":"http://www.itv.com/mercury/Mercury_VideoPlayer.swf?v=1.6.479/[[DYNAMIC]]/2","Content-type":"text/xml; charset=utf-8","Content-length":"%d" % len(SoapMessage),"SOAPAction":"http://tempuri.org/PlaylistService/GetPlaylist"}
+        headers = {"Host":"secure-mercury.itv.com","Referer":"http://www.itv.com/mercury/Mercury_VideoPlayer.swf?v=1.6.479/[[DYNAMIC]]/2","Content-type":"text/xml; charset=utf-8","Content-length":"%d" % len(SoapMessage),"SOAPAction":"http://tempuri.org/PlaylistService/GetPlaylist"}
         
         
-    response, res = http.request("http://mercury.itv.com/PlaylistService.svc", 'POST', headers=headers, body=SoapMessage)
+    response, res = http.request("https://secure-mercury.itv.com/PlaylistService.svc", 'POST', headers=headers, body=SoapMessage)
     title1= res.split("<ProgrammeTitle>")
-
+    
     try:
         title2= title1[1].split("</ProgrammeTitle>")
         #print res
@@ -1036,6 +1125,10 @@ elif mode==6:
 elif mode==7:
         print "Getting Videofiles: "+url
         PLAY_STREAM(name,url,iconimage)
+
+elif mode==8:
+        print "Getting Videofiles: "+url
+        PLAY_STREAM_HLS_LIVE(name,url,iconimage)        
 
 elif mode==12:
     print ""
