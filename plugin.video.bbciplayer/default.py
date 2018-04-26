@@ -245,7 +245,7 @@ def NextPageGenre(url):
 
 def ForCategrories(NEW_URL):    
     HTML=OPEN_URL(NEW_URL)
-    print 'PAGE' + HTML
+    
     html=HTML.split('data-ip-id="')
     for p in html:
         try:
@@ -894,19 +894,19 @@ except: pass
 #these are the modes which tells the plugin where to go
        
 if mode==1:
-        print ""+url
+        
         GetMain(url)
 
 elif mode==2:
-        print ""+url
+        
         GetLive(url)        
         
 elif mode==3:
-        print ""+url
+        
         GetContent(url)
      
 elif mode==4:
-        print ""+url
+        
         GetEpisodes(url)
 
 elif mode==5:

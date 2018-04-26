@@ -42,7 +42,7 @@ if not os.path.isdir(SUBTITLES_DIR):
 if not os.path.isdir(IMAGE_DIR):
     os.makedirs(IMAGE_DIR)
 
-
+livepro = ADDON.getSetting('livepro')
 
 def get_httplib():
  
@@ -176,8 +176,13 @@ def LIVE():
                 title = '[COLOR orange]'+re.compile('title="(.+?)"').findall(p)[0].replace('amp;','')+'[/COLOR]'
                 channel = re.compile('live on (.+?)"').findall(p)[0]
                 sim, icon_num=getsim(channel)
+                if livepro=='true':
+                    mode = 8
+                else:
+                    mode = 7
+                    sim = 'sim'+icon_num
+                addDir(channel + ' - '+title,sim,mode,foricon+'art/%s.png' % icon_num,isFolder=False)
                 
-                addDir(channel + ' - '+title,sim,8,foricon+'art/%s.png' % icon_num,isFolder=False)
 
         addDir('Events/Sport','https://itvliveevents-i.akamaihd.net/hls/live/203496/itvliveevents/ITVEVTMN/master.m3u8',7,foricon+'art/9.jpg',isFolder=False)#sim9
         
@@ -218,19 +223,19 @@ def PLAY_STREAM(name,url,iconimage):
 
     else:    
         SoapMessage=TEMPLATE(url,'itv'+url.replace('sim',''))
-        headers={'Content-Length':'%d'%len(SoapMessage),'Content-Type':'text/xml; charset=utf-8','Host':'mercury.itv.com','Origin':'http://www.itv.com','Referer':'http://www.itv.com/Mercury/Mercury_VideoPlayer.swf?v=null','SOAPAction':"http://tempuri.org/PlaylistService/GetPlaylist",'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36'}
+        headers={'Content-Length':'%d'%len(SoapMessage),'Content-Type':'text/xml; charset=utf-8','Host':'secure-mercury.itv.com','Origin':'http://www.itv.com','Referer':'http://www.itv.com/Mercury/Mercury_VideoPlayer.swf?v=null','SOAPAction':"http://tempuri.org/PlaylistService/GetPlaylist",'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36'}
 
         if ADDON.getSetting('proxy')=='true':
             if ADDON.getSetting('custom_ip')=='':
                 IP=getip()
             else:
                 IP=ADDON.getSetting('custom_ip')
-            headers={"X-Forwarded-For":IP,'Content-Length':'%d'%len(SoapMessage),'Content-Type':'text/xml; charset=utf-8','Host':'mercury.itv.com','Origin':'http://www.itv.com','Referer':'http://www.itv.com/Mercury/Mercury_VideoPlayer.swf?v=null','SOAPAction':"http://tempuri.org/PlaylistService/GetPlaylist",'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36'}
+            headers={"X-Forwarded-For":IP,'Content-Length':'%d'%len(SoapMessage),'Content-Type':'text/xml; charset=utf-8','Host':'secure-mercury.itv.com','Origin':'http://www.itv.com','Referer':'http://www.itv.com/Mercury/Mercury_VideoPlayer.swf?v=null','SOAPAction':"http://tempuri.org/PlaylistService/GetPlaylist",'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36'}
 
             ENDING='|X-Forwarded-For='+IP
 
-        res, response = http.request("http://secure-mercury.itv.com/PlaylistService.svc", 'POST', headers=headers, body=SoapMessage)
-
+        res, response = http.request("https://secure-mercury.itv.com/PlaylistService.svc", 'POST', headers=headers, body=SoapMessage)
+        
         rtmp=re.compile('<MediaFiles base="(.+?)"').findall(response)[0]
         if 'CITV' in name:
             r='CDATA\[(citv.+?)\]'
@@ -442,14 +447,16 @@ def EPS(name,url):
     buf=re.sub('&middot;','',buf)
     buf=re.sub('&#039;','\'',buf)
     f.close()
+    buf = buf.split('more-episodes')[1]
+    buf = buf.split('<div id="')[0]
     buf = buf.split('grid-list__item width--one-half width--custard--one-third')
     NAME=name.split('-')[0]
     uniques=[]
     for p in buf:
-        #print p
+       
         try:
             linkurl= re.compile('href="(.+?)"').findall (p)[0]
-            #print linkurl
+          
             image= re.compile('srcset="(.+?)"').findall (p)[0]
             if '?' in image:
                 image=image.split('?')[0] +'?w=512&h=288'
@@ -458,7 +465,8 @@ def EPS(name,url):
             if 'datetime' in name:
                 name=NAME
             #episodes = re.compile('"tout__meta theme__meta">(.+?)</p',re.DOTALL).findall (p)[0].strip()
-            description = re.compile('tout__summary theme__subtle">(.+?)</p',re.DOTALL).findall (p)[0].strip()
+            try:description = re.compile('tout__summary theme__subtle">(.+?)</p',re.DOTALL).findall (p)[0].strip()
+            except: description = ''
             #print description
 
             date = re.compile('datetime="(.+?)">',re.DOTALL).findall (p)[0]
@@ -468,13 +476,12 @@ def EPS(name,url):
                 ADDDATE= '%s %s' % (DATE,TIME)
             except Exception as e:
                ADDDATE= ''
-            #print date
-            NAME = name# + ' - ' + ADDDATE
+        
+            NAME = name
             
-            if ADDDATE not in uniques:
-                uniques.append(ADDDATE)
-                #xbmc.log(str(linkurl))
-                addDir2(NAME + ' - ' + ADDDATE,linkurl,3,date, name,image,description,isFolder=False)
+            #if ADDDATE not in uniques:
+                #uniques.append(ADDDATE)
+            addDir2(NAME + ' - ' + ADDDATE,linkurl,3,date, name,image,description,isFolder=False)
         except:pass  
                                 
 
@@ -664,7 +671,7 @@ def HLS(url,iconimage):
     req.add_header('Referer',url)
 
 
-    #data  = {"user":{"itvUserId":"","entitlements":[],"token":""},"device":{"manufacturer":"Apple","model":"iPhone","os":{"name":"iPad OS","version":"11.2.5","type":"ios"}},"client":{"version":"4.1","id":"browser"},"variantAvailability":{"featureset":{"min":["hls","aes"],"max":["hls","aes"]},"platformTag":"mobile"}}
+   #data  = {"user":{"itvUserId":"","entitlements":[],"token":""},"device":{"manufacturer":"Apple","model":"iPhone","os":{"name":"iPad OS","version":"11.2.5","type":"ios"}},"client":{"version":"4.1","id":"browser"},"variantAvailability":{"featureset":{"min":["hls","aes"],"max":["hls","aes"]},"platformTag":"mobile"}}
     data  = {"user": {"itvUserId": "", "entitlements": [], "token": ""}, "device": {"manufacturer": "Safari", "model": "5", "os": {"name": "Windows NT", "version": "6.1", "type": "desktop"}}, "client": {"version": "4.1", "id": "browser"}, "variantAvailability": {"featureset": {"min": ["hls", "aes", "outband-webvtt"], "max": ["hls", "aes", "outband-webvtt"]}, "platformTag": "dotcom"}}
 
 
