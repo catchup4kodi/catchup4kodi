@@ -151,17 +151,17 @@ def CATS():
         
                         
 def getsim(channel):
-    if 'ITV' == channel.upper():return ('ITV','2')
+    if 'ITV' == channel.upper():return ('ITV','1')
 
-    if 'ITV2' in channel.upper():return ('ITV2','3')
+    if 'ITV2' in channel.upper():return ('ITV2','2')
 
-    if 'ITV3' in channel.upper():return ('ITV3','4')
+    if 'ITV3' in channel.upper():return ('ITV3','3')
 
-    if 'ITV4' in channel.upper():return ('ITV4','5')
+    if 'ITV4' in channel.upper():return ('ITV4','4')
 
-    if 'CITV' in channel.upper():return ('CITV','6')
+    if 'CITV' in channel.upper():return ('CITV','7')
 
-    if 'ITVBE' in channel.upper():return ('ITVBe','7')
+    if 'ITVBE' in channel.upper():return ('ITVBe','8')
 
     
                         

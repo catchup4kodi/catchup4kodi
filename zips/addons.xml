@@ -76,7 +76,7 @@
     </extension>
 </addon>
 
-<addon id="plugin.video.itv" name="ITV" version="2.5.1" provider-name="LittleWiz">
+<addon id="plugin.video.itv" name="ITV" version="2.5.2" provider-name="LittleWiz">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
   </requires>
@@ -144,6 +144,20 @@
   <extension point="xbmc.addon.metadata">
     <summary lang="en">NotFilmOn</summary>
     <description lang="en">Stream And Record From FilmON Tv Live</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
+<addon id="plugin.video.tvcatchup.unrestricted" name="Tv Catchup Unrestricted" version="0.0.1" provider-name="LittleWiz">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="default.py">
+        <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Tv Catchup Unrestricted</summary>
+    <description lang="en">Tv Catchup Unrestricted</description>
     <platform>all</platform>
   </extension>
 </addon>
