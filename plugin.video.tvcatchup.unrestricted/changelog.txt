@@ -1,0 +1,20 @@
+v0.5
+Fixed search
+
+v0.4
+Fixed some lists not opening due to Welsh chars
+Fixed playback for live and catchup
+
+v0.0.7
+Fixed Live
+
+v0.0.4
+Added Popular
+
+v0.0.2
+Added More Functions
+Right Click On Any Availables to Grab Full Listings
+
+
+v0.0.1
+Initial Release

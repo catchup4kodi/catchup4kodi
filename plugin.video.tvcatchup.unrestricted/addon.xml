@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="plugin.video.tvcatchup.unrestricted" name="Tv Catchup Unrestricted" version="0.0.1" provider-name="LittleWiz">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="default.py">
+        <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Tv Catchup Unrestricted</summary>
+    <description lang="en">Tv Catchup Unrestricted</description>
+    <platform>all</platform>
+  </extension>
+</addon>
