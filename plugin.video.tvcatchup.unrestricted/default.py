@@ -37,7 +37,8 @@ def CATEGORIES():
             _URL_ = 'https://tvcatchup.com' +url
 
         NAME = '%s - [COLOR orange]%s[/COLOR]' % (name.replace('Watch ',''),whatson.strip())    
-        addDir(NAME,_URL_,200,iconimage+'|User-Agent='+UA)    
+        try:addDir(NAME,_URL_,200,iconimage+'|User-Agent='+UA)
+        except:pass
 
     
     
