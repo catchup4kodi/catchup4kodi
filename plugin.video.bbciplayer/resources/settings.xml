@@ -1,5 +1,7 @@
 <settings>
 <category label="Stream Options">
+    <setting id="SHOWLIVE" type="bool" label="Show Live On Launch" default="true"/>
+    <setting label="" type="lsep"/>
 	<setting id="livehd" type="bool" label="HD Live Streams" default="true"/>
 	<setting label="AutoPlay" type="bool" default="true" id="autoplay"/>
 	<setting label="Catchup Source" type="enum" default="0" id="catchup" enable="eq(-1,true)" values="HLS|RTMP|DASH Kodi 17+"/>

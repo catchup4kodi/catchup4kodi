@@ -9,6 +9,7 @@ ADDON = xbmcaddon.Addon(id='plugin.video.bbciplayer')
 ICON = ADDON.getAddonInfo('icon')
 FANART = ADDON.getAddonInfo('fanart')
 PROXYBASE=ADDON.getSetting('PROXYBASE')
+SHOWLIVE=ADDON.getSetting('SHOWLIVE')
 ART = xbmc.translatePath(os.path.join('special://home/addons/plugin.video.bbciplayer/img/'))
 
 
@@ -58,6 +59,9 @@ def CATEGORIES():
     addDir('iPlayer A-Z','url',3,ART+'iplay.jpg','')
     addDir('Categories','url',7,ART+'iplay.jpg','')
     addDir('Live','url',2,ART+'iplay.jpg','')
+    if SHOWLIVE == 'true':
+        try:GetLive('dont')
+        except:pass
 
 
  
@@ -69,54 +73,91 @@ def char_range(c1, c2):
         yield chr(c)
  
 
-def GetLive(url):
-    addDir('[COLOR red]Red Button[/COLOR]','url',13,'','')     
 
+def GetOnNow(html,name):
+    r='%s-on-now.+?rcset="(.+?)".+?alt="(.+?)">.+?"schedule__sub-title">(.+?)<' % name
+    link=html.split('aria-labelledby="')
+    yo=[]
+    for p in link:
+        haha = p.split('"')[0]
+        try:
+            match=re.compile(r,re.DOTALL).findall(p)
+
+                
+            icon = match[0][0]
+            
+            title = match[0][1]
+            time = match[0][2]
+            if name in haha:
+                
+                yo.append([icon ,title,time])
+        except:pass
+      
+    if yo:
+        return yo[0][0],yo[0][1],yo[0][2]
+
+
+
+    
+def GetLive(url):
+    html=OPEN_URL('https://www.bbc.co.uk/iplayer/guide',False)
+    if url=='url':
+        addDir('[COLOR red]Red Button[/COLOR]','url',13,'','')     
+    extra =''
     channel_list = [
-                    ('bbc_one_hd','bbc_one_hd',                       'BBC One','choose'),
-                    ('bbc_two_hd','bbc_two_hd',                       'BBC Two','choose'),
-                    ('bbc_four_hd','bbc_four_hd',                      'BBC Four','choose'),
-                    ('cbbc_hd','cbbc_hd',                          'CBBC','choose'),
-                    ('cbeebies_hd','cbeebies_hd',                      'CBeebies','choose'),
-                    ('bbc_news24','bbc_news24',                       'BBC News Channel','choose'),
-                    ('bbc_parliament','bbc_parliament',                   'BBC Parliament','hls_tablet'),
-                    ('bbc_alba','bbc_alba',                         'Alba','hls_tablet'),
-                    ('s4cpbs','s4cpbs',                           'S4C','hls_tablet'),
-                    ('bbc_one_hd','bbc_one_london',                   'BBC One London','hls_tablet'),
-                    ('bbc_one_hd','bbc_one_scotland_hd',              'BBC One Scotland','hls_tablet'),
-                    ('bbc_one_hd','bbc_one_northern_ireland_hd',      'BBC One Northern Ireland','hls_tablet'),
-                    ('bbc_one_hd','bbc_one_wales_hd',                 'BBC One Wales','hls_tablet'),
-                    ('bbc_two_hd','bbc_two_scotland',                 'BBC Two Scotland','hls_tablet'),
-                    ('bbc_two_hd','bbc_two_northern_ireland_digital', 'BBC Two Northern Ireland','hls_tablet'),
-                    ('bbc_two_hd','bbc_two_wales_digital',            'BBC Two Wales','hls_tablet'),
-                    ('bbc_two_hd','bbc_two_england',                  'BBC Two England','hls_tablet'),
-                    ('bbc_one_hd','bbc_one_cambridge',                'BBC One Cambridge','hls_tablet'),
-                    ('bbc_one_hd','bbc_one_channel_islands',          'BBC One Channel Islands','hls_tablet'),
-                    ('bbc_one_hd','bbc_one_east',                     'BBC One East','hls_tablet'),
-                    ('bbc_one_hd','bbc_one_east_midlands',            'BBC One East Midlands','hls_tablet'),
-                    ('bbc_one_hd','bbc_one_east_yorkshire',           'BBC One East Yorkshire','hls_tablet'),
-                    ('bbc_one_hd','bbc_one_north_east',               'BBC One North East','hls_tablet'),
-                    ('bbc_one_hd','bbc_one_north_west',               'BBC One North West','hls_tablet'),
-                    ('bbc_one_hd','bbc_one_oxford',                   'BBC One Oxford','hls_tablet'),
-                    ('bbc_one_hd','bbc_one_south',                    'BBC One South','hls_tablet'),
-                    ('bbc_one_hd','bbc_one_south_east',               'BBC One South East','hls_tablet'),
-                    ('bbc_one_hd','bbc_one_west',                     'BBC One West','hls_tablet'),
-                    ('bbc_one_hd','bbc_one_west_midlands',            'BBC One West Midlands','hls_tablet'),
-                    ('bbc_one_hd','bbc_one_yorks',                    'BBC One Yorks','hls_tablet')
+                    ('bbc_one_london','bbc_one_hd',                   'BBC One','choose','true'),
+                    ('bbc_two_england','bbc_two_hd',                  'BBC Two','choose','true'),
+                    ('bbc_four_hd','bbc_four_hd',                     'BBC Four','choose','true'),
+                    ('cbbc_hd','cbbc_hd',                             'CBBC','choose','true'),
+                    ('cbeebies_hd','cbeebies_hd',                     'CBeebies','choose','true'),
+                    ('bbc_news24','bbc_news24',                       'BBC News Channel','choose','true'),
+                    ('bbc_parliament','bbc_parliament',               'BBC Parliament','hls_tablet','true'),
+                    ('bbc_alba','bbc_alba',                           'Alba','hls_tablet','true'),
+                    ('s4c','s4cpbs',                                  'S4C','hls_tablet','true'),
+                    ('bbc_one_hd','bbc_one_london',                   'BBC One London','hls_tablet','false'),
+                    ('bbc_one_hd','bbc_one_scotland_hd',              'BBC One Scotland','hls_tablet','false'),
+                    ('bbc_one_hd','bbc_one_northern_ireland_hd',      'BBC One Northern Ireland','hls_tablet','false'),
+                    ('bbc_one_hd','bbc_one_wales_hd',                 'BBC One Wales','hls_tablet','false'),
+                    ('bbc_two_hd','bbc_two_scotland',                 'BBC Two Scotland','hls_tablet','false'),
+                    ('bbc_two_hd','bbc_two_northern_ireland_digital', 'BBC Two Northern Ireland','hls_tablet','false'),
+                    ('bbc_two_hd','bbc_two_wales_digital',            'BBC Two Wales','hls_tablet','false'),
+                    ('bbc_two_hd','bbc_two_england',                  'BBC Two England','hls_tablet','false'),
+                    ('bbc_one_hd','bbc_one_cambridge',                'BBC One Cambridge','hls_tablet','false'),
+                    ('bbc_one_hd','bbc_one_channel_islands',          'BBC One Channel Islands','hls_tablet','false'),
+                    ('bbc_one_hd','bbc_one_east',                     'BBC One East','hls_tablet','false'),
+                    ('bbc_one_hd','bbc_one_east_midlands',            'BBC One East Midlands','hls_tablet','false'),
+                    ('bbc_one_hd','bbc_one_east_yorkshire',           'BBC One East Yorkshire','hls_tablet','false'),
+                    ('bbc_one_hd','bbc_one_north_east',               'BBC One North East','hls_tablet','false'),
+                    ('bbc_one_hd','bbc_one_north_west',               'BBC One North West','hls_tablet','false'),
+                    ('bbc_one_hd','bbc_one_oxford',                   'BBC One Oxford','hls_tablet','false'),
+                    ('bbc_one_hd','bbc_one_south',                    'BBC One South','hls_tablet','false'),
+                    ('bbc_one_hd','bbc_one_south_east',               'BBC One South East','hls_tablet','false'),
+                    ('bbc_one_hd','bbc_one_west',                     'BBC One West','hls_tablet','false'),
+                    ('bbc_one_hd','bbc_one_west_midlands',            'BBC One West Midlands','hls_tablet','false'),
+                    ('bbc_one_hd','bbc_one_yorks',                    'BBC One Yorks','hls_tablet','false')
                 ]
     
-    for id, img, name , device  in channel_list :
-
+    for id, img, name , device, Pass  in channel_list :
+        if url=='dont':
+            name = '[COLOR plum]Now[/COLOR] - [COLOR green]%s[/COLOR]' % name
         if device == 'choose':
             if ADDON.getSetting('livehd')=='true':
                 device='abr_hdtv'
             else:
                 device='hls_mobile_wifi'
                 
-        url='http://a.files.bbci.co.uk/media/live/manifesto/audio_video/simulcast/hls/uk/%s/ak/%s.m3u8' % (device, img)
-        iconimage = xbmc.translatePath(os.path.join('special://home/addons/plugin.video.bbciplayer/img',id+'.png'))
-        addDir(name,url,6,iconimage,'')
+        URL='http://a.files.bbci.co.uk/media/live/manifesto/audio_video/simulcast/hls/uk/%s/ak/%s.m3u8' % (device, img)
+        iconimage = xbmc.translatePath(os.path.join('special://home/addons/plugin.video.bbciplayer/img',img+'.png'))
 
+        if Pass=='true':
+            try:
+                iconimage , extra , time= GetOnNow(html,id.replace('_hd',''))
+                extra = ' - [COLOR orange]%s [/COLOR][COLOR royalblue](%s)[/COLOR]' % (extra,time)                            
+            except:pass                                
+            addDir(name + extra,URL,6,iconimage.replace('288x162','1280x720'),'')
+        else:
+            if url=='url':
+                addDir(name,URL,6,iconimage.replace('288x162','1280x720'),'')
 
 def ListRedButton():
     channel_list = [
@@ -538,16 +579,19 @@ def GetAutoPlayable(name,url,iconimage):
         html = OPEN_URL(NEW_URL,True)
 
         match=re.compile('application="(.+?)".+?String="(.+?)".+?identifier="(.+?)".+?protocol="(.+?)".+?server="(.+?)".+?supplier="(.+?)"').findall(html.replace('amp;',''))
+        
         for app,auth , playpath ,protocol ,server,supplier in match:
 
             port = '1935'
             if protocol == 'rtmpt': port = 80
-            if supplier == 'limelight':
-                if 'bbcmedia' in server:
-                    url="%s://%s:%s/ app=%s?%s tcurl=%s://%s:%s/%s?%s playpath=%s" % (protocol,server,port,app,auth,protocol,server,port,app,auth,playpath)
-                    res=playpath.split('secure_auth/')[1]
-                    resolution=res.split('kbps')[0]
-                    URL.append([(eval(resolution)),url]) 
+
+            if 'bbcmedia' in server.lower():
+                url="%s://%s:%s/ app=%s?%s tcurl=%s://%s:%s/%s?%s playpath=%s" % (protocol,server,port,app,auth,protocol,server,port,app,auth,playpath)
+                res=playpath.split('secure_auth/')[1]
+                resolution=res.split('kbp')[0]
+                
+                URL.append([(eval(resolution)),url])
+                     
 
 
     elif int(ADDON.getSetting('catchup'))==1:
@@ -783,8 +827,10 @@ def OPEN_URL(url,resolve=False):
                 headers['Cookie'] = token
 
 
-                link = net.http_POST('http://www.speedproxy.co.uk/?do=search',data,headers=headers).get_url()
-
+                link = net.http_POST('http://www.speedproxy.co.uk/?do=search',data,headers=headers).content
+                return link
+                
+              
             
         
     link = net.http_GET(url,headers).content
