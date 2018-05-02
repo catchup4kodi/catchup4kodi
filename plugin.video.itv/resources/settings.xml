@@ -1,6 +1,8 @@
 <settings>
   <!-- Streams -->
   <category label="30200">
+    <setting id="SHOWLIVE" type="bool" label="Show Live On Launch" default="true"/>
+    <setting label="" type="lsep"/>
     <setting label="You need to disable inbuilt proxy to use HLS for Catchup" type="lsep"/>
     <setting id="hls" label="Use HLS For Catchup"  type="bool" default="true" enable="!eq(3,true)" />
     <setting label="" type="lsep"/>

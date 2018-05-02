@@ -1,6 +1,7 @@
 import urllib,urllib2,sys,re,xbmcplugin,xbmcgui,xbmcaddon,xbmc,os
 import HTMLParser
 import net
+import htmlcleaner
 
 net=net.Net()
 
@@ -10,8 +11,12 @@ ICON = ADDON.getAddonInfo('icon')
 FANART = ADDON.getAddonInfo('fanart')
 PROXYBASE=ADDON.getSetting('PROXYBASE')
 ART = xbmc.translatePath(os.path.join('special://home/addons/plugin.video.tvcatchup.unrestricted/img/'))
+PROXY_ENABLED=ADDON.getSetting('new_proxy')
 
 
+if PROXY_ENABLED=='true':
+    if ADDON.getSetting('custom_ip')=='':
+        import grabnewip
 
 UA='Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25'
     
@@ -28,13 +33,23 @@ def CATEGORIES():
             'Upgrade-Insecure-Requests':'1',
             'User-Agent':'Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25'}
 
-    link = net.http_GET('https://tvcatchup.com/channels',headers).content
+
+    if PROXY_ENABLED=='true':
+        link = OPEN_URL_PROXY('https://tvcatchup.com/channels')
+        CHANGE=True
+    else:
+        link = net.http_GET('https://tvcatchup.com/channels',headers).content
+        CHANGE=False
 
     match= re.compile('<p class="channelsicon".+?href="(.+?)".+?src="(.+?)".+?<br/>(.+?)<.+?alt="(.+?)"',re.DOTALL).findall(link)
 
     for url, iconimage, whatson, name in match:
+        whatson=htmlcleaner.clean(whatson)
         if not 'http' in url:
-            _URL_ = 'https://tvcatchup.com' +url
+            if CHANGE==True:
+                _URL_ = 'https://' +url
+            else:    
+                _URL_ = 'https://tvcatchup.com' +url
 
         NAME = '%s - [COLOR orange]%s[/COLOR]' % (name.replace('Watch ',''),whatson.strip())    
         try:addDir(NAME,_URL_,200,iconimage+'|User-Agent='+UA)
@@ -43,7 +58,7 @@ def CATEGORIES():
     
     
 def PLAY_STREAM(name,url,iconimage):
-    
+ 
     headers={'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
             'Accept-Encoding':'gzip, deflate, br',
             'Accept-Language':'en-US,en;q=0.9',
@@ -54,16 +69,54 @@ def PLAY_STREAM(name,url,iconimage):
             'Upgrade-Insecure-Requests':'1',
             'User-Agent':'Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25'}
 
-    link = net.http_GET(url,headers).content
-
+    if PROXY_ENABLED=='true':
+        link = OPEN_URL_PROXY(url)
+        CHANGE=True
+    else:
+        link = net.http_GET(url,headers).content
+        CHANGE=False
+        
+ 
     stream= re.compile('<source src="(.+?)"').findall(link)[0].replace('amp;','')
-    
+    if CHANGE==True:
+        stream = 'https://' +stream+'|X-Forwarded-For=%s' %ADDON.getSetting('custom_ip')
     liz = xbmcgui.ListItem(name, iconImage='DefaultVideo.png', thumbnailImage=iconimage)
     liz.setInfo(type='Video', infoLabels={'Title':name})
     liz.setProperty("IsPlayable","true")
     liz.setPath(stream)
     xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, liz)
     
+
+
+
+def OPEN_URL_PROXY(url):
+    
+
+    if 'just' in PROXYBASE:
+        PROXYURL = 'http://www.justproxy.co.uk/index.php?q=%s'
+        PROXYREF = 'http://www.justproxy.co.uk/'
+        
+
+    if 'england' in PROXYBASE:
+        PROXYURL = 'https://www.englandproxy.co.uk/'
+        PROXYREF = 'https://www.englandproxy.co.uk/'
+
+        
+    import base64
+    if 'england' in PROXYREF:
+        url=url.split('//')[1]
+        req = PROXYURL + url
+        REPLACE = 'http://www.englandproxy.co.uk:80/'
+    else:    
+        req = PROXYURL % base64.b64encode(url)
+        REPLACE = PROXYURL % base64.b64encode(url)
+
+    headers={'Referer':PROXYREF,
+            'User-Agent':'Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25'}
+    
+    link = net.http_GET(req,headers).content
+    return link.replace(REPLACE,'').replace('https://www.englandproxy.co.uk:443/','')
+
 
 
 def addDir(name,url,mode,iconimage):

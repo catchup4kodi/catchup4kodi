@@ -139,7 +139,7 @@ def GetLive(url):
     
     for id, img, name , device, Pass  in channel_list :
         if url=='dont':
-            name = '[COLOR plum]Now[/COLOR] - [COLOR green]%s[/COLOR]' % name
+            name = '[COLOR plum]On Now[/COLOR] - [COLOR green]%s[/COLOR]' % name
         if device == 'choose':
             if ADDON.getSetting('livehd')=='true':
                 device='abr_hdtv'
