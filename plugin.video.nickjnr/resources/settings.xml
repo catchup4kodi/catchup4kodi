@@ -1,11 +1,11 @@
 <settings>
+<category label="Language">
+	<setting id="lang" type="labelenum" label="Select Language" default="English" values="English|Spanish|German|Dutch"  />
+</category>
+
 <category label="Auto-View">
-	<setting id="auto-view" type="bool" label="Enable Automatic View" default="false"/>
+	<setting id="auto-view" type="bool" label="Enable Automatic View" default="true"/>
 	<setting id="default" type="number" label="Default" default="500" enable="!eq(-1,false)"/>
 	<setting id="episode-view" type="number" label="Episode View" default="500" enable="!eq(-1,false)"/>
 </category>
 </settings>
-
-
-
-

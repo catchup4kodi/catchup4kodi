@@ -1,6 +1,7 @@
 import urllib,urllib2,sys,re,xbmcplugin,xbmcgui,xbmcaddon,xbmc,os
-import HTMLParser,json
+import json
 import net
+import htmlcleaner
 
 net=net.Net()
 
@@ -16,11 +17,12 @@ ART = xbmc.translatePath(os.path.join('special://home/addons/plugin.video.nickjn
 
 
 def CATEGORIES():
-    link = net.http_GET('http://www.nickjr.tv').content
+    DOTCOM , THEPAGE ,API = GetLang()
+    link = net.http_GET('http://www.nickjr.%s'%DOTCOM).content
     match= re.compile('"seriesKey":"(.+?)"').findall(link)
     for key in match:
         name = key.replace('-',' ').title()
-        addDir(name,key,1,ART+key+'.jpg','0')
+        addDir(name,key,1,ART+ADDON.getSetting('lang')+'/'+key+'.jpg','0')
         
     setView('movies', 'default')
 
@@ -29,29 +31,39 @@ def CATEGORIES():
 
 def Episodes(url,page):
     page = int(page)+1
-    
-    link = net.http_GET('http://www.nickjr.tv/data/propertyStreamPage.json?&urlKey=%s&apiKey=global_Nickjr_web&page=%s' % (url,page)).content
+    DOTCOM , THEPAGE ,API = GetLang()
+    headers={'Referer':'http://www.nickjr.%s'%DOTCOM, 'User-Agent':'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-GB; rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13 (.NET CLR 3.5.30729)'}
+    link = net.http_GET('http://www.nickjr.%s/data/property%s.json?&urlKey=%s&apiKey=%s&page=%s' % (DOTCOM,THEPAGE,url,API,page),headers=headers).content
 
     link=json.loads(link)
     data=link['stream']
     for k in data:
         for w in k['items']:
             try:
-                URL=w['data']['id']
-                name=w['data']['title'] + ' - [' +w['data']['duration']+']'
+                try:URL=w['data']['id']
+                except:URL=None
+                try:duration =' - [' +w['data']['duration']+']'
+                except:duration = ''
+                try:name=w['data']['title'] + duration
+                except:
+                    try:name=htmlcleaner.cleanUnicode(w['data']['title']) + duration
+                    except:
+                        try:name=htmlcleaner.clean(w['data']['title']) + duration
+                        except:
+                            name=''
                 try:iconimage=w['data']['images']['thumbnail']['r1-1']
                 except:
-                    try:w['data']['images']['thumbnail']['r25-12']
+                    try:iconimage = w['data']['images']['thumbnail']['r25-12']
                     except:iconimage=''
        
-                try:plot=w['data']['description']
+                try:plot=htmlcleaner.cleanUnicode(w['data']['description'])
                 except:
                     plot=''
 
                     
 
-                    
-                addDir(name,URL,200,iconimage ,plot)
+                if URL:    
+                    addDir(name,URL,200,iconimage ,plot)
             except:
                 pass
     if data:        
@@ -60,13 +72,27 @@ def Episodes(url,page):
 
 
 
+def GetError():
+    lang = ADDON.getSetting('lang')
+    if lang=='English':return 'Error Getting Stream'        
+    if lang=='Spanish':return 'Error al obtener la transmision'
+    if lang=='German':return 'Fehler beim Streamen'
+    if lang=='Dutch':return 'Fout bij ophalen van stream'
+
+def GetLang():
+    lang = ADDON.getSetting('lang')
+    if lang=='English':return 'tv','StreamPage','global_Nickjr_web'        
+    if lang=='Spanish':return 'es','StreamPage','es_global_Nickjr_web'
+    if lang=='German':return 'de','StreamPage','global_Nickjr_web'
+    if lang=='Dutch':return 'nl','StreamPage','global_Nickjr_web'
+
 
 
 def GrabStream(url):
-    
+    DOTCOM , THEPAGE ,API = GetLang()
     headers={'Host':'media.mtvnservices.com',
             'User-Agent':'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-GB; rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13 (.NET CLR 3.5.30729)',
-            'Referer':'http://www.nickjr.nl',
+            'Referer':'http://www.nickjr.%s' % DOTCOM,
             'Connection':'close',
             'Accept-Encoding':'gzip, deflate'}
              
@@ -75,27 +101,33 @@ def GrabStream(url):
 
     link=json.loads(link)
 
-    data=link['feed']['items'][0]['group']['content']+'&format=json'
-    
-    headers={'Host':'media-utils.mtvnservices.com',
-            'User-Agent':'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-GB; rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13 (.NET CLR 3.5.30729)',
-            'Referer':'http://www.nickjr.nl',
-            'Connection':'close',
-            'Accept-Encoding':'gzip, deflate'}
-    
-    link = net.http_GET(data.replace('{device}','iPhone10,3'),headers=headers).content
-    link=json.loads(link)
+    try:
+        data=link['feed']['items'][0]['group']['content']+'&format=json'
+        
+        headers={'Host':'media-utils.mtvnservices.com',
+                'User-Agent':'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-GB; rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13 (.NET CLR 3.5.30729)',
+                'Referer':'http://www.nickjr.%s' % DOTCOM,
+                'Connection':'close',
+                'Accept-Encoding':'gzip, deflate'}
+        
+        link = net.http_GET(data.replace('{device}','iPhone10,3'),headers=headers).content
+        link=json.loads(link)
 
-    return link['package']['video']['item'][0]['rendition'][0]['src']
-    
+        return link['package']['video']['item'][0]['rendition'][0]['src']
+    except:
+        return False
     
 def PLAY_STREAM(name,url,iconimage):
-
-    liz = xbmcgui.ListItem(name, iconImage='DefaultVideo.png', thumbnailImage=iconimage)
-    liz.setInfo(type='Video', infoLabels={'Title':name})
-    liz.setProperty("IsPlayable","true")
-    liz.setPath(GrabStream(url))
-    xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, liz)
+    STREAM =GrabStream(url)
+    if STREAM:
+        liz = xbmcgui.ListItem(name, iconImage='DefaultVideo.png', thumbnailImage=iconimage)
+        liz.setInfo(type='Video', infoLabels={'Title':name})
+        liz.setProperty("IsPlayable","true")
+        liz.setPath(STREAM)
+        xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, liz)
+    else:
+        dialog = xbmcgui.Dialog()
+        dialog.ok("Nick Jnr", GetError(),'', '')
     
 
 
