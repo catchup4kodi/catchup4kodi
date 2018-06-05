@@ -98,8 +98,8 @@ def OPEN_URL_PROXY(url):
         
 
     if 'england' in PROXYBASE:
-        PROXYURL = 'https://www.englandproxy.co.uk/'
-        PROXYREF = 'https://www.englandproxy.co.uk/'
+        PROXYURL = 'http://www.englandproxy.co.uk/'
+        PROXYREF = 'http://www.englandproxy.co.uk/'
 
         
     import base64
