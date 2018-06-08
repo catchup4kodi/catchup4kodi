@@ -76,13 +76,14 @@
     </extension>
 </addon>
 
-<addon id="plugin.video.itv" name="ITV" version="2.5.3" provider-name="LittleWiz">
+<addon id="plugin.video.itv" name="ITV" version="2.5.4" provider-name="LittleWiz">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
   </requires>
   <extension point="xbmc.python.pluginsource" library="default.py">
         <provides>video</provides>
   </extension>
+  <extension library="service.py" point="xbmc.service"  start="startup"/>
   <extension point="xbmc.addon.metadata">
     <platform>all</platform>
     <summary>Plugin for ITV Live Tv Player</summary>
