@@ -1,6 +1,6 @@
 import os,xbmc
 
-cache = xbmc.translatePath(os.path.join('special://home', 'cache'))
+cache = xbmc.translatePath(os.path.join('special://temp'))
 
 for root, dirs, files in os.walk(cache):
 
