@@ -284,7 +284,8 @@ def NextPageGenre(url):
     setView('movies', 'episode-view')
 
 
-def ForCategrories(NEW_URL):    
+def ForCategrories(NEW_URL):
+    #xbmc.log(NEW_URL)
     HTML=OPEN_URL(NEW_URL)
     
     html=HTML.split('data-ip-id="')
@@ -351,12 +352,14 @@ def Genre(url):
                 nameurl.append(h.unescape(name))
                 urlurl.append('/iplayer/categories/'+url)
         
-        NEW_URL='http://www.bbc.co.uk%s/all?sort=dateavailable'%urlurl[xbmcgui.Dialog().select('Please Select Category', nameurl)]
+        NEW_URL='http://www.bbc.co.uk%s?sort=dateavailable'%urlurl[xbmcgui.Dialog().select('Please Select Category', nameurl)]
     else:
         NEW_URL = url
     if '/categories/' in NEW_URL:
-        return ForCategrories(NEW_URL)
-    
+        return GetEpisodes(NEW_URL.replace('featured','most-recent'))
+
+    NEW_URL = NEW_URL.replace('featured','most-recent')
+    #xbmc.log(NEW_URL)
     HTML=OPEN_URL(NEW_URL)
     html=HTML.split('programme">')
     for p in html:
@@ -498,17 +501,23 @@ def Search(search_entered):
 
 
 def GetEpisodes(id, page=1):
-    url  = 'http://www.bbc.co.uk/iplayer/episodes/%s?page=%d' % (id, page)
-  
+
+    if not '/categories/' in id:
+        
+        url  = 'http://www.bbc.co.uk/iplayer/episodes/%s?page=%d' % (id, page)
+    else:
+
+        url = id
+    #xbmc.log(url)    
     link = OPEN_URL(url)
-    html = link.split('<li class="list__grid__item')
+    html = link.split('class="rs-image"')
     for p in html:
         try:
             #IPID=p.split('"')[0]
-            URL=re.compile('href="(.+?)"').findall (p)[0]
-         
+            URL=re.compile('<a href="(.+?)"').findall (p)[0]
+
             name=re.compile('skylark typo--bold">(.+?)<').findall (p)[0]
-           
+ 
             try:iconimage=re.compile('srcSet="(.+?),').findall (p)[0]
             except:iconimage=''
             if ',' in iconimage:
@@ -525,13 +534,20 @@ def GetEpisodes(id, page=1):
             else:
                 _URL_ = URL
                 
-            IPID= URL.split('episode/')[1].split('/')[0]
-
+            try:
+                IPID= URL.split('episode/')[1].split('/')[0]
                 
-            if ADDON.getSetting('autoplay')=='true':
-                mode=14
-            else:
-                mode=5
+                if ADDON.getSetting('autoplay')=='true':
+                    mode=14
+                else:
+                    mode=5
+            except:
+                IPID= URL.split('episodes/')[1].split('/')[0]
+                _URL_ = IPID
+                mode= 4
+                
+                
+
                 
             addDir(name,_URL_,mode,iconimage.replace('464x261','832x468').replace('416x234','832x468').replace('304x171','832x468') ,'',IPID)
         except:
@@ -787,7 +803,7 @@ def GetLivePlayable(name,url,iconimage):
 
  
 def OPEN_URL(url,resolve=False):
-
+ 
     headers = {'User-Agent':'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36'}
     
     if ADDON.getSetting('new_proxy')=='false':
