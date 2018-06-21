@@ -184,7 +184,7 @@ def LIVE(url):
                     mode = 8
                 else:
                     mode = 7
-                    sim = 'sim'+icon_num
+                    sim = 'itv'+icon_num
                     
                 if url=='dont':
                     name = '[COLOR plum]On Now[/COLOR] - [COLOR green]%s[/COLOR] - %s' % (channel,title)
@@ -231,20 +231,24 @@ def PLAY_STREAM(name,url,iconimage):
         STREAM=url
 
     else:    
-        SoapMessage=TEMPLATE(url,'itv'+url.replace('sim',''))
-        headers={'Content-Length':'%d'%len(SoapMessage),'Content-Type':'text/xml; charset=utf-8','Host':'secure-mercury.itv.com','Origin':'http://www.itv.com','Referer':'http://www.itv.com/Mercury/Mercury_VideoPlayer.swf?v=null','SOAPAction':"http://tempuri.org/PlaylistService/GetPlaylist",'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36'}
+        #SoapMessage=TEMPLATE(url,'itv'+url.replace('sim',''))
+        #headers={'Content-Length':'%d'%len(SoapMessage),'Content-Type':'text/xml; charset=utf-8','Host':'secure-mercury.itv.com','Origin':'http://www.itv.com',
+                 #'Referer':'http://www.itv.com/Mercury/Mercury_VideoPlayer.swf?v=null',
+                 #'SOAPAction':"http://tempuri.org/PlaylistService/GetPlaylist",
+                 #'User-Agent':'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36'}
 
         if ADDON.getSetting('proxy')=='true':
             if ADDON.getSetting('custom_ip')=='':
                 IP=getip()
             else:
                 IP=ADDON.getSetting('custom_ip')
-            headers={"X-Forwarded-For":IP,'Content-Length':'%d'%len(SoapMessage),'Content-Type':'text/xml; charset=utf-8','Host':'secure-mercury.itv.com','Origin':'http://www.itv.com','Referer':'http://www.itv.com/Mercury/Mercury_VideoPlayer.swf?v=null','SOAPAction':"http://tempuri.org/PlaylistService/GetPlaylist",'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36'}
+            #headers={"X-Forwarded-For":IP,'Content-Length':'%d'%len(SoapMessage),'Content-Type':'text/xml; charset=utf-8','Host':'secure-mercury.itv.com','Origin':'http://www.itv.com','Referer':'http://www.itv.com/Mercury/Mercury_VideoPlayer.swf?v=null','SOAPAction':"http://tempuri.org/PlaylistService/GetPlaylist",'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36'}
 
             ENDING='|X-Forwarded-For='+IP
 
-        res, response = http.request("https://secure-mercury.itv.com/PlaylistService.svc", 'POST', headers=headers, body=SoapMessage)
-        
+        res, response = http.request("https://mediaplayer.itv.com/flash/playlists/ukonly/%s.xml" %url.lower())
+        #res, response = http.request("https://secure-mercury.itv.com/PlaylistService.svc", 'POST', headers=headers, body=SoapMessage)
+ 
         rtmp=re.compile('<MediaFiles base="(.+?)"').findall(response)[0]
         if 'CITV' in name:
             r='CDATA\[(citv.+?)\]'
