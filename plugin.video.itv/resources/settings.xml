@@ -1,12 +1,13 @@
 <settings>
   <!-- Streams -->
   <category label="30200">
+    <setting id="delcache" type="bool" label="Delete Cache on Startup" default="true"/>
     <setting id="SHOWLIVE" type="bool" label="Show Live On Launch" default="true"/>
     <setting label="" type="lsep"/>
     <setting label="You need to disable inbuilt proxy to use HLS for Catchup" type="lsep"/>
     <setting id="hls" label="Use HLS For Catchup"  type="bool" default="true" enable="!eq(3,true)" />
-    <setting label="" type="lsep"/>
     <setting id="livepro" label="Use HLS For Live Tv"  type="bool" default="true" />
+    <setting id="UA" label="Use Safari User-Agent"  type="bool" default="true" />
     <setting label="" type="lsep"/>
     <setting id="subtitles_control" label="30130"  type="bool" default="false" />
     <setting id="video_stream" label="30210" type="enum" values="Auto|H.264 (400Kb)|H.264 (600kb)|H.264 (800kb)|H.264 (1200kb)|H.264 (1800kb)" default="0" />

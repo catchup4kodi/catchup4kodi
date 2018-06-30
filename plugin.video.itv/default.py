@@ -586,9 +586,11 @@ def PLAY_STREAM_HLS_LIVE(name,url,iconimage):
     req.add_header('User-Agent','Mozilla/5.0 (iPhone; CPU iPhone OS 11_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/11.0 Mobile/15E148 Safari/604.1')       
     req.add_header('Referer',REF)
 
+    if ADDON.getSetting('UA')=='true':
+        data  = {"user": {"itvUserId": "", "entitlements": [], "token": ""}, "device": {"manufacturer": "Safari", "model": "5", "os": {"name": "Windows NT", "version": "6.1", "type": "desktop"}}, "client": {"version": "4.1", "id": "browser"}, "variantAvailability": {"featureset": {"min": ["hls", "aes"], "max": ["hls", "aes"]}, "platformTag": "dotcom"}}
+    else:
+        data  = {"user":{"itvUserId":"","entitlements":[],"token":""},"device":{"manufacturer":"Apple","model":"iPad","os":{"name":"iPhone OS","version":"6.0","type":"ios"}},"client":{"version":"4.1","id":"browser"},"variantAvailability":{"featureset":{"min":["hls","aes"],"max":["hls","aes"]},"platformTag":"mobile"}}
 
-    data  = {"user":{"itvUserId":"","entitlements":[],"token":""},"device":{"manufacturer":"Apple","model":"iPad","os":{"name":"iPhone OS","version":"6.0","type":"ios"}},"client":{"version":"4.1","id":"browser"},"variantAvailability":{"featureset":{"min":["hls","aes"],"max":["hls","aes"]},"platformTag":"mobile"}}
-    #data  = {"user": {"itvUserId": "", "entitlements": [], "token": ""}, "device": {"manufacturer": "Safari", "model": "5", "os": {"name": "Windows NT", "version": "6.1", "type": "desktop"}}, "client": {"version": "4.1", "id": "browser"}, "variantAvailability": {"featureset": {"min": ["hls", "aes"], "max": ["hls", "aes"]}, "platformTag": "dotcom"}}
 
 
     try:
