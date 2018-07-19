@@ -30,6 +30,11 @@ class Zone(tzinfo):
          return self.name
 
 
+if ADDON.getSetting('premium')=='false':
+        dialog = xbmcgui.Dialog()
+        dialog.ok("TV Player", 'You Need and account with Tv Player','Please sign up for free account', '[COLOR royalblue]TVPLAYER.COM[/COLOR]')
+        ADDON.openSettings()
+
 def login():
     loginurl = 'https://tvplayer.com/account/login/'
     email = ADDON.getSetting('email')
@@ -110,10 +115,7 @@ def CATEGORIES():
         except:fanart=''
         if status=='online':
             if ADDON.getSetting('genre')== 'false':
-                if ADDON.getSetting('premium')== 'true':
-                    addDir(name,id,200,icon,desc,fanart,GENRE)
-                else:
-                    if field['type']=='free':
+                if field['type']=='free':
                         addDir(name,id,200,icon,desc,fanart,GENRE)
             else:
                 if GENRE not in uniques:
@@ -162,10 +164,7 @@ def GENRE(name,url):
         fanart=field['programmes'][0]['thumbnail']
         if status=='online':
             if GENRE in genre:
-                if ADDON.getSetting('premium')== 'true':
-                    addDir(name,id,200,icon,desc,fanart,GENRE)
-                else:
-                    if field['type']=='free':
+                if field['type']=='free':
                         addDir(name,id,200,icon,desc,fanart,GENRE)
 
 

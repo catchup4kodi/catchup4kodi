@@ -163,7 +163,7 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.tvplayer" name="Tv Player" version="0.3.2" provider-name="catchup4kodi">
+<addon id="plugin.video.tvplayer" name="Tv Player" version="0.3.3" provider-name="catchup4kodi">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
   </requires>

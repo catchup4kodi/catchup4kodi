@@ -1,6 +1,6 @@
 <settings>
 <category label="Settings">
-	<setting id="premium" type="bool" label="Enable Premium" default="false"/>
+	<setting id="premium" type="bool" label="Login" default="false"/>
 	<setting id="email" type="text" label="Email" default="" enable="!eq(-1,false)"/>
 	<setting id="password" type="text" label="Password" default="" enable="!eq(-2,false)"/>	
     <setting label="" type="lsep"/>
@@ -12,7 +12,7 @@
 </category>
 
 <category label="Auto View">
-	<setting id="auto-view" type="bool" label="Enable Automatic View" default="false"/>
-	<setting id="default" type="number" label="Default" default="50" enable="!eq(-1,false)"/>
+	<setting id="auto-view" type="bool" label="Enable Automatic View" default="true"/>
+	<setting id="default" type="number" label="Default" default="504" enable="!eq(-1,false)"/>
 </category>
 </settings>
