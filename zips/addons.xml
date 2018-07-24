@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-<addon id="plugin.video.bbciplayer" name="BBC iPlayer" version="0.6.8" provider-name="LittleWiz">
+<addon id="plugin.video.bbciplayer" name="BBC iPlayer" version="0.6.9" provider-name="LittleWiz">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
   </requires>

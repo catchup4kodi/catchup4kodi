@@ -222,11 +222,11 @@ def GetByChannel(url):
     for p in link:
         try:
             name=re.compile('alt="(.+?)"').findall(p)[0]
-            _url=re.compile('href="(.+?)"').findall(p)[0]+'/a-z'
+            _url=re.compile('href="(.+?)"').findall(p)[0]+'/a-z?page=0'
       
             if len(name)<16:
                 if not 'http' in _url:
-                    _url='http://www.bbc.co.uk/'+_url
+                    _url='http://www.bbc.co.uk'+_url
                 addDir(name,_url,7,ART+'iplay.jpg','')
         except:pass
     setView('movies', 'default')
@@ -339,7 +339,7 @@ def ForCategrories(NEW_URL):
         pass  
 
 def Genre(url):
-
+    
     if not len(url)> 3:
         nameurl=[]
         urlurl=[]
@@ -352,14 +352,15 @@ def Genre(url):
                 nameurl.append(h.unescape(name))
                 urlurl.append('/iplayer/categories/'+url)
         
-        NEW_URL='http://www.bbc.co.uk%s?sort=dateavailable'%urlurl[xbmcgui.Dialog().select('Please Select Category', nameurl)]
+        NEW_URL='http://www.bbc.co.uk%s?sort=dateavailable&page=1'%urlurl[xbmcgui.Dialog().select('Please Select Category', nameurl)]
     else:
         NEW_URL = url
-    if '/categories/' in NEW_URL:
-        return GetEpisodes(NEW_URL.replace('featured','most-recent'))
+        
+    
+    return GetEpisodes(NEW_URL.replace('featured','most-recent'))
 
     NEW_URL = NEW_URL.replace('featured','most-recent')
-    #xbmc.log(NEW_URL)
+    
     HTML=OPEN_URL(NEW_URL)
     html=HTML.split('programme">')
     for p in html:
@@ -411,9 +412,9 @@ def Genre(url):
         except:pass             
 
     try:
-        HTML=HTML.split('pagination__item--next">')[1]
+        HTML=HTML.split('pagination__number">')[1]
         
-        nextpage = urllib.unquote(re.compile('<a href="(.+?)"').findall(HTML)[0])
+        nextpage = urllib.unquote(re.compile('pagination__number"><a href="(.+?)"').findall(HTML)[0])
         if '?' in NEW_URL:
             NEW_URL=NEW_URL.split('?')[0]
         _URL_=NEW_URL+nextpage.replace('&#x3D;','=')
@@ -473,7 +474,7 @@ def MySearch():
     favs = ADDON.getSetting('favs').split(',')
     for title in favs:
         NEW_URL='http://www.bbc.co.uk/iplayer/search?q=%s' % title.replace(' ','%20')        
-        addDir(title,NEW_URL,8,ART+'iplay.jpg','')
+        addDir(title,NEW_URL,4,ART+'iplay.jpg','')
     
 
 def Search(search_entered):
@@ -497,25 +498,44 @@ def Search(search_entered):
 
     NEW_URL='http://www.bbc.co.uk/iplayer/search?q=%s' % search_entered
 
-    NextPageGenre(NEW_URL)
+    GetEpisodes(NEW_URL)
 
 
 def GetEpisodes(id, page=1):
-
-    if not '/categories/' in id:
+    
+    if not 'http' in id:
         
         url  = 'http://www.bbc.co.uk/iplayer/episodes/%s?page=%d' % (id, page)
-    else:
+        #xbmc.log(url)
+        link = OPEN_URL(url)
 
-        url = id
-    #xbmc.log(url)    
-    link = OPEN_URL(url)
-    html = link.split('class="rs-image"')
+    else:
+        url= id
+        if '?page' in id:
+            page = id.split('?page=')[1]
+            page = int(page)+1
+            id = id.split('?')[0]
+            url = id+'?page=%d' % page
+        if '&page' in id:
+            page = id.split('&page=')[1]
+            page = int(page)+1
+            id = id.split('&')[0]
+            url = id+'&page=%d' % page
+        #bmc.log(url)    
+        link = OPEN_URL(url)
+    
+    
+    html = link.split('<li class="grid__item')
     for p in html:
         try:
             #IPID=p.split('"')[0]
-            URL=re.compile('<a href="(.+?)"').findall (p)[0]
+            if 'all episodes' in p:
+                amount = 1
+                
+            else:
+                amount = 0
 
+            URL=re.compile('<a href="(.+?)"').findall (p)[amount]
             name=re.compile('skylark typo--bold">(.+?)<').findall (p)[0]
  
             try:iconimage=re.compile('srcSet="(.+?),').findall (p)[0]
@@ -523,8 +543,8 @@ def GetEpisodes(id, page=1):
             if ',' in iconimage:
                 iconimage=iconeimage.split(',')[1]
          
-            #plot=re.compile('<p class="synopsis">(.+?)</p>').findall (p)[0]
-
+            try:plot=re.compile('aria-label="(.+?)"').findall (p)[0]
+            except:plot=''
             #except:
                 #name=name
             
@@ -549,7 +569,7 @@ def GetEpisodes(id, page=1):
                 
 
                 
-            addDir(name,_URL_,mode,iconimage.replace('464x261','832x468').replace('416x234','832x468').replace('304x171','832x468') ,'',IPID)
+            addDir(name,_URL_,mode,iconimage.replace('464x261','832x468').replace('416x234','832x468').replace('304x171','832x468') ,plot,IPID)
         except:
             pass
 
@@ -557,6 +577,14 @@ def GetEpisodes(id, page=1):
     if '/iplayer/episodes/%s?page=%d' % (id, page) in link:
         GetEpisodes(id, page=page)
         
+    
+
+    try:
+        if not 'episodes/' in url:
+            addDir('[COLOR blue]>> Next Page >>[/COLOR]',url,4,ART+'nextpage.jpg' ,'','')
+    except:
+        pass
+    
     setView('movies', 'episode-view')
 
 
