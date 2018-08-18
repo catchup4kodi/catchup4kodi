@@ -54,7 +54,7 @@ def fixImage(image, resolution):
 
 def CATEGORIES():
     addDir('My Searches','',11,ART+'iplay.jpg','')    
-    addDir('Most Popular','http://www.bbc.co.uk/iplayer/group/popular',10,ART+'iplay.jpg','')
+    addDir('Most Popular','http://www.bbc.co.uk/iplayer/group/popular?page=0',10,ART+'iplay.jpg','')
     addDir('By Channel','http://www.bbc.co.uk/iplayer',15,ART+'iplay.jpg','')
     addDir('iPlayer A-Z','url',3,ART+'iplay.jpg','')
     addDir('Categories','url',7,ART+'iplay.jpg','')
@@ -423,51 +423,98 @@ def Genre(url):
         pass      
     setView('movies', 'episode-view')   
 
-def POPULAR(url):
-    NEW_URL=url
-    HTML=OPEN_URL(NEW_URL)
+def POPULAR(id, page=1):
+    
+    if not 'http' in id:
+        
+        url  = 'http://www.bbc.co.uk/iplayer/episodes/%s?page=%d' % (id, page)
+        #xbmc.log(url)
+        link = OPEN_URL(url)
 
-    #match1=re.compile('data-ip-id="(.+?)">.+?href="(.+?)" title="(.+?)".+?img src="(.+?)".+?<p class="synopsis">(.+?)</p>',re.DOTALL).findall (html)
-    html=HTML.split('data-ip-id="')
+    else:
+        url= id
+        if '?page' in id:
+            page = id.split('?page=')[1]
+            page = int(page)+1
+            id = id.split('?')[0]
+            url = id+'?page=%d' % page
+        if '&page' in id:
+            page = id.split('&page=')[1]
+            page = int(page)+1
+            id = id.split('&')[0]
+            url = id+'&page=%d' % page
+        #bmc.log(url)
+        HELLO=url 
+        link = OPEN_URL(url)
+    
+    
+    html = link.split('<li class="grid__item')
     for p in html:
         try:
-            IPID=p.split('"')[0]
-            URL=re.compile('href="(.+?)"').findall (p)[0]
-            name=re.compile('title="(.+?)"').findall (p)[0]
-            try:iconimage=re.compile('img src="(.+?)"').findall (p)[0]
-            except:
-                try:iconimage=re.compile('srcset="(.+?)"').findall (p)[0]
-                except:iconimage=''
-   
-            plot=re.compile('<p class="synopsis">(.+?)</p>').findall (p)[0]
+            #IPID=p.split('"')[0]
+            if 'all episodes' in p:
+                amount = 1
+                
+            else:
+                amount = 0
 
-            #except:
-                #name=name    
-            _URL_=URL
-            if not IPID in _URL_:
-                IPID=IPID
-            else:
-                IPID=''
-                
-            if ADDON.getSetting('autoplay')=='true':
-                mode=14
-            else:
-                mode=5
-                
-            addDir(name,_URL_,mode,iconimage.replace('336x189','832x468') ,plot,IPID)
-        except:pass
+            URL=re.compile('<a href="(.+?)"').findall (p)[amount]
+            name=re.compile('skylark typo--bold">(.+?)<').findall (p)[0]
  
-    try:
-        HTML=HTML.split('next txt')[1]
+            try:iconimage=re.compile('srcSet="(.+?),').findall (p)[0]
+            except:iconimage=''
+            if ',' in iconimage:
+                iconimage=iconeimage.split(',')[1]
+         
+            try:plot=re.compile('aria-label="(.+?)"').findall (p)[0]
+            except:plot=''
+            
+            try:extra=' - '+re.compile('([0-9|/]+?):').findall (plot)[0]
+            except:
+                try:extra = ' - '+re.compile(' ([0-9|/]+?) ').findall (plot)[0]
+                except: extra=''
+            #except:
+                #name=name
+            
+            if 'http://www.bbc.co.uk' not in URL:
+                
+                _URL_='http://www.bbc.co.uk%s' %URL
+            else:
+                _URL_ = URL
+                
+            try:
+                IPID= URL.split('episode/')[1].split('/')[0]
+                
+                if ADDON.getSetting('autoplay')=='true':
+                    mode=14
+                else:
+                    mode=5
+            except:
+                IPID= URL.split('episodes/')[1].split('/')[0]
+                _URL_ = IPID
+                mode= 4
+                
+                
+
+                
+            addDir(name+extra,_URL_,mode,iconimage.replace('464x261','832x468').replace('416x234','832x468').replace('304x171','832x468') ,plot,IPID)
+        except:
+            pass
+
+    page = page + 1    
+    if '/iplayer/episodes/%s?page=%d' % (id, page) in link:
+        GetEpisodes(id, page=page)
         
-        nextpage = re.compile('<a href="(.+?)"').findall(HTML)[0].replace('amp;','')
-        if not nextpage in NEW_URL:
-            _URL_='http://www.bbc.co.uk'+nextpage
-           
-            addDir('[COLOR blue]>> Next Page >>[/COLOR]',_URL_,10,ART+'nextpage.jpg' ,'','')
+    
+
+    try:
+        if not 'episodes/' in url:
+            addDir('[COLOR blue]>> Next Page >>[/COLOR]',HELLO,10,ART+'nextpage.jpg' ,'','')
     except:
-        pass   
+        pass
+    
     setView('movies', 'episode-view')
+    
 
 def MySearch():
     addDir('Search','',9,ART+'iplay.jpg','')
