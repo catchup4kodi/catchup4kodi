@@ -549,6 +549,7 @@ def Search(search_entered):
 
 
 def GetEpisodes(id, page=1):
+   
     
     if not 'http' in id:
         
@@ -563,15 +564,15 @@ def GetEpisodes(id, page=1):
             page = int(page)+1
             id = id.split('?')[0]
             url = id+'?page=%d' % page
-        if '&page' in id:
+        elif '&page' in id:
             page = id.split('&page=')[1]
             page = int(page)+1
             id = id.split('&')[0]
             url = id+'&page=%d' % page
-        #bmc.log(url)    
+         
         link = OPEN_URL(url)
     
-    
+   
     html = link.split('<li class="grid__item')
     for p in html:
         try:
@@ -627,7 +628,7 @@ def GetEpisodes(id, page=1):
     
 
     try:
-        if not 'episodes/' in url:
+        if 'episodes/' in url:
             addDir('[COLOR blue]>> Next Page >>[/COLOR]',url,4,ART+'nextpage.jpg' ,'','')
     except:
         pass
