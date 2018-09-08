@@ -628,7 +628,7 @@ def GetEpisodes(id, page=1):
     
 
     try:
-        if 'episodes/' in url:
+        if '"Next Page">' in link and not 'search?' in url:
             addDir('[COLOR blue]>> Next Page >>[/COLOR]',url,4,ART+'nextpage.jpg' ,'','')
     except:
         pass

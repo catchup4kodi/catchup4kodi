@@ -104,7 +104,7 @@ def NEXTPAGE(SPLITME):
         Show_Red_Flag()
 
 def GETLINKS(name,url,iconimage):#  cause mode is empty in this one it will go back to first directory
-
+   
     link=OPEN_URL(url)
     NAME=[]
     url=[]
@@ -718,11 +718,33 @@ def LOGIN_VK(number,password,GET_URL):
     html = net.http_GET(GET_URL).content.replace('\\','')
     return html
 
-def PLAYSTREAM(name,url,iconimage):
+
+def matchat(url):
         
+        name=[]
+        URL=[]
+        linked = OPEN_URL(url)
+        r = 'hls:"(.+?)"'
+        match = re.compile(r,re.DOTALL).findall(linked)
+        if not match:
+            return Show_Red_Flag()
+        for stream in match:
+
+            name.append(stream.split('//')[1].split('/')[0])
+            URL.append('http:'+stream)
+            
+        return URL[xbmcgui.Dialog().select('Please Select Source', name)]
+
+
+
+
+def PLAYSTREAM(name,url,iconimage):
+        #xbmc.log(url)
         if 'ok.ru' in url:
             link = OKRU(url)
-
+            
+        elif 'matchat.online' in url:
+            link = matchat(url)
 
         else:
             import urlresolver
@@ -771,7 +793,7 @@ def get_params():
 
 # this is the listing of the items
 def addDir(name,url,mode,iconimage,page):
-        
+        name=name.replace('amp;','')
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&iconimage="+urllib.quote_plus(iconimage)+"&page="+str(page)
         ok=True
         liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
@@ -786,6 +808,7 @@ def addDir(name,url,mode,iconimage,page):
         return ok
 
 def addDir2(leagueURL,leagueName,theDate,name,url,mode,iconimage,page):
+        leagueName=leagueName.replace('amp;','')
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&iconimage="+urllib.quote_plus(iconimage)+"&leagueURL="+urllib.quote_plus(leagueURL)+"&leagueName="+urllib.quote_plus(leagueName)+"&theDate="+urllib.quote_plus(theDate)+"&page="+str(page)
         ok=True
         liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
@@ -794,6 +817,7 @@ def addDir2(leagueURL,leagueName,theDate,name,url,mode,iconimage,page):
         return ok
 
 def addDir3(name,mode,url):
+        name=name.replace('amp;','')
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
         ok=True
         liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
