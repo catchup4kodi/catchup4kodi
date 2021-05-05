@@ -381,13 +381,13 @@ def addFavorite(name,url,iconimage):
         import json
         favList = []
         if os.path.exists(favorites)==False:
-            print 'Making Favorites File'
+            print ('Making Favorites File')
             favList.append((name.split(' -')[0],url,iconimage))
             a = open(favorites, "w")
             a.write(json.dumps(favList))
             a.close()
         else:
-            print 'Appending Favorites'
+            print ('Appending Favorites')
             with open(favorites) as f:
                 a = f.read()
             try:
@@ -404,7 +404,7 @@ def addFavorite(name,url,iconimage):
 
 def rmFavorite(name):
         import json
-        print 'Remove Favorite'
+        print ('Remove Favorite')
         with open(favorites) as f:
             a = f.read()
         data = json.loads(a)
@@ -717,7 +717,7 @@ def HLS(url,iconimage):
     if __settings__.getSetting('subtitles_control') == 'true':
         if subtitles_exist == 1:
             subtitles_file = download_subtitles_HLS(SUBLINK, '')
-            print "Subtitles at ", subtitles_file
+            print ("Subtitles at ", subtitles_file)
             there_are_subtitles=1
         
     STREAM =  BEG+END
@@ -852,12 +852,12 @@ def VIDEO(url,iconimage):
         if match1:
             if __settings__.getSetting('subtitles_control') == 'true':
                 subtitles_file = download_subtitles(match1[0], offset)
-                print "Subtitles at ", subtitles_file
+                print ("Subtitles at ", subtitles_file)
                 there_are_subtitles=1
     
         for index in range(len(mediafile)):
-            print mediafile[index]
-            print "MEDIA ENTRY"
+            print (mediafile[index])
+            print ("MEDIA ENTRY")
     
         quality = int(__settings__.getSetting('video_stream'))
         selected_stream = 5
@@ -986,7 +986,7 @@ def get_url(url):
         except: 
             dialog = xbmcgui.Dialog()
             dialog.ok('Network Error', 'Failed to fetch URL', url)
-            print 'Network Error. Failed to fetch URL %s' % url
+            print ('Network Error. Failed to fetch URL %s' % url)
             raise
     
     return data
@@ -1118,50 +1118,50 @@ try:
         mode=int(params["mode"])
 except:
         pass
-print "Mode: "+str(mode)
-print "URL: "+str(url)
-print "Name: "+str(name)
-print "iconimage: "+str(iconimage)
+print ("Mode: "+str(mode))
+print ("URL: "+str(url))
+print ("Name: "+str(name))
+print ("iconimage: "+str(iconimage))
 
 if mode==None or url==None or len(url)<1:
-        print "categories"
+        print ("categories")
         CATS()
 elif mode==1:
-        print "index of : "+url
+        print ("index of : "+url)
         SHOWS(url)
 elif mode==2:
-        print "Getting Episodes: "+url
+        print ("Getting Episodes: "+url)
         EPS(name,url)
 elif mode==3:
-        print "Getting Videofiles: "+url
+        print ("Getting Videofiles: "+url)
         VIDEO(url,iconimage)
 elif mode==4:
-        print "Getting Videofiles: "+url
+        print ("Getting Videofiles: "+url)
         BESTOF(url)
 elif mode==5:
-        print "Getting Videofiles: "+url
+        print ("Getting Videofiles: "+url)
         BESTOFEPS(name,url)
 elif mode==6:
-        print "Getting Videofiles: "+url
+        print ("Getting Videofiles: "+url)
         STREAMS()
 elif mode==7:
-        print "Getting Videofiles: "+url
+        print ("Getting Videofiles: "+url)
         PLAY_STREAM(name,url,iconimage)
 
 elif mode==8:
-        print "Getting Videofiles: "+url
+        print ("Getting Videofiles: "+url)
         PLAY_STREAM_HLS_LIVE(name,url,iconimage)        
 
 elif mode==12:
-    print ""
+    print ("")
     getFavorites()
 
 elif mode==13:
-    print ""
+    print ("")
     addFavorite(name,url,iconimage)
 
 elif mode==14:
-    print ""
+    print ("")
     rmFavorite(name)
 
 elif mode==204:
