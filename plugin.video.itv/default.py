@@ -828,7 +828,7 @@ def VIDEO(url,iconimage):
     try:
         title2= title1[1].split("</ProgrammeTitle>")
         #print res
-        match2 = re.findall(ur'<PosterFrame>.*?<URL><\!\[CDATA\[(.*?)\].*?</PosterFrame>', res, flags=re.DOTALL)
+        match2 = re.findall(r'<PosterFrame>.*?<URL><\!\[CDATA\[(.*?)\].*?</PosterFrame>', res, flags=re.DOTALL)
         #print "match %s" % match2[0]
         if match2:
             thumbfile = match2[0]
@@ -848,7 +848,7 @@ def VIDEO(url,iconimage):
             there_are_subtitles=1
         except:     
             there_are_subtitles=0            
-        match1 = re.findall(ur'<ClosedCaptioningURIs>.*?<URL><\!\[CDATA\[(.*?)\].*?</ClosedCaptioningURIs>', res, flags=re.DOTALL)
+        match1 = re.findall(r'<ClosedCaptioningURIs>.*?<URL><\!\[CDATA\[(.*?)\].*?</ClosedCaptioningURIs>', res, flags=re.DOTALL)
         if match1:
             if __settings__.getSetting('subtitles_control') == 'true':
                 subtitles_file = download_subtitles(match1[0], offset)
