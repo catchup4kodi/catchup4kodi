@@ -1,11 +1,10 @@
-import urllib,urllib2,re,sys,socket,os,datetime,xbmcplugin,xbmcgui, xbmcaddon,json
+import urllib.request, urllib.parse, urllib.error,urllib.request,urllib.error,urllib.parse,re,sys,socket,os,datetime,xbmcplugin,xbmcgui, xbmcaddon,json
 from hashlib import md5
 
 
 # external libs
 sys.path.insert(0, xbmc.translatePath(os.path.join('special://home/addons/plugin.video.itv', 'lib')))
-import utils, httplib2, socks, httplib, logging, time
-import urllib2
+import utils, httplib2, socks, http.client, logging, time
 import datetime
 import time
 
@@ -318,15 +317,15 @@ def SHOWS(url):
             proxy_pass = __settings__.getSetting('proxy_pass')
         except:
             pass
-        passmgr = urllib2.HTTPPasswordMgrWithDefaultRealm()
+        passmgr = urllib.request.HTTPPasswordMgrWithDefaultRealm()
         proxy_details = 'http://' + proxy_server + ':' + proxy_port
         passmgr.add_password(None, proxy_details, proxy_user, proxy_pass) 
-        authinfo = urllib2.ProxyBasicAuthHandler(passmgr)
-        proxy_support = urllib2.ProxyHandler({"http" : proxy_details})
+        authinfo = urllib.request.ProxyBasicAuthHandler(passmgr)
+        proxy_support = urllib.request.ProxyHandler({"http" : proxy_details})
 
-        opener = urllib2.build_opener(proxy_support, authinfo)
-        urllib2.install_opener(opener)
-    f = urllib2.urlopen(url)
+        opener = urllib.request.build_opener(proxy_support, authinfo)
+        urllib.request.install_opener(opener)
+    f = urllib.request.urlopen(url)
     buf = f.read()
     buf=re.sub('&amp;','&',buf)
     buf=re.sub('&middot;','',buf)
@@ -445,16 +444,16 @@ def EPS(name,url):
             proxy_pass = __settings__.getSetting('proxy_pass')
         except:
             pass
-        passmgr = urllib2.HTTPPasswordMgrWithDefaultRealm()
+        passmgr = urllib.request.HTTPPasswordMgrWithDefaultRealm()
         proxy_details = 'http://' + proxy_server + ':' + proxy_port
         passmgr.add_password(None, proxy_details, proxy_user, proxy_pass) 
-        authinfo = urllib2.ProxyBasicAuthHandler(passmgr)
-        proxy_support = urllib2.ProxyHandler({"http" : proxy_details})
+        authinfo = urllib.request.ProxyBasicAuthHandler(passmgr)
+        proxy_support = urllib.request.ProxyHandler({"http" : proxy_details})
 
-        opener = urllib2.build_opener(proxy_support, authinfo)
-        urllib2.install_opener(opener)
+        opener = urllib.request.build_opener(proxy_support, authinfo)
+        urllib.request.install_opener(opener)
 
-    f = urllib2.urlopen(url)
+    f = urllib.request.urlopen(url)
     buf = f.read()
     buf=re.sub('&amp;','&',buf)
     buf=re.sub('&middot;','',buf)
@@ -501,8 +500,8 @@ def EPS(name,url):
     setView('tvshows', 'episode') 
 
 def OPEN_URL(url):
-    req = urllib2.Request(url, headers={'User-Agent' : "Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_3 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13G34 Safari/601.1"}) 
-    con = urllib2.urlopen( req )
+    req = urllib.request.Request(url, headers={'User-Agent' : "Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_3 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13G34 Safari/601.1"}) 
+    con = urllib.request.urlopen( req )
     link= con.read()
     return link
 
@@ -527,14 +526,14 @@ def OPEN_URL_PROXY(url):
     import base64
     if 'england' in PROXYREF:
         url=url.split('//')[1]
-        req = urllib2.Request(PROXYURL + url)
+        req = urllib.request.Request(PROXYURL + url)
     else:    
-        req = urllib2.Request(PROXYURL % base64.b64encode(url))
+        req = urllib.request.Request(PROXYURL % base64.b64encode(url))
 
         
     req.add_header('Referer', PROXYREF)                                                  
     req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-    response = urllib2.urlopen(req)
+    response = urllib.request.urlopen(req)
     link=response.read()
     response.close()
     return link
@@ -570,7 +569,7 @@ def PLAY_STREAM_HLS_LIVE(name,url,iconimage):
     POSTURL='https://magni.itv.com/playlist/itvonline/'+url
     hmac=re.compile('data-video-hmac="(.+?)"').findall(buf)[0]
     
-    req = urllib2.Request(POSTURL)
+    req = urllib.request.Request(POSTURL)
     req.add_header('Host','magni.itv.com')
     req.add_header('hmac',hmac)
     req.add_header('Accept','application/vnd.itv.vod.playlist.v2+json')
@@ -594,7 +593,7 @@ def PLAY_STREAM_HLS_LIVE(name,url,iconimage):
 
 
     try:
-        content = urllib2.urlopen(req, json.dumps(data)).read()
+        content = urllib.request.urlopen(req, json.dumps(data)).read()
     except:
         
         dialog = xbmcgui.Dialog()
@@ -663,7 +662,7 @@ def HLS(url,iconimage):
     POSTURL=re.compile('data-video-id="(.+?)"').findall(buf)[0]
     hmac=re.compile('data-video-hmac="(.+?)"').findall(buf)[0]
     
-    req = urllib2.Request(POSTURL)
+    req = urllib.request.Request(POSTURL)
     req.add_header('Host','magni.itv.com')
     req.add_header('hmac',hmac)
     req.add_header('Accept','application/vnd.itv.vod.playlist.v2+json')
@@ -687,7 +686,7 @@ def HLS(url,iconimage):
 
 
     try:
-        content = urllib2.urlopen(req, json.dumps(data)).read()
+        content = urllib.request.urlopen(req, json.dumps(data)).read()
     except:
         
         dialog = xbmcgui.Dialog()
@@ -957,7 +956,7 @@ def decode_date(date):
     month=1
     monthname = monthname.lower()
     lookup = {'jan':1, 'feb':2, 'mar':3, 'apr':4, 'may':5, 'jun':6, 'jul':7, 'aug':8, 'sep':9, 'oct':10, 'nov':11, 'dec':12}
-    if lookup.has_key(monthname[:3]):
+    if monthname[:3] in lookup:
         month=lookup[monthname[:3]]
     
     try:
@@ -1061,7 +1060,7 @@ def addDir(name,url,mode,iconimage,plot='',isFolder=True):
         try:
             PID = iconimage.split('episode/')[1].split('?')[0]
         except:pass    
-        u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&iconimage="+urllib.quote_plus(iconimage)
+        u=sys.argv[0]+"?url="+urllib.parse.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.parse.quote_plus(name)+"&iconimage="+urllib.parse.quote_plus(iconimage)
         ok=True
         liz=xbmcgui.ListItem(name,iconImage="DefaultVideo.png", thumbnailImage=iconimage)
         liz.setInfo( type="Video", infoLabels={ "Title": name, "Plot": plot,'Premiered' : '2012-01-01','Episode' : '7-1' } )
@@ -1084,7 +1083,7 @@ def addDir(name,url,mode,iconimage,plot='',isFolder=True):
         return ok
 
 def addDir2(name,url,mode,date, episode,iconimage,plot='',isFolder=True):
-        u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&iconimage="+urllib.quote_plus(iconimage)
+        u=sys.argv[0]+"?url="+urllib.parse.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.parse.quote_plus(name)+"&iconimage="+urllib.parse.quote_plus(iconimage)
         ok=True
         liz=xbmcgui.ListItem(name,iconImage="DefaultVideo.png", thumbnailImage=iconimage)
         liz.setInfo( type="Video", infoLabels={ "Title": name, "Plot": plot,'Premiered' : date,'Episode' : episode } )
@@ -1103,15 +1102,15 @@ iconimage=None
 mode=None
 
 try:
-        url=urllib.unquote_plus(params["url"])
+        url=urllib.parse.unquote_plus(params["url"])
 except:
         pass
 try:
-        name=urllib.unquote_plus(params["name"])
+        name=urllib.parse.unquote_plus(params["name"])
 except:
         pass
 try:
-        iconimage=urllib.unquote_plus(params["iconimage"])
+        iconimage=urllib.parse.unquote_plus(params["iconimage"])
 except:
         pass
 try:
