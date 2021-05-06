@@ -3,7 +3,7 @@
   <requires>
     <import addon="xbmc.python" version="3.0.0"/>
   </requires>
-  <extension point="xbmc.python.pluginsouce" library="default.py">
+  <extension point="xbmc.python.pluginsource" library="default.py">
         <provides>video</provides>
   </extension>	
   <extension library="service.py" point="xbmc.service"  start="startup"/>	
