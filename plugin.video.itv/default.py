@@ -564,42 +564,41 @@ def HLS(url,iconimage):
     
     #xbmc.log(str(url))            
     ENDING=''
-    buf = OPEN_URL(url)
+    buf = OPEN_URL(url).decode('utf-8')
 
     TITLE=re.compile('data-video-title="(.+?)"').findall(buf)[0]
     POSTURL=re.compile('data-video-id="(.+?)"').findall(buf)[0]
     hmac=re.compile('data-video-hmac="(.+?)"').findall(buf)[0]
-    
+
+    #data  = {"user": {"itvUserId": "", "entitlements": [], "token": ""}, "device": {"manufacturer": "Safari", "model": "5", "os": {"name": "Windows NT", "version": "6.1", "type": "desktop"}}, "client": {"version": "4.1", "id": "browser"}, "variantAvailability": {"featureset": {"min": ["hls", "aes", "outband-webvtt"], "max": ["hls", "aes", "outband-webvtt"]}, "platformTag": "dotcom"}}
+    data  = {"user": {"itvUserId": "", "entitlements": [], "token": ""}, "device": {"manufacturer": "Safari", "model": "5", "os": {"name": "Windows NT", "version": "6.1", "type": "desktop"}}, "client": {"version": "4.1", "id": "browser"}, "variantAvailability": {"featureset": {"min": ["hls", "aes", "outband-webvtt"], "max": ["hls", "aes", "outband-webvtt"]}, "platformTag": "mobile"}}
+
     req = urllib.request.Request(POSTURL)
+    jsondata = json.dumps(data)
+    jsondataasbytes = jsondata.encode('utf-8')   # needs to be bytes
+
     req.add_header('Host','magni.itv.com')
     req.add_header('hmac',hmac)
     req.add_header('Accept','application/vnd.itv.vod.playlist.v2+json')
     req.add_header('Proxy-Connection','keep-alive')
     req.add_header('Accept-Language','en-gb')
     req.add_header('Accept-Encoding','gzip, deflate')
-    req.add_header('Content-Type','application/json')
+    req.add_header('Content-Type', 'application/json; charset=utf-8')
     req.add_header('Origin','http://www.itv.com')
     req.add_header('Connection','keep-alive')
     req.add_header('User-Agent','Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_3 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13G34 Safari/601.1')       
     req.add_header('Referer',url)
+    req.add_header('Content-Length', len(jsondataasbytes))
 
+    xbmc.log("Attempting to fetch: %s" % POSTURL)
+    xbmc.log("With data: %s" % data)
+    xbmc.log("HMAC: %s" % hmac)
+    xbmc.log("Refer: %s" % url)
 
-   #data  = {"user":{"itvUserId":"","entitlements":[],"token":""},"device":{"manufacturer":"Apple","model":"iPhone","os":{"name":"iPad OS","version":"11.2.5","type":"ios"}},"client":{"version":"4.1","id":"browser"},"variantAvailability":{"featureset":{"min":["hls","aes"],"max":["hls","aes"]},"platformTag":"mobile"}}
-    
-    data  = {"user": {"itvUserId": "", "entitlements": [], "token": ""}, "device": {"manufacturer": "Safari", "model": "5", "os": {"name": "Windows NT", "version": "6.1", "type": "desktop"}}, "client": {"version": "4.1", "id": "browser"}, "variantAvailability": {"featureset": {"min": ["hls", "aes", "outband-webvtt"], "max": ["hls", "aes", "outband-webvtt"]}, "platformTag": "dotcom"}}
-    #data  = {"user":{"itvUserId":"","entitlements":[],"token":""},"device":{"manufacturer":"Apple","model":"iPad","os":{"name":"iPhone OS","version":"6.0","type":"ios"}},"client":{"version":"4.1","id":"browser"},"variantAvailability":{"featureset":{"min":["aes","hls", "outband-webvtt"],"max":["hls","aes", "outband-webvtt"]},"platformTag":"mobile"}}
-
-
-    try:
-        content = urllib.request.urlopen(req, json.dumps(data)).read()
-    except:
-        
-        dialog = xbmcgui.Dialog()
-        dialog.ok('ITV Player', '','Not Available', '')
-        return ''
+    with urllib.request.urlopen(req,jsondataasbytes) as f:
+        content = f.read()
 
     link=json.loads(content)
-
 
     BEG = link['Playlist']['Video']['Base']
     bb= link['Playlist']['Video']['MediaFiles']
