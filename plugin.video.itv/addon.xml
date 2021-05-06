@@ -3,7 +3,7 @@
   <requires>
     <import addon="xbmc.python" version="3.0.0"/>
   </requires>
-  <extension point="xbmc.python.pluginsource" library="default.py">
+  <extension point="xbmc.python.pluginsouce" library="default.py">
         <provides>video</provides>
   </extension>	
   <extension library="service.py" point="xbmc.service"  start="startup"/>	
@@ -12,5 +12,8 @@
     <summary>Plugin for ITV Live Tv Player</summary>
     <description>ITV Player Front End</description>
     <news>Upgrade Python version to 3.0.0</news>
+    <assets>
+      <icon>icon.png</icon>
+  </assets>
   </extension>
 </addon>

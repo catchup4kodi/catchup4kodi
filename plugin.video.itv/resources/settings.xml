@@ -4,7 +4,6 @@
     <setting id="delcache" type="bool" label="Delete Cache on Startup" default="true"/>
     <setting id="SHOWLIVE" type="bool" label="Show Live On Launch" default="true"/>
     <setting label="" type="lsep"/>
-    <setting label="You need to disable inbuilt proxy to use HLS for Catchup" type="lsep"/>
     <setting id="hls" label="Use HLS For Catchup"  type="bool" default="true" enable="!eq(3,true)" />
     <setting id="livepro" label="Use HLS For Live Tv"  type="bool" default="true" />
     <setting id="UA" label="Use Safari User-Agent"  type="bool" default="true" />
@@ -15,13 +14,6 @@
     <setting id="ga_time" type="text" label="GA Called" default="2000-01-01 00:00:00" visible="false"/>
     <setting id="visitor_ga" type="text" label="GA visitor" default="" visible="false"/>
   </category>
-  <category label="Inbuilt Proxy">
-    <setting label="Not in UK? Use our in built proxy below." type="lsep"/>
-	<setting id="proxy" type="bool" label="Use Geo Unrestricted Catchup Only" default="false"/>
-	<setting id="new_custom_url" type="labelenum" label="Proxy Url" default="http://www.justproxy.co.uk/" values="http://www.englandproxy.co.uk/|http://www.justproxy.co.uk/|http://www.joeproxy.co.uk/" enable="!eq(-1,false)" />
-	<setting id="custom_ip" type="text" label="Custom UK IP" default="" values="" enable="!eq(-2,false)" />
-    <setting label="[COLOR green]-->>>[/COLOR] [COLOR red]Click Me To Grab A UK IP[/COLOR] [COLOR green]<<<--[/COLOR]" type="action" option="open" action="RunScript($CWD/grabnewip.py)" enable="!eq(-3,false)"/> 
-   </category>
   <!-- Auto View -->
   <category label="Auto-View">
 	<setting id="auto-view" type="bool" label="Enable Automatic View" default="false"/>

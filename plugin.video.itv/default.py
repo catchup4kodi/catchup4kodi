@@ -4,11 +4,9 @@ from hashlib import md5
 
 # external libs
 sys.path.insert(0, xbmc.translatePath(os.path.join('special://home/addons/plugin.video.itv', 'lib')))
-import utils, httplib2, socks, http.client, logging, time
+import utils, httplib2, http.client, logging, time
 import datetime
 import time
-
-
 
 PLUGIN='plugin.video.itv'
 ADDON = xbmcaddon.Addon(id=PLUGIN)
@@ -45,14 +43,9 @@ livepro = ADDON.getSetting('livepro')
 SHOWLIVE=ADDON.getSetting('SHOWLIVE')
 
 def get_httplib():
- 
-
-
     return httplib2.Http()
 
 http = get_httplib()
-
-
        
 # what OS?        
 environment = os.environ.get( "OS", "xbox" )
@@ -236,15 +229,6 @@ def PLAY_STREAM(name,url,iconimage):
                  #'SOAPAction':"http://tempuri.org/PlaylistService/GetPlaylist",
                  #'User-Agent':'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36'}
 
-        if ADDON.getSetting('proxy')=='true':
-            if ADDON.getSetting('custom_ip')=='':
-                IP=getip()
-            else:
-                IP=ADDON.getSetting('custom_ip')
-            #headers={"X-Forwarded-For":IP,'Content-Length':'%d'%len(SoapMessage),'Content-Type':'text/xml; charset=utf-8','Host':'secure-mercury.itv.com','Origin':'http://www.itv.com','Referer':'http://www.itv.com/Mercury/Mercury_VideoPlayer.swf?v=null','SOAPAction':"http://tempuri.org/PlaylistService/GetPlaylist",'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36'}
-
-            ENDING='|X-Forwarded-For='+IP
-
         res, response = http.request("https://mediaplayer.itv.com/flash/playlists/ukonly/%s.xml" %url.lower())
         #res, response = http.request("https://secure-mercury.itv.com/PlaylistService.svc", 'POST', headers=headers, body=SoapMessage)
  
@@ -302,29 +286,6 @@ def BESTOFEPS(name,url):
                 addDir(name,url,3,'',isFolder=False)
         
 def SHOWS(url):
-        
-    if __settings__.getSetting('proxy_use') == 'true':
-        proxy_server = None
-        proxy_type_id = 0
-        proxy_port = 8080
-        proxy_user = None
-        proxy_pass = None
-        try:
-            proxy_server = __settings__.getSetting('proxy_server')
-            proxy_type_id = __settings__.getSetting('proxy_type')
-            proxy_port = __settings__.getSetting('proxy_port')
-            proxy_user = __settings__.getSetting('proxy_user')
-            proxy_pass = __settings__.getSetting('proxy_pass')
-        except:
-            pass
-        passmgr = urllib.request.HTTPPasswordMgrWithDefaultRealm()
-        proxy_details = 'http://' + proxy_server + ':' + proxy_port
-        passmgr.add_password(None, proxy_details, proxy_user, proxy_pass) 
-        authinfo = urllib.request.ProxyBasicAuthHandler(passmgr)
-        proxy_support = urllib.request.ProxyHandler({"http" : proxy_details})
-
-        opener = urllib.request.build_opener(proxy_support, authinfo)
-        urllib.request.install_opener(opener)
     f = urllib.request.urlopen(url)
     buf = f.read()
     buf=re.sub('&amp;','&',buf)
@@ -430,29 +391,6 @@ def parse_Date(date_string,format,thestrip):
     
 def EPS(name,url):
 
-    if __settings__.getSetting('proxy_use') == 'true':
-        proxy_server = None
-        proxy_type_id = 0
-        proxy_port = 8080
-        proxy_user = None
-        proxy_pass = None
-        try:
-            proxy_server = __settings__.getSetting('proxy_server')
-            proxy_type_id = __settings__.getSetting('proxy_type')
-            proxy_port = __settings__.getSetting('proxy_port')
-            proxy_user = __settings__.getSetting('proxy_user')
-            proxy_pass = __settings__.getSetting('proxy_pass')
-        except:
-            pass
-        passmgr = urllib.request.HTTPPasswordMgrWithDefaultRealm()
-        proxy_details = 'http://' + proxy_server + ':' + proxy_port
-        passmgr.add_password(None, proxy_details, proxy_user, proxy_pass) 
-        authinfo = urllib.request.ProxyBasicAuthHandler(passmgr)
-        proxy_support = urllib.request.ProxyHandler({"http" : proxy_details})
-
-        opener = urllib.request.build_opener(proxy_support, authinfo)
-        urllib.request.install_opener(opener)
-
     f = urllib.request.urlopen(url)
     buf = f.read()
     buf=re.sub('&amp;','&',buf)
@@ -552,18 +490,8 @@ def getip():
 def PLAY_STREAM_HLS_LIVE(name,url,iconimage):
 
     REF = 'https://www.itv.com/hub/'+url.lower()
-    
     ENDING='|User-Agent=Mozilla/5.0 (iPhone; CPU iPhone OS 11_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/11.0 Mobile/15E148 Safari/604.1'
-    
-    if ADDON.getSetting('proxy')=='false':
-        buf = OPEN_URL('https://www.itv.com/hub/'+url.lower())
-    else:
-        buf = OPEN_URL_PROXY('https://www.itv.com/hub/'+url.lower())
-        
-        if ADDON.getSetting('custom_ip')=='':
-            IP=getip()
-        else:
-            IP=ADDON.getSetting('custom_ip')
+    buf = OPEN_URL('https://www.itv.com/hub/'+url.lower())        
 
     TITLE= name
     POSTURL='https://magni.itv.com/playlist/itvonline/'+url
@@ -579,9 +507,6 @@ def PLAY_STREAM_HLS_LIVE(name,url,iconimage):
     req.add_header('Content-Type','application/json')
     req.add_header('Origin','http://www.itv.com')
     req.add_header('Connection','keep-alive')
-    if ADDON.getSetting('proxy')=='true':
-        req.add_header('X-Forwarded-For',IP)
-        ENDING='|User-Agent=Mozilla/5.0 (iPhone; CPU iPhone OS 11_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/11.0 Mobile/15E148 Safari/604.1&X-Forwarded-For='+IP
     req.add_header('User-Agent','Mozilla/5.0 (iPhone; CPU iPhone OS 11_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/11.0 Mobile/15E148 Safari/604.1')       
     req.add_header('Referer',REF)
 
@@ -595,18 +520,11 @@ def PLAY_STREAM_HLS_LIVE(name,url,iconimage):
     try:
         content = urllib.request.urlopen(req, json.dumps(data)).read()
     except:
-        
         dialog = xbmcgui.Dialog()
-        if ADDON.getSetting('proxy')=='true':
-            dialog.ok('ITV Player', 'Ooops Seems Your Uk IP Adress','[COLOR green]%s[/COLOR] Is Out Of Date' %IP, 'Gonna Grab New One Now')
-            import grabnewip
-        else:
-            dialog.ok('ITV Player', '','Not Available', '')
+        dialog.ok('ITV Player', '','Not Available', '')
         return ''
 
-
     link=json.loads(content)
-
 
     BEG = link['Playlist']['Video']['Base']
     bb= link['Playlist']['Video']['MediaFiles']
@@ -637,26 +555,14 @@ def HLS(url,iconimage):
     #xbmc.log(str(url))  
     if url.endswith('##'):
         url=url.split('##')[0]
-        if ADDON.getSetting('proxy')=='false':
-            buf = OPEN_URL(url)
-        else:
-            buf = OPEN_URL_PROXY(url)
+        buf = OPEN_URL(url)
             
         link=buf.split('data-episode-current')[1]
         url=re.compile('href="(.+?)"').findall(link)[0]
     
     #xbmc.log(str(url))            
     ENDING=''
-    
-    if ADDON.getSetting('proxy')=='false':
-        buf = OPEN_URL(url)
-    else:
-        buf = OPEN_URL_PROXY(url)
-        
-        if ADDON.getSetting('custom_ip')=='':
-            IP=getip()
-        else:
-            IP=ADDON.getSetting('custom_ip')
+    buf = OPEN_URL(url)
 
     TITLE=re.compile('data-video-title="(.+?)"').findall(buf)[0]
     POSTURL=re.compile('data-video-id="(.+?)"').findall(buf)[0]
@@ -672,9 +578,6 @@ def HLS(url,iconimage):
     req.add_header('Content-Type','application/json')
     req.add_header('Origin','http://www.itv.com')
     req.add_header('Connection','keep-alive')
-    if ADDON.getSetting('proxy')=='true':
-        req.add_header('X-Forwarded-For',IP)
-        ENDING='|X-Forwarded-For='+IP
     req.add_header('User-Agent','Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_3 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13G34 Safari/601.1')       
     req.add_header('Referer',url)
 
@@ -690,13 +593,8 @@ def HLS(url,iconimage):
     except:
         
         dialog = xbmcgui.Dialog()
-        if ADDON.getSetting('proxy')=='true':
-            dialog.ok('ITV Player', 'Ooops Seems Your Uk IP Adress','[COLOR green]%s[/COLOR] Is Out Of Date' %IP, 'Gonna Grab New One Now')
-            import grabnewip
-        else:
-            dialog.ok('ITV Player', '','Not Available', '')
+        dialog.ok('ITV Player', '','Not Available', '')
         return ''
-
 
     link=json.loads(content)
 
@@ -734,30 +632,17 @@ def HLS(url,iconimage):
     
 def VIDEO(url,iconimage):
     #xbmc.log(url)
-    if ADDON.getSetting('proxy')=='false':
-        if ADDON.getSetting('hls')=='true':
-            return HLS(url,iconimage)
+    if ADDON.getSetting('hls')=='true':
+        return HLS(url,iconimage)
 
     if url.endswith('##'):
         url=url.split('##')[0]
-        if ADDON.getSetting('proxy')=='false':
-            buf = OPEN_URL(url)
-        else:
-            buf = OPEN_URL_PROXY(url)
+        buf = OPEN_URL(url)
             
         link=buf.split('data-episode-current')[1]
         url=re.compile('href="(.+?)"').findall(link)[0]
 
-        
-    if ADDON.getSetting('proxy')=='false':
-        buf = OPEN_URL(url)
-    else:
-        buf = OPEN_URL_PROXY(url)
-        
-        if ADDON.getSetting('custom_ip')=='':
-            IP=getip()
-        else:
-            IP=ADDON.getSetting('custom_ip')
+    buf = OPEN_URL(url)
 
     productionID=re.compile('data-video-production-id="(.+?)"').findall(buf)[0]
     
@@ -809,17 +694,7 @@ def VIDEO(url,iconimage):
     
 
     url = 'http://mercury.itv.com/PlaylistService.svc'
-
-    if ADDON.getSetting('proxy')=='true':
-        if ADDON.getSetting('custom_ip')=='':
-            IP=getip()
-        else:
-            IP=ADDON.getSetting('custom_ip')
-        headers = {"X-Forwarded-For":IP,"Host":"secure-mercury.itv.com","Referer":"http://www.itv.com/mercury/Mercury_VideoPlayer.swf?v=1.6.479/[[DYNAMIC]]/2","Content-type":"text/xml; charset=utf-8","Content-length":"%d" % len(SoapMessage),"SOAPAction":"http://tempuri.org/PlaylistService/GetPlaylist"}
-        
-    else:
-        headers = {"Host":"secure-mercury.itv.com","Referer":"http://www.itv.com/mercury/Mercury_VideoPlayer.swf?v=1.6.479/[[DYNAMIC]]/2","Content-type":"text/xml; charset=utf-8","Content-length":"%d" % len(SoapMessage),"SOAPAction":"http://tempuri.org/PlaylistService/GetPlaylist"}
-        
+    headers = {"Host":"secure-mercury.itv.com","Referer":"http://www.itv.com/mercury/Mercury_VideoPlayer.swf?v=1.6.479/[[DYNAMIC]]/2","Content-type":"text/xml; charset=utf-8","Content-length":"%d" % len(SoapMessage),"SOAPAction":"http://tempuri.org/PlaylistService/GetPlaylist"}
         
     response, res = http.request("https://secure-mercury.itv.com/PlaylistService.svc", 'POST', headers=headers, body=SoapMessage)
     title1= res.split("<ProgrammeTitle>")
