@@ -12,7 +12,7 @@ PLUGIN='plugin.video.itv'
 ADDON = xbmcaddon.Addon(id=PLUGIN)
 icon = xbmc.translatePath(os.path.join('special://home/addons/plugin.video.itv', 'icon.png'))
 foricon = xbmc.translatePath(os.path.join('special://home/addons/plugin.video.itv', ''))
-from BeautifulSoup import BeautifulSoup
+from bs4 import BeautifulSoup
 datapath = xbmc.translatePath(ADDON.getAddonInfo('profile'))
 favorites = os.path.join(datapath, 'favorites')
 #if os.path.exists(favorites)==True:
@@ -244,7 +244,8 @@ def PLAY_STREAM(name,url,iconimage):
         STREAM=rtmp+' playpath='+playpath+' swfUrl=http://www.itv.com/mediaplayer/ITVMediaPlayer.swf live=true timeout=10 swfvfy=true'
        
         
-    liz = xbmcgui.ListItem(name, iconImage='DefaultVideo.png', thumbnailImage=iconimage)
+    liz = xbmcgui.ListItem(name)
+    liz.setArt({'icon' : 'DefaultVideo.png', 'thumb' : iconimage})
     liz.setInfo(type='Video', infoLabels={'Title':name})
     liz.setProperty("IsPlayable","true")
     liz.setPath(STREAM+ENDING)
@@ -287,7 +288,7 @@ def BESTOFEPS(name,url):
         
 def SHOWS(url):
     f = urllib.request.urlopen(url)
-    buf = f.read()
+    buf = f.read().decode('utf-8')
     buf=re.sub('&amp;','&',buf)
     buf=re.sub('&middot;','',buf)
     #print "BUF %s" % buf
@@ -392,7 +393,7 @@ def parse_Date(date_string,format,thestrip):
 def EPS(name,url):
 
     f = urllib.request.urlopen(url)
-    buf = f.read()
+    buf = f.read().decode('utf-8')
     buf=re.sub('&amp;','&',buf)
     buf=re.sub('&middot;','',buf)
     buf=re.sub('&#039;','\'',buf)
@@ -540,7 +541,8 @@ def PLAY_STREAM_HLS_LIVE(name,url,iconimage):
 
     
     
-    liz = xbmcgui.ListItem(TITLE, iconImage='DefaultVideo.png', thumbnailImage=iconimage)
+    liz = xbmcgui.ListItem(TITLE)
+    liz.setArt({'icon' : 'DefaultVideo.png', 'thumb' : iconimage})
     liz.setInfo(type='Video', infoLabels={'Title':TITLE})
     liz.setProperty('mimetype', 'application/x-mpegURL')
     liz.setProperty("IsPlayable","true")
@@ -619,7 +621,8 @@ def HLS(url,iconimage):
         
     STREAM =  BEG+END
     
-    liz = xbmcgui.ListItem(TITLE, iconImage='DefaultVideo.png', thumbnailImage=iconimage)
+    liz = xbmcgui.ListItem(TITLE)
+    liz.setArt({'icon' : 'DefaultVideo.png', 'thumb' : iconimage})
     try:
         if there_are_subtitles == 1:
             liz.setSubtitles([subtitles_file])
@@ -774,7 +777,8 @@ def VIDEO(url,iconimage):
     
         url = rtmp + " swfurl=http://www.itv.com/mediaplayer/ITVMediaPlayer.swf playpath=" + playpath + " swfvfy=true"
  
-        liz = xbmcgui.ListItem(title2[0], iconImage='DefaultVideo.png', thumbnailImage=iconimage)
+        liz = xbmcgui.ListItem(title2[0])
+        liz.setArt({'icon' : 'DefaultVideo.png', 'thumb' : iconimage})
         try:
             if there_are_subtitles == 1:
                 liz.setSubtitles([subtitles_file])
@@ -925,7 +929,8 @@ def get_params():
 def addLink(name,url):
         ok=True
         thumbnail_url = url.split( "thumbnailUrl=" )[ -1 ]
-        liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=thumbnail_url)
+        liz=xbmcgui.ListItem(name)
+        liz.setArt({'icon' : 'DefaultVideo.png', 'thumb' : thumbnail_url})
         liz.setInfo( type="Video", infoLabels={ "Title": name,'Premiered' : '2012-01-01','Episode' : '1'} )
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=url,listitem=liz)
         return ok
@@ -937,7 +942,8 @@ def addDir(name,url,mode,iconimage,plot='',isFolder=True):
         except:pass    
         u=sys.argv[0]+"?url="+urllib.parse.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.parse.quote_plus(name)+"&iconimage="+urllib.parse.quote_plus(iconimage)
         ok=True
-        liz=xbmcgui.ListItem(name,iconImage="DefaultVideo.png", thumbnailImage=iconimage)
+        liz=xbmcgui.ListItem(name)
+        liz.setArt({'icon' : 'DefaultVideo.png', 'thumb' : iconimage})
         liz.setInfo( type="Video", infoLabels={ "Title": name, "Plot": plot,'Premiered' : '2012-01-01','Episode' : '7-1' } )
         liz.setProperty('Fanart_Image', iconimage.replace('w=512&h=288','w=1280&h=720'))
         menu=[]
@@ -960,7 +966,8 @@ def addDir(name,url,mode,iconimage,plot='',isFolder=True):
 def addDir2(name,url,mode,date, episode,iconimage,plot='',isFolder=True):
         u=sys.argv[0]+"?url="+urllib.parse.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.parse.quote_plus(name)+"&iconimage="+urllib.parse.quote_plus(iconimage)
         ok=True
-        liz=xbmcgui.ListItem(name,iconImage="DefaultVideo.png", thumbnailImage=iconimage)
+        liz=xbmcgui.ListItem(name)
+        liz.setArt({'icon' : 'DefaultVideo.png', 'thumb' : iconimage})
         liz.setInfo( type="Video", infoLabels={ "Title": name, "Plot": plot,'Premiered' : date,'Episode' : episode } )
         liz.setProperty('Fanart_Image', iconimage.replace('w=512&h=288','w=1280&h=720'))
         menu = []

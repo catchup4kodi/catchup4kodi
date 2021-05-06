@@ -2,8 +2,8 @@
 <addon id="plugin.video.itv" name="ITV" version="3.0.0" provider-name="LittleWiz, Cowebtech">
   <requires>
     <import addon="xbmc.python" version="3.0.0"/>
-    <import addon="script.module.httplib2" />
-    <import addon="script.module.beautifulsoup" />
+    <import addon="script.module.httplib2"/>
+    <import addon="script.module.beautifulsoup4" />
   </requires>
   <extension point="xbmc.python.pluginsource" library="default.py">
         <provides>video</provides>
