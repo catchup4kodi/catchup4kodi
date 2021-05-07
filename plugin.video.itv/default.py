@@ -71,8 +71,7 @@ def download_subtitles_HLS(url, offset):
         fw.write("1\n0:00:00,001 --> 0:01:00,001\nNo subtitles available\n\n")
         fw.close() 
         return outfile
-    txt = OPEN_URL(url)
-
+    txt = OPEN_URL(url).decode('utf-8')
 
     fw.write(txt)
     fw.close()    
