@@ -39,8 +39,6 @@ if not os.path.isdir(SUBTITLES_DIR):
 if not os.path.isdir(IMAGE_DIR):
     os.makedirs(IMAGE_DIR)
 
-SHOWLIVE=ADDON.getSetting('SHOWLIVE')
-
 def get_httplib():
     return httplib2.Http()
 
@@ -136,11 +134,8 @@ def CATS():
             addDir('[COLOR yellow]Favorites[/COLOR]','url',12,'')
             
         addDir('Shows','http://www.itv.com/hub/shows',1,icon,isFolder=True)
-        addDir('Categories','cats',205,icon,isFolder=True)
+        # addDir('Categories','cats',205,icon,isFolder=True)
         addDir('Live','Live',206,icon,isFolder=True)
-        if SHOWLIVE == 'true':
-            try:LIVE('dont')
-            except:pass
         setView('tvshows', 'default')
 
         
@@ -157,39 +152,14 @@ def getsim(channel):
     if 'CITV' in channel.upper():return ('CITV','7')
 
     if 'ITVBE' in channel.upper():return ('ITVBe','8')
-
-    
                         
-def LIVE(url):
-    try:
-        link = OPEN_URL('https://www.itv.com/hub/tv-guide')
-
-        link = link.split('class="guide__item')
-        for p in link:
-            if 'watch live' in p.lower():
-
-                title = '[COLOR orange]'+re.compile('title="(.+?)"').findall(p)[0].replace('amp;','')+'[/COLOR]'
-                channel = re.compile('live on (.+?)"').findall(p)[0]
-                sim, icon_num=getsim(channel)
-                mode = 8 # HLS for live streams
-                    
-                if url=='dont':
-                    name = '[COLOR plum]On Now[/COLOR] - [COLOR green]%s[/COLOR] - %s' % (channel,title)
-                    addDir(name,sim,mode,foricon+'art/%s.png' % icon_num,isFolder=False)
-                else:
-                    addDir(channel + ' - '+title,sim,mode,foricon+'art/%s.png' % icon_num,isFolder=False)
-                
-        if url !='dont':
-            addDir('Events/Sport','https://itvliveevents-i.akamaihd.net/hls/live/203496/itvliveevents/ITVEVTMN/master.m3u8',7,foricon+'art/9.jpg',isFolder=False)#sim9
-        
-    except: 
-        addDir('ITV1','sim1',7,foricon+'art/1.png',isFolder=False)#sim1   https://itv1liveios-i.akamaihd.net/hls/live/203437/itvlive/ITV1MN/master.m3u8
-        addDir('ITV2','sim2',7,foricon+'art/2.png',isFolder=False)#sim2   https://itv2liveios-i.akamaihd.net/hls/live/203495/itvlive/ITV2MN/master.m3u8
-        addDir('ITV3','sim3',7,foricon+'art/3.png',isFolder=False)#sim3   https://itv3liveios-i.akamaihd.net/hls/live/207262/itvlive/ITV3MN/master.m3u8
-        addDir('ITV4','sim4',7,foricon+'art/4.png',isFolder=False)#sim4   https://itv4liveios-i.akamaihd.net/hls/live/207266/itvlive/ITV4MN/master.m3u8
-        addDir('ITVBe','sim8',7,foricon+'art/8.jpg',isFolder=False)#    https://itvbeliveios-i.akamaihd.net/hls/live/219078/itvlive/ITVBE/master.m3u8
-        addDir('CITV','sim7',7,foricon+'art/7.png',isFolder=False)#sim7  https://citvliveios-i.akamaihd.net/hls/live/207267/itvlive/CITVMN/master.m3u8
-        addDir('Events/Sport','https://itvliveevents-i.akamaihd.net/hls/live/203496/itvliveevents/ITVEVTMN/master.m3u8',7,foricon+'art/9.jpg',isFolder=False)#sim9
+def LIVE():
+    addDir('ITV1','https://www.itv.com/hub/itv',8,foricon+'art/1.png',isFolder=False)
+    addDir('ITV2','https://www.itv.com/hub/itv2',8,foricon+'art/2.png',isFolder=False)
+    addDir('ITV3','https://www.itv.com/hub/itv3',8,foricon+'art/3.png',isFolder=False)
+    addDir('ITV4','https://www.itv.com/hub/itv4',8,foricon+'art/4.png',isFolder=False)
+    addDir('ITVBe','https://www.itv.com/hub/itvbe',8,foricon+'art/8.jpg',isFolder=False)
+    addDir('CITV','https://www.itv.com/hub/citv',8,foricon+'art/7.png',isFolder=False)
 
 def CATEGORIES():
         CATS= [('children', 'Children'),
@@ -436,69 +406,75 @@ def OPEN_URL(url):
     return link
 
 def PLAY_STREAM_HLS_LIVE(name,url,iconimage):
+    ENDING=''
+    xbmc.log("URL to fetch: %s" % url)
 
-    REF = 'https://www.itv.com/hub/'+url.lower()
-    ENDING='|User-Agent=Mozilla/5.0 (iPhone; CPU iPhone OS 11_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/11.0 Mobile/15E148 Safari/604.1'
-    buf = OPEN_URL('https://www.itv.com/hub/'+url.lower())        
+    buf = OPEN_URL(url).decode('utf-8')
 
-    TITLE= name
-    POSTURL='https://magni.itv.com/playlist/itvonline/'+url
+    TITLE=re.compile('data-video-title="(.+?)"').findall(buf)[0]
+    POSTURL=re.compile('data-html5-playlist="(.+?)"').findall(buf)[0]
     hmac=re.compile('data-video-hmac="(.+?)"').findall(buf)[0]
-    
+
+    data  = {"user": {"itvUserId": "", "entitlements": [], "token": ""}, "device": {"manufacturer": "Safari", "model": "5", "os": {"name": "Windows NT", "version": "6.1", "type": "desktop"}}, "client": {"version": "4.1", "id": "browser"}, "variantAvailability": {"featureset": {"min": ["hls", "aes"], "max": ["hls", "aes"]}, "platformTag": "mobile"}}
+
     req = urllib.request.Request(POSTURL)
-    req.add_header('Host','magni.itv.com')
-    req.add_header('hmac',hmac)
+    jsondata = json.dumps(data)
+    jsondataasbytes = jsondata.encode('utf-8')   # needs to be bytes
+
+    req.add_header('Host','simulcast.itv.com')
     req.add_header('Accept','application/vnd.itv.vod.playlist.v2+json')
     req.add_header('Proxy-Connection','keep-alive')
     req.add_header('Accept-Language','en-gb')
     req.add_header('Accept-Encoding','gzip, deflate')
-    req.add_header('Content-Type','application/json')
+    req.add_header('Content-Type', 'application/json; charset=utf-8')
     req.add_header('Origin','http://www.itv.com')
     req.add_header('Connection','keep-alive')
-    req.add_header('User-Agent','Mozilla/5.0 (iPhone; CPU iPhone OS 11_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/11.0 Mobile/15E148 Safari/604.1')       
-    req.add_header('Referer',REF)
+    req.add_header('User-Agent','Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_3 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13G34 Safari/601.1')       
+    req.add_header('Referer',url)
+    req.add_header('hmac',hmac)
+    req.add_header('Content-Length', len(jsondataasbytes))
 
-    if ADDON.getSetting('UA')=='true':
-        data  = {"user": {"itvUserId": "", "entitlements": [], "token": ""}, "device": {"manufacturer": "Safari", "model": "5", "os": {"name": "Windows NT", "version": "6.1", "type": "desktop"}}, "client": {"version": "4.1", "id": "browser"}, "variantAvailability": {"featureset": {"min": ["hls", "aes"], "max": ["hls", "aes"]}, "platformTag": "dotcom"}}
-    else:
-        data  = {"user":{"itvUserId":"","entitlements":[],"token":""},"device":{"manufacturer":"Apple","model":"iPad","os":{"name":"iPhone OS","version":"6.0","type":"ios"}},"client":{"version":"4.1","id":"browser"},"variantAvailability":{"featureset":{"min":["hls","aes"],"max":["hls","aes"]},"platformTag":"mobile"}}
+    xbmc.log("Attempting to fetch: %s" % url)
+    xbmc.log("With data: %s" % data)
 
-    try:
-        content = urllib.request.urlopen(req, json.dumps(data)).read()
-    except:
-        dialog = xbmcgui.Dialog()
-        dialog.ok('ITV Player', '','Not Available', '')
-        return ''
+    with urllib.request.urlopen(req,jsondataasbytes) as f:
+        content = f.read()
 
     link=json.loads(content)
 
     BEG = link['Playlist']['Video']['Base']
     bb= link['Playlist']['Video']['MediaFiles']
-
+    try:
+        SUBLINK = link['Playlist']['Video']['Subtitles'][0]['Href']
+        subtitles_exist = 1
+    except:
+        subtitles_exist = 0
+        there_are_subtitles=0
         
     for k in bb:
         END = bb[0]['Href']
 
+    if __settings__.getSetting('subtitles_control') == 'true':
+        if subtitles_exist == 1:
+            subtitles_file = download_subtitles_HLS(SUBLINK, '')
+            print ("Subtitles at ", subtitles_file)
+            there_are_subtitles=1
         
     STREAM =  BEG+END
-
-    HOST = BEG.split('//')[1].split('/')[0]
-
-    
     
     liz = xbmcgui.ListItem(TITLE)
     liz.setArt({'icon' : 'DefaultVideo.png', 'thumb' : iconimage})
+    try:
+        if there_are_subtitles == 1:
+            liz.setSubtitles([subtitles_file])
+    except:pass     
     liz.setInfo(type='Video', infoLabels={'Title':TITLE})
-    liz.setProperty('mimetype', 'application/x-mpegURL')
     liz.setProperty("IsPlayable","true")
-    
     liz.setPath(STREAM+ENDING)
     xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, liz)
 
-
-
-    
 def HLS(url,iconimage):
+    xbmc.log("URL to fetch: %s" % url)
     #xbmc.log(str(url))  
     if url.endswith('##'):
         url=url.split('##')[0]
@@ -515,7 +491,6 @@ def HLS(url,iconimage):
     POSTURL=re.compile('data-video-id="(.+?)"').findall(buf)[0]
     hmac=re.compile('data-video-hmac="(.+?)"').findall(buf)[0]
 
-    #data  = {"user": {"itvUserId": "", "entitlements": [], "token": ""}, "device": {"manufacturer": "Safari", "model": "5", "os": {"name": "Windows NT", "version": "6.1", "type": "desktop"}}, "client": {"version": "4.1", "id": "browser"}, "variantAvailability": {"featureset": {"min": ["hls", "aes", "outband-webvtt"], "max": ["hls", "aes", "outband-webvtt"]}, "platformTag": "dotcom"}}
     data  = {"user": {"itvUserId": "", "entitlements": [], "token": ""}, "device": {"manufacturer": "Safari", "model": "5", "os": {"name": "Windows NT", "version": "6.1", "type": "desktop"}}, "client": {"version": "4.1", "id": "browser"}, "variantAvailability": {"featureset": {"min": ["hls", "aes", "outband-webvtt"], "max": ["hls", "aes", "outband-webvtt"]}, "platformTag": "mobile"}}
 
     req = urllib.request.Request(POSTURL)
@@ -575,7 +550,6 @@ def HLS(url,iconimage):
     liz.setProperty("IsPlayable","true")
     liz.setPath(STREAM+ENDING)
     xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, liz)
-
     
 def VIDEO(url,iconimage):
     return HLS(url,iconimage)
@@ -586,11 +560,6 @@ def setView(content, viewType):
                 xbmcplugin.setContent(int(sys.argv[1]), content)
         if ADDON.getSetting('auto-view') == 'true':#<<<----see here if auto-view is enabled(true) 
                 xbmc.executebuiltin("Container.SetViewMode(%s)" % ADDON.getSetting(viewType) )#<<<-----then get the view type
-                
-                
-                
-                
-                
                 
 def decode_redirect(url):
     
@@ -654,44 +623,6 @@ def get_url(url):
             raise
     
     return data
-
-    
-    
-def TEMPLATE(sim,channel):
-        SM_TEMPLATE='''<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-                  <SOAP-ENV:Body>
-                    <tem:GetPlaylist xmlns:tem="http://tempuri.org/" xmlns:itv="http://schemas.datacontract.org/2004/07/Itv.BB.Mercury.Common.Types" xmlns:com="http://schemas.itv.com/2009/05/Common">
-                      <tem:request>
-                        <itv:RequestGuid>BF0B9A3C-4F65-C45D-4BC4-3F639208946F</itv:RequestGuid>
-                        <itv:Vodcrid>
-                          <com:Id>%s</com:Id>
-                          <com:Partition>itv.com</com:Partition>
-                        </itv:Vodcrid>
-                      </tem:request>
-                      <tem:userInfo>
-                        <itv:Broadcaster>Itv</itv:Broadcaster>
-                        <itv:GeoLocationToken>
-                          <itv:Token/>
-                        </itv:GeoLocationToken>
-                        <itv:RevenueScienceValue/>
-                      </tem:userInfo>
-                      <tem:siteInfo>
-                        <itv:AdvertisingRestriction>None</itv:AdvertisingRestriction>
-                        <itv:AdvertisingSite>ITV</itv:AdvertisingSite>
-                        <itv:Area>channels.%s</itv:Area>
-                        <itv:Platform>DotCom</itv:Platform>
-                        <itv:Site>ItvCom</itv:Site>
-                      </tem:siteInfo>
-                      <tem:deviceInfo>
-                        <itv:ScreenSize>Big</itv:ScreenSize>
-                      </tem:deviceInfo>
-                    </tem:GetPlaylist>
-                  </SOAP-ENV:Body>
-                </SOAP-ENV:Envelope>
-                '''
-        return SM_TEMPLATE%(sim,channel)
-        
-    
 
 def get_params():
         param=[]
@@ -811,7 +742,6 @@ elif mode==6:
 elif mode==7:
         print ("Getting Videofiles: "+url)
         PLAY_STREAM(name,url,iconimage)
-
 elif mode==8:
         print ("Getting Videofiles: "+url)
         PLAY_STREAM_HLS_LIVE(name,url,iconimage)        
@@ -829,14 +759,13 @@ elif mode==14:
     rmFavorite(name)
 
 elif mode==204:
-        
-        EPS(name,url)
+    EPS(name,url)
         
 elif mode==205:
     CATEGORIES()
     
 elif mode==206:
-    LIVE(url)   
+    LIVE()   
         
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
 

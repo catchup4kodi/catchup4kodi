@@ -2,7 +2,6 @@
   <!-- Streams -->
   <category label="30100">
     <setting id="delcache" type="bool" label="30101" default="true"/>
-    <setting id="SHOWLIVE" type="bool" label="30102" default="true"/>
     <setting id="UA" label="30103"  type="bool" default="true" />
     <setting id="subtitles_control" label="30104"  type="bool" default="false" />
   </category>
