@@ -1,20 +1,16 @@
 <settings>
   <!-- Streams -->
-  <category label="Streams">
-    <setting id="delcache" type="bool" label="Delete Cache on Startup" default="true"/>
-    <setting id="SHOWLIVE" type="bool" label="Show Live On Launch" default="true"/>
-    <setting id="hls" label="Use HLS For Catchup"  type="bool" default="true" />
-    <setting id="livepro" label="Use HLS For Live Tv"  type="bool" default="true" />
-    <setting id="UA" label="Use Safari User-Agent"  type="bool" default="true" />
-    <setting id="subtitles_control" label="Use subtitles when available"  type="bool" default="false" />
-    <setting id="video_stream" label="Video stream to use" type="enum" values="Auto|H.264 (400Kb)|H.264 (600kb)|H.264 (800kb)|H.264 (1200kb)|H.264 (1800kb)" default="0" />
-    <setting id="live_stream" label="Live stream to use" type="enum" values="600kb|800kb|1200kb|1500kb|1800kb" default="2" />
+  <category label="30100">
+    <setting id="delcache" type="bool" label="30101" default="true"/>
+    <setting id="SHOWLIVE" type="bool" label="30102" default="true"/>
+    <setting id="UA" label="30103"  type="bool" default="true" />
+    <setting id="subtitles_control" label="30104"  type="bool" default="false" />
   </category>
   <!-- Auto View -->
-  <category label="Auto-View">
-	<setting id="auto-view" type="bool" label="Enable Automatic View" default="false"/>
-	<setting id="default" type="number" label="Main Screen" default="50" enable="!eq(-1,false)"/>
-	<setting id="show" type="number" label="Shows Listing" default="50" enable="!eq(-1,false)"/>
-	<setting id="episode" type="number" label="Episode Listing" default="503" enable="!eq(-1,false)"/>
+  <category label="30200">
+	<setting id="auto-view" type="bool" label="30201" default="false"/>
+	<setting id="default" type="number" label="30202" default="50" enable="!eq(-1,false)"/>
+	<setting id="show" type="number" label="30203" default="50" enable="!eq(-1,false)"/>
+	<setting id="episode" type="number" label="30204" default="503" enable="!eq(-1,false)"/>
    </category>
 </settings>

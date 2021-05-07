@@ -15,3 +15,43 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: en\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30100"
+msgid "Streams"
+msgstr ""
+
+msgctxt "#30101"
+msgid "Delete Cache on Startup"
+msgstr ""
+
+msgctxt "#30102"
+msgid "Show Live On Launch"
+msgstr ""
+
+msgctxt "#30103"
+msgid "Use Safari User-Agent"
+msgstr ""
+
+msgctxt "#30104"
+msgid "Use subtitles when available"
+msgstr ""
+
+msgctxt "#30200"
+msgid "Auto-View"
+msgstr ""
+
+msgctxt "#30201"
+msgid "Enable Automatic View"
+msgstr ""
+
+msgctxt "#30202"
+msgid "Main Screen"
+msgstr ""
+
+msgctxt "#30203"
+msgid "Shows Listing"
+msgstr ""
+
+msgctxt "#30204"
+msgid "Episode Listing"
+msgstr ""
