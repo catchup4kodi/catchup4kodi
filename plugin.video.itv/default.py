@@ -415,7 +415,7 @@ def PLAY_STREAM_HLS_LIVE(name,url,iconimage):
     POSTURL=re.compile('data-html5-playlist="(.+?)"').findall(buf)[0]
     hmac=re.compile('data-video-hmac="(.+?)"').findall(buf)[0]
 
-    data  = {"user": {"itvUserId": "", "entitlements": [], "token": ""}, "device": {"manufacturer": "Safari", "model": "5", "os": {"name": "Windows NT", "version": "6.1", "type": "desktop"}}, "client": {"version": "4.1", "id": "browser"}, "variantAvailability": {"featureset": {"min": ["hls", "aes"], "max": ["hls", "aes"]}, "platformTag": "mobile"}}
+    data  = {"user": {"itvUserId": "", "entitlements": [], "token": ""}, "device": {"manufacturer": "Safari", "model": "5", "os": {"name": "Windows NT", "version": "6.1", "type": "desktop"}}, "client": {"version": "4.1", "id": "browser"}, "variantAvailability": {"featureset": {"min": ["hls", "aes"], "max": ["hls", "aes"]}, "platformTag": "youview"}}
 
     req = urllib.request.Request(POSTURL)
     jsondata = json.dumps(data)
@@ -436,6 +436,7 @@ def PLAY_STREAM_HLS_LIVE(name,url,iconimage):
 
     xbmc.log("Attempting to fetch: %s" % url)
     xbmc.log("With data: %s" % data)
+    xbmc.log("with HMAC: %s" % hmac)
 
     with urllib.request.urlopen(req,jsondataasbytes) as f:
         content = f.read()
@@ -491,7 +492,7 @@ def HLS(url,iconimage):
     POSTURL=re.compile('data-video-id="(.+?)"').findall(buf)[0]
     hmac=re.compile('data-video-hmac="(.+?)"').findall(buf)[0]
 
-    data  = {"user": {"itvUserId": "", "entitlements": [], "token": ""}, "device": {"manufacturer": "Safari", "model": "5", "os": {"name": "Windows NT", "version": "6.1", "type": "desktop"}}, "client": {"version": "4.1", "id": "browser"}, "variantAvailability": {"featureset": {"min": ["hls", "aes", "outband-webvtt"], "max": ["hls", "aes", "outband-webvtt"]}, "platformTag": "mobile"}}
+    data  = {"user": {"itvUserId": "", "entitlements": [], "token": ""}, "device": {"manufacturer": "Safari", "model": "5", "os": {"name": "Windows NT", "version": "6.1", "type": "desktop"}}, "client": {"version": "4.1", "id": "browser"}, "variantAvailability": {"featureset": {"min": ["hls", "aes", "outband-webvtt"], "max": ["hls", "aes", "outband-webvtt"]}, "platformTag": "youview"}}
 
     req = urllib.request.Request(POSTURL)
     jsondata = json.dumps(data)
