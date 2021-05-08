@@ -1,6 +1,6 @@
 import urllib.request, urllib.parse, urllib.error,urllib.request,urllib.error,urllib.parse,re,sys,socket,os,datetime,xbmcplugin,xbmcgui, xbmcaddon,json
 from hashlib import md5
-
+import codecs
 
 # external libs
 sys.path.insert(0, xbmc.translatePath(os.path.join('special://home/addons/plugin.video.itv', 'lib')))
@@ -65,18 +65,108 @@ def download_subtitles_HLS(url, offset):
 
     logging.info('subtitles at =%s' % url)
     outfile = os.path.join(SUBTITLES_DIR, 'itv.srt')
-    fw = open(outfile, 'w')
-    
+    fw = codecs.open(outfile, 'w', encoding='utf-8')
+
     if not url:
         fw.write("1\n0:00:00,001 --> 0:01:00,001\nNo subtitles available\n\n")
-        fw.close() 
-        return outfile
+        fw.close()
+        return
+
     txt = OPEN_URL(url).decode('utf-8')
+    # print txt
 
-    fw.write(txt)
-    fw.close()    
+    # get styles
+    styles = []
+    match = re.search(r'<styling>(.+?)</styling>', txt, re.DOTALL)
+    if match:
+        match = re.findall(r'<style(.*?)>', match.group(1), re.DOTALL)
+        if match:
+            for style_line in match:
+                match = re.search(r'id="(.*?)"', style_line, re.DOTALL)
+                id = None
+                if match:
+                    id = match.group(1)
+                color = None
+                match = re.search(r'color="(.*?)"', style_line, re.DOTALL)
+                if match:
+                    # Some of the subtitle files use #ffffff color coding, others use plain text.
+                    if match.group(1).startswith('#'):
+                        styles.append((id, match.group(1)[0:7]))
+                    else:
+                        styles.append((id, match.group(1)))
+                    # span_replacer = make_span_replacer(styles)
+    # print "Retrieved styles"
+    # print styles
+
+    # get body
+    body = []
+    body = re.search(r'<body.*?>(.+?)</body>', txt, re.DOTALL)
+    if body:
+        # print "Located body"
+        # print body.group(1).encode('utf-8')
+        frames = re.findall(r'<p(.*?)>(.*?)</p>', body.group(1), re.DOTALL)
+        # frames = re.findall(r'<p.*?begin=\"(.*?)".*?end=\"(.*?)".*?style="(.*?)".*?>(.*?)</p>', body.group(1), re.DOTALL)
+        if frames:
+            index = 1
+            # print "Found %s frames"%len(frames)
+            # print frames
+            for formatting, content in frames:
+                start = ''
+                match = re.search(r'begin=\"(.*?)"', formatting, re.DOTALL)
+                if match:
+                    # begin="00:00:27:00"
+                    start = match.group(1)
+                    start_value = start[0:8] + "," + start[9:11] + '0'
+                end = ''
+                match = re.search(r'end=\"(.*?)"', formatting, re.DOTALL)
+                if match:
+                    #      0123456789
+                    # end="00:00:29:06"
+                    end = match.group(1)
+                    end_value = end[0:8] + "," + end[9:11] + '0'
+                style = None
+                match = re.search(r'style=\"(.*?)"', formatting, re.DOTALL)
+                if match:
+                    style = match.group(1)
+                else:
+                    style = False
+                start_split = re.split('\.',start)
+                # print start_split
+                if(len(start_split)>1):
+                    start_mil_f = start_split[1].ljust(3, '0')
+                else:
+                    start_mil_f = "000"
+                end_split = re.split('\.',end)
+                if(len(end_split)>1):
+                    end_mil_f = end_split[1].ljust(3, '0')
+                else:
+                    end_mil_f = "000"
+
+                spans = []
+                text = ''
+                spans = re.findall(r'<span.*?style="(.*?)">(.*?)</span>', content, re.DOTALL)
+                if (spans):
+                    num_spans = len(spans)
+                    for num, (substyle, line) in enumerate(spans):
+                        if num >0:
+                            text = text+'\n'
+                        color = [value for (style_id, value) in styles if substyle == style_id]
+                        # print substyle, color, line.encode('utf-8')
+                        text = text+'<font color="%s">%s</font>' %  (color[0], line)
+                else:
+                    if style:
+                        color = [value for (style_id, value) in styles if style == style_id]
+                        text = text+'<font color="%s">%s</font>' %  (color[0], content)
+                    else:
+                         text = text+content
+                    # print substyle, color, line.encode('utf-8')
+                entry = "%d\n%s --> %s\n%s\n\n" % (index, start_value, end_value, text)
+                if entry:
+                    fw.write(entry)
+                    index += 1
+
+    fw.close()
     return outfile
-
 
 def download_subtitles(url, offset):
 
