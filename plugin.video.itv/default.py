@@ -13,11 +13,6 @@ ADDON = xbmcaddon.Addon(id=PLUGIN)
 icon = xbmc.translatePath(os.path.join('special://home/addons/plugin.video.itv', 'icon.png'))
 foricon = xbmc.translatePath(os.path.join('special://home/addons/plugin.video.itv', ''))
 from bs4 import BeautifulSoup
-datapath = xbmc.translatePath(ADDON.getAddonInfo('profile'))
-favorites = os.path.join(datapath, 'favorites')
-#if os.path.exists(favorites)==True:
-    #FAV = open(favorites).read()
-    
 
 # setup cache dir
 __scriptname__  = 'ITV'
@@ -31,6 +26,7 @@ __settings__   = xbmcaddon.Addon(id=__scriptid__)
 DIR_USERDATA   = xbmc.translatePath(__addoninfo__["profile"])
 SUBTITLES_DIR  = os.path.join(DIR_USERDATA, 'Subtitles')
 IMAGE_DIR      = os.path.join(DIR_USERDATA, 'Images')
+favorites      = os.path.join(DIR_USERDATA, 'favorites')
 
 if not os.path.isdir(DIR_USERDATA):
     os.makedirs(DIR_USERDATA)
@@ -66,7 +62,7 @@ def download_subtitles_HLS(url, offset):
     logging.info('subtitles at =%s' % url)
     outfile = os.path.join(SUBTITLES_DIR, 'itv.srt')
     fw = codecs.open(outfile, 'w', encoding='utf-8')
-
+    
     if not url:
         fw.write("1\n0:00:00,001 --> 0:01:00,001\nNo subtitles available\n\n")
         fw.close()
@@ -144,15 +140,14 @@ def download_subtitles_HLS(url, offset):
 
                 spans = []
                 text = ''
-                spans = re.findall(r'<span.*?style="(.*?)">(.*?)</span>', content, re.DOTALL)
+                spans = re.findall(r'<span.*?tts:color="(.*?)">(.*?)<\/span>', content, re.DOTALL)
                 if (spans):
                     num_spans = len(spans)
                     for num, (substyle, line) in enumerate(spans):
                         if num >0:
                             text = text+'\n'
-                        color = [value for (style_id, value) in styles if substyle == style_id]
                         # print substyle, color, line.encode('utf-8')
-                        text = text+'<font color="%s">%s</font>' %  (color[0], line)
+                        text = text+'<font color="%s">%s</font>' %  (substyle, line)
                 else:
                     if style:
                         color = [value for (style_id, value) in styles if style == style_id]
@@ -168,66 +163,14 @@ def download_subtitles_HLS(url, offset):
     fw.close()
     return outfile
 
-def download_subtitles(url, offset):
-
-    logging.info('subtitles at =%s' % url)
-    outfile = os.path.join(SUBTITLES_DIR, 'itv.srt')
-    fw = open(outfile, 'w')
-    
-    if not url:
-        fw.write("1\n0:00:00,001 --> 0:01:00,001\nNo subtitles available\n\n")
-        fw.close() 
-        return outfile
-    txt = httpget(url)
-    try:
-        txt = txt.decode("utf-16")
-    except UnicodeDecodeError:
-        txt = txt[:-1].decode("utf-16")
-    txt = txt.encode('latin-1')
-    txt = re.sub("<br/>"," ",txt)
-    #print "SUBS %s" % txt
-    p= re.compile('^\s*<p.*?begin=\"(.*?)\.([0-9]+)\"\s+.*?end=\"(.*?)\.([0-9]+)\"\s*>(.*?)</p>')
-    i=0
-    prev = None
-
-    entry = None
-    for line in txt.splitlines():
-        subtitles1 = re.findall('<p.*?begin="(...........)" end="(...........)".*?">(.*?)</p>',line)
-        if subtitles1:
-            for start_time, end_time, text in subtitles1:
-                r = re.compile('<[^>]*>')
-                text = r.sub('',text)
-                start_hours = re.findall('(..):..:..:..',start_time)
-                start_mins = re.findall('..:(..):..:..', start_time)
-                start_secs = re.findall('..:..:(..):..', start_time)
-                start_msecs = re.findall('..:..:..:(..)',start_time)
-#               start_mil = start_msecs +'0'
-                end_hours = re.findall('(..):..:..:..',end_time)
-                end_mins = re.findall('..:(..):..:..', end_time)
-                end_secs = re.findall('..:..:(..):..', end_time)
-                end_msecs = re.findall('..:..:..:(..)',end_time)
-#               end_mil = end_msecs +'0'
-                entry = "%d\n%s:%s:%s,%s --> %s:%s:%s,%s\n%s\n\n" % (i, start_hours[0], start_mins[0], start_secs[0], start_msecs[0], end_hours[0], end_mins[0], end_secs[0], end_msecs[0], text)
-                i=i+1
-                #print "ENTRY" + entry
-        if entry: 
-            fw.write(entry)
-    
-    fw.close()    
-    return outfile
-
-
-
 def CATS():
         if os.path.exists(favorites)==True:
             addDir('[COLOR yellow]Favorites[/COLOR]','url',12,'')
             
         addDir('Shows','http://www.itv.com/hub/shows',1,icon,isFolder=True)
         # addDir('Categories','cats',205,icon,isFolder=True)
-        addDir('Live','Live',206,icon,isFolder=True)
+        # addDir('Live','Live',206,icon,isFolder=True)
         setView('tvshows', 'default')
-
-        
                         
 def getsim(channel):
     if 'ITV' == channel.upper():return ('ITV','1')
@@ -387,7 +330,6 @@ def getFavorites():
 
             
 def addFavorite(name,url,iconimage):
-  
         iconimage='http://mercury.itv.com/browser/production/image?q=80&format=jpg&w=800&h=450&productionId='+iconimage
         import json
         favList = []
@@ -738,7 +680,7 @@ def addLink(name,url):
         thumbnail_url = url.split( "thumbnailUrl=" )[ -1 ]
         liz=xbmcgui.ListItem(name)
         liz.setArt({'icon' : 'DefaultVideo.png', 'thumb' : thumbnail_url})
-        liz.setInfo( type="Video", infoLabels={ "Title": name,'Premiered' : '2012-01-01','Episode' : '1'} )
+        liz.setInfo( type="Video", infoLabels={ "Title": name } )
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=url,listitem=liz)
         return ok
 
@@ -751,7 +693,7 @@ def addDir(name,url,mode,iconimage,plot='',isFolder=True):
         ok=True
         liz=xbmcgui.ListItem(name)
         liz.setArt({'icon' : 'DefaultVideo.png', 'thumb' : iconimage})
-        liz.setInfo( type="Video", infoLabels={ "Title": name, "Plot": plot,'Premiered' : '2012-01-01','Episode' : '7-1' } )
+        liz.setInfo( type="Video", infoLabels={ "Title": name, "Plot": plot } )
         liz.setProperty('Fanart_Image', iconimage.replace('w=512&h=288','w=1280&h=720'))
         menu=[]
         if mode == 2:
