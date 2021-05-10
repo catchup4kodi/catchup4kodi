@@ -703,9 +703,9 @@ def addDir(name,url,mode,iconimage,plot='',isFolder=True):
         liz.setProperty('Fanart_Image', iconimage.replace('w=512&h=288','w=1280&h=720'))
         menu=[]
         if mode == 2:
-            menu.append(('[COLOR yellow]Add To Favourites[/COLOR]','XBMC.RunPlugin(%s?mode=13&url=%s&name=%s&iconimage=%s)'% (sys.argv[0],url,name,PID)))
+            menu.append(('[COLOR yellow]Add To Favourites[/COLOR]','RunPlugin(%s?mode=13&url=%s&name=%s&iconimage=%s)'% (sys.argv[0],url,name,PID)))
         if mode == 204:
-            menu.append(('[COLOR yellow]Remove Favourite[/COLOR]','XBMC.RunPlugin(%s?mode=14&url=%s&name=%s&iconimage=%s)'% (sys.argv[0],url,name,iconimage)))
+            menu.append(('[COLOR yellow]Remove Favourite[/COLOR]','RunPlugin(%s?mode=14&url=%s&name=%s&iconimage=%s)'% (sys.argv[0],url,name,iconimage)))
         liz.addContextMenuItems(items=menu, replaceItems=False)    
         if mode==3:
             xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_DATE)
