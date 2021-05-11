@@ -43,20 +43,6 @@ http = get_httplib()
 # what OS?        
 environment = os.environ.get( "OS", "xbox" )
 
-
-############## SUBS #################
-
-def chomps(s):
-    return s.rstrip('\n')
-
-def httpget(url):
-    resp = ''
-    data = ''
-    http = get_httplib()
-    resp, data = http.request(url, "GET")
-    return data
-    
-    
 def download_subtitles_HLS(url, offset):
 
     logging.info('subtitles at =%s' % url)
@@ -178,19 +164,6 @@ def CATS():
         # addDir('Live','Live',206,icon,isFolder=True)
         setView('tvshows', 'default')
                         
-def getsim(channel):
-    if 'ITV' == channel.upper():return ('ITV','1')
-
-    if 'ITV2' in channel.upper():return ('ITV2','2')
-
-    if 'ITV3' in channel.upper():return ('ITV3','3')
-
-    if 'ITV4' in channel.upper():return ('ITV4','4')
-
-    if 'CITV' in channel.upper():return ('CITV','7')
-
-    if 'ITVBE' in channel.upper():return ('ITVBe','8')
-                        
 def LIVE():
     addDir('ITV1','https://www.itv.com/hub/itv',8,foricon+'art/1.png',isFolder=False)
     addDir('ITV2','https://www.itv.com/hub/itv2',8,foricon+'art/2.png',isFolder=False)
@@ -215,76 +188,6 @@ def CATEGORIES():
         
         setView('tvshows', 'default')
 
-        
-        
-def PLAY_STREAM(name,url,iconimage):
-    ENDING=''
-    if len(url)>4:
-            
-        STREAM=url
-
-    else:    
-        #SoapMessage=TEMPLATE(url,'itv'+url.replace('sim',''))
-        #headers={'Content-Length':'%d'%len(SoapMessage),'Content-Type':'text/xml; charset=utf-8','Host':'secure-mercury.itv.com','Origin':'http://www.itv.com',
-                 #'Referer':'http://www.itv.com/Mercury/Mercury_VideoPlayer.swf?v=null',
-                 #'SOAPAction':"http://tempuri.org/PlaylistService/GetPlaylist",
-                 #'User-Agent':'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36'}
-
-        res, response = http.request("https://mediaplayer.itv.com/flash/playlists/ukonly/%s.xml" %url.lower())
-        #res, response = http.request("https://secure-mercury.itv.com/PlaylistService.svc", 'POST', headers=headers, body=SoapMessage)
- 
-        response = response.decode('utf-8')
-        rtmp=re.compile('<MediaFiles base="(.+?)"').findall(response)[0]
-        if 'CITV' in name:
-            r='CDATA\[(citv.+?)\]'
-        else:
-            r='CDATA\[(itv.+?)\]'
-        playpath=re.compile(r,re.DOTALL).findall(response) [0]
-        STREAM=rtmp+' playpath='+playpath+' swfUrl=http://www.itv.com/mediaplayer/ITVMediaPlayer.swf live=true timeout=10 swfvfy=true'
-       
-        
-    liz = xbmcgui.ListItem(name)
-    liz.setArt({'icon' : 'DefaultVideo.png', 'thumb' : iconimage})
-    liz.setInfo(type='Video', infoLabels={'Title':name})
-    liz.setProperty("IsPlayable","true")
-    liz.setPath(STREAM+ENDING)
-    xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, liz)
-
-    
-
-def STREAMS():
-        streams=[]
-        key = get_url('http://www.itv.com/_app/dynamic/AsxHandler.ashx?getkey=please')
-        for channel in range(1,5):
-                streaminfo = get_url('http://www.itv.com/_app/dynamic/AsxHandler.ashx?key='+key+'&simid=sim'+str(channel)+'&itvsite=ITV&itvarea=SIMULCAST.SIM'+str(channel)+'&pageid=4567756521')
-                stream=re.compile('<TITLE>(.+?)</TITLE><REF href="(.+?)" />').findall(streaminfo)
-                streams.append(stream[1])
-        for name,url in streams:
-                addLink(name,url)
-
-def BESTOF(url):
-        response = get_url(url).replace('&amp;','&')
-        match=re.compile('<li><a href="(.+?)"><img src=".+?" alt=".+?"></a><h4><a href=".+?">(.+?)</a></h4>').findall(response)
-        for url,name in match:
-                addDir(name,url,5,'')
-                
-def BESTOFEPS(name,url):
-    
-        response = get_url(url).replace('&amp;','&')
-        eps=re.compile('<a [^>]*?title="Play" href=".+?vodcrid=crid://itv.com/(.+?)&DF=0"><img\s* src="(.*?)" alt="(.*?)"').findall(response)
-        if eps:
-            for url,thumb,name in eps:
-                addDir(name,url,3,'http://itv.com/'+thumb,isFolder=False)
-            return
-        eps=re.compile('<a [^>]*?title="Play" href=".+?vodcrid=crid://itv.com/(.+?)&DF=0">(.+?)</a>').findall(response)
-        if not eps: eps=re.compile('href=".+?vodcrid=crid://itv.com/(.+?)&G=.+?&DF=0">(.+?)</a>').findall(response)
-        if not eps:
-                eps=re.compile('<meta name="videoVodCrid" content="crid://itv.com/(.+?)">').findall(response)
-                name=re.compile('<meta name="videoMetadata" content="(.+?)">').findall(response)
-                eps=[(eps[0],name[0])]
-        for url,name in eps:
-                addDir(name,url,3,'',isFolder=False)
-        
 def SHOWS(url):
     f = urllib.request.urlopen(url)
     buf = f.read().decode('utf-8')
@@ -420,7 +323,7 @@ def EPS(name,url):
 
             date = re.compile('datetime="(.+?)">',re.DOTALL).findall (p)[0]
             try:
-                TIME= parse_Date(str(date), '%Y-%m-%dT%H:%MZ','%H:%M%p')
+                TIME= parse_Date(str(date), '%Y-%m-%dT%H:%MZ','%H:%M')
                 DATE= parse_Date(str(date), '%Y-%m-%dT%H:%MZ','%d/%m/%Y')
                 ADDDATE= '%s %s' % (DATE,TIME)
             except Exception as e:
@@ -589,9 +492,6 @@ def HLS(url,iconimage):
     liz.setPath(STREAM+ENDING)
     xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, liz)
     
-def VIDEO(url,iconimage):
-    return HLS(url,iconimage)
-                
 def setView(content, viewType):
         # set content type so library shows more views and info
         if content:
@@ -599,69 +499,6 @@ def setView(content, viewType):
         if ADDON.getSetting('auto-view') == 'true':#<<<----see here if auto-view is enabled(true) 
                 xbmc.executebuiltin("Container.SetViewMode(%s)" % ADDON.getSetting(viewType) )#<<<-----then get the view type
                 
-def decode_redirect(url):
-    
-    # some of the the urls passed in are redirects that are not handled by XBMC.
-    # These are text files with multiple stream urls
-
-    #if environment in ['xbox', 'linux']:
-    #    # xbox xbmc works just fine with redirects
-    #    return url
-
-    response = get_url(url).replace('&amp;','&')
-    match=re.compile('Ref1\=(http.*)\s').findall(response)
-
-    stream_url = None
-    if match:
-        stream_url = match[0].rstrip()
-    else:
-        # no match so pass url to xbmc and see if the url is directly supported 
-        stream_url = url
-
-    return stream_url
-
-def decode_date(date):
-    # format eg Sat 10 Jan 2009
-    (dayname,day,monthname,year) = date.split(' ')
-    if not year:
-        return date
-    month=1
-    monthname = monthname.lower()
-    lookup = {'jan':1, 'feb':2, 'mar':3, 'apr':4, 'may':5, 'jun':6, 'jul':7, 'aug':8, 'sep':9, 'oct':10, 'nov':11, 'dec':12}
-    if monthname[:3] in lookup:
-        month=lookup[monthname[:3]]
-    
-    try:
-        # yes I know the colons are weird but the 2009-01-25 xbox release
-        # when in filemode (but not library mode) converts YYYY-MM-DD in (YYYY)
-        sep='-'
-        if environment == 'xbox': sep=':' 
-        ndate = "%04d%s%02d%s%02d" % (int(year),sep,int(month),sep,int(day))
-    except:
-        # oops funny date, return orgional date
-        return date
-    #print "Date %s from %s" % (ndate, date)
-    return ndate
-
-def get_url(url):
-    http = get_httplib()
-    data = None    
-    try:
-        resp, data = http.request(url, 'GET')
-    except: pass
-    
-    # second try
-    if not data:
-        try:
-            resp, data = http.request(url, 'GET')
-        except: 
-            dialog = xbmcgui.Dialog()
-            dialog.ok('Network Error', 'Failed to fetch URL', url)
-            print ('Network Error. Failed to fetch URL %s' % url)
-            raise
-    
-    return data
-
 def get_params():
         param=[]
         paramstring=sys.argv[2]
@@ -679,16 +516,6 @@ def get_params():
                                 param[splitparams[0]]=splitparams[1]
                                 
         return param
-
-      
-def addLink(name,url):
-        ok=True
-        thumbnail_url = url.split( "thumbnailUrl=" )[ -1 ]
-        liz=xbmcgui.ListItem(name)
-        liz.setArt({'icon' : 'DefaultVideo.png', 'thumb' : thumbnail_url})
-        liz.setInfo( type="Video", infoLabels={ "Title": name } )
-        ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=url,listitem=liz)
-        return ok
 
 def addDir(name,url,mode,iconimage,plot='',isFolder=True):
     
@@ -751,59 +578,28 @@ try:
         mode=int(params["mode"])
 except:
         pass
-print ("Mode: "+str(mode))
-print ("URL: "+str(url))
-print ("Name: "+str(name))
-print ("iconimage: "+str(iconimage))
 
 if mode==None or url==None or len(url)<1:
-        print ("categories")
         CATS()
 elif mode==1:
-        print ("index of : "+url)
         SHOWS(url)
 elif mode==2:
-        print ("Getting Episodes: "+url)
         EPS(name,url)
 elif mode==3:
-        print ("Getting Videofiles: "+url)
-        VIDEO(url,iconimage)
-elif mode==4:
-        print ("Getting Videofiles: "+url)
-        BESTOF(url)
-elif mode==5:
-        print ("Getting Videofiles: "+url)
-        BESTOFEPS(name,url)
-elif mode==6:
-        print ("Getting Videofiles: "+url)
-        STREAMS()
-elif mode==7:
-        print ("Getting Videofiles: "+url)
-        PLAY_STREAM(name,url,iconimage)
+        HLS(url,iconimage)
 elif mode==8:
-        print ("Getting Videofiles: "+url)
         PLAY_STREAM_HLS_LIVE(name,url,iconimage)        
-
 elif mode==12:
-    print ("")
     getFavorites()
-
 elif mode==13:
-    print ("")
     addFavorite(name,url,iconimage)
-
 elif mode==14:
-    print ("")
     rmFavorite(name)
-
 elif mode==204:
     EPS(name,url)
-        
 elif mode==205:
     CATEGORIES()
-    
 elif mode==206:
     LIVE()   
         
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
-
