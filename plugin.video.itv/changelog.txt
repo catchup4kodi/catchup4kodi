@@ -1,3 +1,14 @@
+v.3.0.2
+Subtiles now work the same as BBC iPlayer (different actors get different colours)
+The date on each folder has been removed
+The time is not in 24 hrs without the AM or PM on the end
+
+v.3.0.1
+Fixed crash due to subtiles
+
+v.3.0.0
+Upgraded to python 3
+
 v2.3.9
 Fixed regex to pull correct video url
 

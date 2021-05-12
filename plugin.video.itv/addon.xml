@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.itv" name="ITV" version="3.0.0" provider-name="LittleWiz, Cowebtech">
+<addon id="plugin.video.itv" name="ITV" version="3.0.2" provider-name="LittleWiz, Cowebtech">
   <requires>
     <import addon="xbmc.python" version="3.0.0"/>
     <import addon="script.module.httplib2"/>
@@ -13,7 +13,6 @@
     <platform>all</platform>
     <summary>TV from ITV Hub</summary>
     <description>This add-on enables the playing of Live and Catchup TV from ITV Hub (UK only)</description>
-    <news>Upgrade Python version to 3.0.0</news>
     <disclaimer lang="en">This add-on is a front end to the ITV Hub website. It is not an official ITV product. A UK TV Licence is required to watch the live, catch-up, or on-demand TV content.</disclaimer>
     <assets>
       <icon>icon.png</icon>
